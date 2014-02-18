@@ -1,0 +1,34 @@
+<?php
+$this->page_header = "#CTS_CONTROLLER_NAME#";
+$this->page_subheader = sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.title');;
+
+$this->page_breadcrumb = array(
+    '#UCF_MODULE_NAME#' => array('/#MODULE_NAME#'),
+    '#CTS_CONTROLLER_NAME#' => array('/#MODULE_NAME#/#CONTROLLER_NAME#'),    
+    sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.title'));
+
+$object = $this->object;
+$this->page_menu = array(    
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.create'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/create'),
+        'icon' => 'plus'
+    ),   
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.update'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/update',#KEYS_ARRAY_FROM_OBJ#),
+        'icon' => 'edit'
+    ),
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.delete'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/delete',#KEYS_ARRAY_FROM_OBJ#),
+        'icon' => 'remove'
+    ),    
+);
+?>
+<div class="panel panel-default">
+    <div class="panel-heading"><?= sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.panel.heading') ?></div>
+    <div class="panel-body">
+        #VIEW_ELEMENTS#
+    </div>
+</div>

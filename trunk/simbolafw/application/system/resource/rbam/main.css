@@ -1,0 +1,12 @@
+.auth-select{
+    padding: 5px;
+    min-width: 200px;
+}
+
+.auth-select option{
+    padding: 5px;
+}
+
+.ui-widget{
+    font-size: 10px;
+}

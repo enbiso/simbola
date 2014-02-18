@@ -1,0 +1,15 @@
+<?php
+/**
+ * Description of Model Term
+ *
+ * Model 	: #MODEL_NAME#
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #MODEL_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Model term #MODEL_NAME#
+ *  
+ * @author #AUTHER#
+ */
+#TERM_ENTRIES#

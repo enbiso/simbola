@@ -1,0 +1,20 @@
+<?php
+/**
+ * Description of Controller Term
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * View 	: list
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #CONTROLLER_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller Term #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.create.title'] = 'Create';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.create.menu.list'] = 'List';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.list.title'] = 'List';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.list.menu.create'] = 'Add';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.list.table.title'] = '#CTS_CONTROLLER_NAME#s';

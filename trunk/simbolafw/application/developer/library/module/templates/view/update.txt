@@ -1,0 +1,32 @@
+<?php
+$this->page_header = "#CTS_CONTROLLER_NAME#";
+$this->page_subheader = sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.update.title');
+
+$this->page_breadcrumb = array(
+    '#UCF_MODULE_NAME#' => array('/#MODULE_NAME#'),
+    '#CTS_CONTROLLER_NAME#' => array('/#MODULE_NAME#/#CONTROLLER_NAME#'),    
+    sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.update.title'));
+
+$object = $this->object;
+$this->page_menu = array(    
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.update.menu.list'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/list'),
+        'icon' => 'list'
+    ),
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.update.menu.view'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/view',#KEYS_ARRAY_FROM_OBJ#),
+        'icon' => 'file'
+    ),
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.update.menu.delete'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/delete',#KEYS_ARRAY_FROM_OBJ#),
+        'icon' => 'remove'
+    ),    
+);
+?>
+<?php if($this->isDataSet('error')): ?>
+    <div class="alert alert-warning"><?= $this->error ?></div>
+<?php endif; ?>
+<?php $this->pview('#CONTROLLER_NAME#/_form'); ?>
