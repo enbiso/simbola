@@ -1,0 +1,21 @@
+<?php
+$this->page_header = "#CTS_CONTROLLER_NAME#";
+$this->page_subheader = sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.create.title');
+
+$this->page_breadcrumb = array(
+    '#UCF_MODULE_NAME#' => array('/#MODULE_NAME#'),
+    '#CTS_CONTROLLER_NAME#' => array('/#MODULE_NAME#/#CONTROLLER_NAME#'),    
+    sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.create.title'));
+
+$this->page_menu = array(
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.create.menu.list'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/list'),
+        'icon' => 'list'
+    ),
+);
+?>
+<?php if($this->isDataSet('error')): ?>
+    <div class="alert alert-warning"><?= $this->error ?></div>
+<?php endif; ?>
+<?php $this->pview('#CONTROLLER_NAME#/_form'); ?>

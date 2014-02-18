@@ -1,0 +1,1 @@
+<?= shtmlform_input_hidden_for($this->object, '#FIELD_NAME#', 'keys') ?>

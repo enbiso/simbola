@@ -1,0 +1,4 @@
+        <div class="row">
+            <div class="col-md-2 text-muted"><?= $this->object->eTerm('#FIELD_NAME#') ?></div>
+            <div class="col-md-4"><?php echo $this->object->#FIELD_NAME#; ?></div>        
+        </div>        

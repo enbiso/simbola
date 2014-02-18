@@ -1,0 +1,25 @@
+<?php
+namespace application\#MODULE_NAME#\model\#LU_NAME#;
+/**
+ * Description of Model
+ *
+ * Model 	: #MODEL_NAME#
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #MODEL_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the model #MODEL_NAME#
+ *  
+ * @author #AUTHER#
+ */
+class #MODEL_CLASS_NAME# extends \simbola\core\component\db\activerecord\ActiveModel{
+    //put your code here
+    static $class_name, $table_name, $belongs_to, $has_many;
+    public static function initialize() {
+        self::setClass(__CLASS__);
+        self::setSource("#MODULE_NAME#", '#LU_NAME#', '#TABLE_NAME#');
+    }
+}
+
+?>

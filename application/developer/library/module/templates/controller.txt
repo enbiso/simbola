@@ -1,0 +1,132 @@
+<?php
+namespace application\#MODULE_NAME#\controller;
+/**
+ * Description of Controller
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #CONTROLLER_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */
+class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppController {
+
+    function actionIndex() {
+        $this->view('#CONTROLLER_NAME#/index');
+    }
+
+    function actionCreate() {
+        $object = new #MODEL_CLASS#();
+        if ($this->issetPost('data')) {
+            try {
+                $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'create', array(
+                    'data' => $this->post('data'),
+                ));
+                $object = $response["body"]['response']['object'];
+                $keys = array(
+                    #KEYS_ARRAY_FROM_OBJ#
+                );
+                $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
+            } catch (\Exception $ex) {
+                $this->setViewData("error", $ex->getMessage());
+            }
+        }
+        $this->setViewData('object',$object);
+        $this->view('#CONTROLLER_NAME#/create');
+    }
+    
+    function actionUpdate(){
+        if ($this->issetGet('#KEYS_COMMA_STR#')) {
+            $keysFromGet = array(
+                #KEYS_ARRAY_FROM_GET#
+            );
+            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
+                'keys' => $keysFromGet,
+            ));
+            $object = $response["body"]['response']['object'];
+            $this->setViewData('object',$object);
+            if ($this->issetPost('data')) {
+                try {
+                    $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'update', array(
+                        'keys' => $keysFromGet,
+                        'data' => $this->post('data'),
+                    ));
+                    $object = $response["body"]['response']['object'];
+                    $this->setViewData('object',$object);
+                    $keys = array(
+                        #KEYS_ARRAY_FROM_OBJ#
+                    );
+                    $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
+                } catch (\Exception $ex) {
+                    $this->setViewData("error", $ex->getMessage());
+                }
+            }
+            $this->view('#CONTROLLER_NAME#/update');
+        }else{
+            $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/index');
+        }
+    }
+    
+    function actionDelete(){
+        if ($this->issetGet('#KEYS_COMMA_STR#')) {
+            if ($this->issetPost('keys')) {
+                try {
+                    $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'delete', array(
+                        'keys' => $this->post('keys'),                    
+                    ));                                
+                    $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
+                } catch (\Exception $ex) {
+                    $this->setViewData("error", $ex->getMessage());
+                }
+                $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
+            } else {
+                $keys = array(
+                    #KEYS_ARRAY_FROM_GET#
+                );
+                $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
+                    'keys' => $keys,
+                ));
+                $object = $response["body"]['response']['object'];
+                $this->setViewData('object', $object);
+                $this->view('#CONTROLLER_NAME#/delete');
+            }   
+        } else {
+            $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
+        }
+    }
+
+    function actionView() {
+        if ($this->issetGet('#KEYS_COMMA_STR#')) {            
+            $keys = array(
+                #KEYS_ARRAY_FROM_GET#
+            );
+            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
+                'keys' => $keys,
+            ));
+            $object = $response["body"]['response']['object'];
+            $this->setViewData('object', $object);
+            $this->view('#CONTROLLER_NAME#/view');
+        } else {
+            $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/index');
+        }
+    }
+   
+    function actionList(){        
+        try {
+            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'list', array(
+                'search' => $this->post('data'),
+            ));
+            $data = $response["body"]['response']['data'];
+            $this->setViewData('data', $data);
+        } catch (\Exception $ex) {
+            $this->setViewData("error", $ex->getMessage());
+        }        
+        $this->view('#CONTROLLER_NAME#/list');
+    }
+}
+
+?>

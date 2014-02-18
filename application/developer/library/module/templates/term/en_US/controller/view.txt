@@ -1,0 +1,20 @@
+<?php
+/**
+ * Description of Controller Term
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * View 	: view
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #CONTROLLER_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller Term #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.view.title'] = 'View';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.delete'] = 'Remove';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.update'] = 'Edit';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.view.menu.create'] = 'Create';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.view.panel.heading'] = '#CTS_CONTROLLER_NAME# Information';

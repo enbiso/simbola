@@ -1,0 +1,22 @@
+<?php
+/**
+ * Description of Controller Term
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * View 	: index
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #CONTROLLER_PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller Term #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.create.title'] = 'Create';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.create.menu.list'] = 'List';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.index.title'] = 'Index';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.index.menu.list'] = 'List';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.index.menu.create'] = 'Add';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.index.button.create'] = 'Create';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.index.button.list'] = 'List All';

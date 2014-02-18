@@ -1,0 +1,31 @@
+<?php
+$this->page_header = "#CTS_CONTROLLER_NAME#";
+$this->page_subheader = sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.list.title');;
+
+$this->page_breadcrumb = array(
+    '#UCF_MODULE_NAME#' => array('/#MODULE_NAME#'),
+    '#CTS_CONTROLLER_NAME#' => array('/#MODULE_NAME#/#CONTROLLER_NAME#'),    
+    sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.list.title'));
+
+$this->page_menu = array(     
+    array(
+        'title' => sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.list.menu.create'),
+        'link' => array('/#MODULE_NAME#/#CONTROLLER_NAME#/create'),
+        'icon' => 'plus'
+    ),   
+);
+
+$grid = new application\system\library\simgrid\WidgetSimGrid("#MODULE_NAME#_#CONTROLLER_NAME#_list");
+$grid->setTitle(sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.list.table.title'));
+$grid->setTableCss('table-condensed table-hover');
+$grid->setDataSource("#MODULE_NAME#", "#LU_NAME#", "#MODEL_NAME#");
+$grid->setColumns(array(
+    #COLS_ARRAY_FOR_TABLE#,
+    "Actions",
+));
+$grid->setActions(array(
+    shtml_action_link("open", array('#MODULE_NAME#/#CONTROLLER_NAME#/view#KEYS_ARRAY_FOR_LINK#'), array('class' => 'btn btn-default btn-xs')),
+));
+
+echo $grid->getDisplayData();
+?>

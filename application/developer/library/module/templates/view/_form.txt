@@ -1,0 +1,8 @@
+<div class="row">
+    <?= shtmlform_start("#CONTROLLER_NAME#_form", null, 'POST', array('class' => 'col-md-8')) ?>
+#FORM_ELEMENTS#
+        <div class="form-actions">
+            <input type="submit" value="Save" class="btn btn-default"/>
+        </div>
+    <?= shtmlform_end(); ?>
+</div>
