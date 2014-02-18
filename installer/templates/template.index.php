@@ -32,7 +32,7 @@ Simbola::app()->component('log', array(
 ));
 
 Simbola::app()->component('social', array(
-    'DEBUG' => array('ENABLE' => false, 'FILE' => './logs/social.log'),
+    'DEBUG' => array('ENABLE' => false, 'FILE' => './social.log'),
     'PROVIDERS' => array(
         "Google" => array(
             "enabled" => false,
