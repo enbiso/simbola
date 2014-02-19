@@ -1,0 +1,23 @@
+Simbola::app()->component('social', array(
+    'DEBUG' => array('ENABLE' => false, 'FILE' => './social.log'),
+    'PROVIDERS' => array(
+        "Google" => array(
+            "enabled" => false,
+            "keys" => array(
+                "id" => "[GOOGLE_ID]",
+                "secret" => "[GOOGLE_SECRET]"),
+        ),
+        "Facebook" => array(
+            "enabled" => false,
+            "keys" => array(
+                "id" => "[FB_ID]",
+                "secret" => "[FB_SECRET]"),
+        ),
+        "Twitter" => array(
+            "enabled" => false,
+            "keys" => array(
+                "key" => "[TWITTER_KEY]",
+                "secret" => "[TWITTER_SECRET]")
+        ),
+    )
+));

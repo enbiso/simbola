@@ -1,0 +1,4 @@
+Simbola::app()->component('url', array(
+    'URL_BASE' => '[URL_BASE]',
+    'HIDE_INDEX' => [HIDE_INDEX],
+));

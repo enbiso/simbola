@@ -13,6 +13,8 @@ Simbola::app()->setup(array(
     )
 ));
 
+[URL_SETUP]
+
 Simbola::app()->component('resource', array(
     'MODE' => 'DEV',//DEV or PROD
 ));
@@ -27,41 +29,19 @@ Simbola::app()->component('db', array(
     'DEBUG' => false,
 ));
 
+[SOCIAL_SETUP]
+
 Simbola::app()->component('log', array(
     'TYPES' => array('TRACE','DEBUG','ERROR','INFO'),
 ));
 
-Simbola::app()->component('social', array(
-    'DEBUG' => array('ENABLE' => false, 'FILE' => './social.log'),
-    'PROVIDERS' => array(
-        "Google" => array(
-            "enabled" => false,
-            "keys" => array(
-                "id" => "[GOOGLE_ID]",
-                "secret" => "[GOOGLE_SECRET]"),
-        ),
-        "Facebook" => array(
-            "enabled" => false,
-            "keys" => array(
-                "id" => "[FB_ID]",
-                "secret" => "[FB_SECRET]"),
-        ),
-        "Twitter" => array(
-            "enabled" => false,
-            "keys" => array(
-                "key" => "[TWITTER_KEY]",
-                "secret" => "[TWITTER_SECRET]")
-        ),
-    )
-));
-
 Simbola::app()->component('auth', array(
-    'BYPASS' => true,
+    'BYPASS' => false,
 ));
 
 Simbola::app()->component('router', array(
-    'DEFAULT' => 'system/site/index',
-    'LOGIN' => 'system/user/login',
+    'DEFAULT' => 'system/www/index',
+    'LOGIN' => 'system/auth/login',
 ));
 
 Simbola::app()->execute();
