@@ -13,11 +13,3 @@ class Simbola extends core\Application{
         return Simbola::$app;
     }
 }
-
-if(isset($argc)&&isset($argv)){
-    //SHELL EXECUTE
-    if($argc > 1 && $argv[1] = 'shell'){
-        Simbola::app()->setup(array("BASEPATH"=>'.'));
-        Simbola::app()->shell();
-    }
-}

@@ -42,18 +42,23 @@ class Router extends \simbola\core\component\system\lib\Component {
         }
     }
 
-    public function initWithDefaults($page) {
+    public function initWithDefaults($page, $withNoPage = true) {
         if (is_null($page->module)){            
             $page->loadFromUrl($this->params['DEFAULT']);            
-            
         }else{
-            $mconf = \simbola\Simbola::app()->getModuleConfig($page->module);
-            $mdefRoute = explode("/", $mconf->default_route);
-            if(is_null($page->logicalUnit)){
-                $page->setDefault('logicalUnit', $mdefRoute[0]);
-            }
-            if(is_null($page->action)){
-                $page->setDefault('action', $mdefRoute[1]);
+            try{
+                $mconf = \simbola\Simbola::app()->getModuleConfig($page->module);
+                $mdefRoute = explode("/", $mconf->default_route);
+                if(is_null($page->logicalUnit)){
+                    $page->setDefault('logicalUnit', $mdefRoute[0]);
+                }
+                if(is_null($page->action)){
+                    $page->setDefault('action', $mdefRoute[1]);
+                }
+            }  catch (\Exception $ex){
+                if($withNoPage){
+                    $page->loadFromUrl($this->params['NOPAGE']);            
+                }
             }
         }
         return $page;
@@ -62,8 +67,7 @@ class Router extends \simbola\core\component\system\lib\Component {
     private function executeController($page) {
         //set default if the route is empty                
         try {
-            $controller_name = \simbola\Simbola::app()->getPageClass($page);
-            class_exists($controller_name);
+            $controller_name = \simbola\Simbola::app()->getPageClass($page, false);
         }catch(\Exception $ex){
             $page = new \simbola\core\component\url\lib\Page();
             $page->loadFromUrl($this->params['NOPAGE']);

@@ -12,8 +12,11 @@ class Application {
     public $components = array();
     public $sysParams;
 
-    public function setup($params) {
+    public function __construct() {
         $this->import('core/initlib/include');
+    }
+    
+    public function setup($params) {
         $this->sysParams = $params;
         $this->initParam('APPNAME', "Simbola Application");
         $this->initParam('SERVICE_API', "service_api");
@@ -154,11 +157,6 @@ class Application {
         return $this->components[$name];
     }
 
-    public function shell() {
-        $shell = new \simbola\base\shell\Shell();
-        $shell->execute();
-    }
-
     public function execute() {
         $this->init();
         $this->perform();
@@ -189,7 +187,7 @@ class Application {
     private $moduleConfigCache = array();
 
     public function getModuleConfig($moduleName) {
-        if (empty($moduleName)) {
+        if (empty($moduleName)) {            
             throw new \Exception("Module cannot be empty");
         }
         $config = null;
@@ -216,14 +214,18 @@ class Application {
         return $moduleConfig->getPath('database', false);
     }
 
-    public function getPageClass($page) {
+    public function getPageClass($page, $safeCheck = false) {
         $app = \simbola\Simbola::app();
         $moduleConfig = $this->getModuleConfig($page->module);
         if ($page->type == component\url\lib\Page::$TYPE_CONTROLLER) {
-            return $moduleConfig->getNamespace('controller') . '\\' . ucfirst($page->logicalUnit) . "Controller";
+            $class = $moduleConfig->getNamespace('controller') . '\\' . ucfirst($page->logicalUnit) . "Controller";
         } else {
-            return $moduleConfig->getNamespace('service') . '\\' . ucfirst($page->logicalUnit) . "Service";
+            $class = $moduleConfig->getNamespace('service') . '\\' . ucfirst($page->logicalUnit) . "Service";
         }
+        if($safeCheck && (!class_exists($class) || !method_exists($class, $page->getActionFunction()))){
+            throw new \Exception('Class/Action not found');
+        }
+        return $class;
     }
 
 }
