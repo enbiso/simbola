@@ -15,20 +15,53 @@ function run_installer() {
 
 function setup_application() {
     $appconfig = get_session("application");
-    $dbconnconfig = get_session("dbconn");
-    $dbaseconfig = get_session("dbase");    
+    
     if($appconfig['execute'] == 'YES'){
-        copy("templates/template.htaccess", "../.htaccess");
-        $content = file_get_contents("templates/template.index.php");
-        $content = str_replace("[APP_NAME]", $appconfig['app_name'], $content);
-        $content = str_replace("[DB_VENDOR]", 'MYSQL', $content);
-        $content = str_replace("[DB_SERVER]", $dbconnconfig['server'], $content);
-        $content = str_replace("[DB_USERNAME]", $dbconnconfig['username'], $content);
-        $content = str_replace("[DB_PASSWORD]", $dbconnconfig['password'], $content);
-        $content = str_replace("[DB_NAME]", $dbaseconfig['dbname'], $content);
-        file_put_contents("../index.php", $content);
+        setup_application_htaccess();
+        setup_application_index();
         header("location:../");
     }
+}
+
+function setup_application_htaccess(){
+    copy("templates/htaccess.txt", "../.htaccess");
+}
+
+function setup_application_index(){
+    $appconfig = get_session("application");
+    $dbconnconfig = get_session("dbconn");
+    $dbaseconfig = get_session("dbase");    
+    
+    $content = file_get_contents("templates/index.txt");
+    $content = str_replace("[APP_NAME]", $appconfig['name'], $content);
+    $content = str_replace("[DB_VENDOR]", 'MYSQL', $content);
+    $content = str_replace("[DB_SERVER]", $dbconnconfig['server'], $content);
+    $content = str_replace("[DB_USERNAME]", $dbconnconfig['username'], $content);
+    $content = str_replace("[DB_PASSWORD]", $dbconnconfig['password'], $content);
+    $content = str_replace("[DB_NAME]", $dbaseconfig['dbname'], $content);
+    $content = str_replace("[URL_SETUP]", get_application_index_url(), $content);
+    $content = str_replace("[SOCIAL_SETUP]", get_application_index_social(), $content);
+    file_put_contents("../index.php", $content);
+}
+
+function get_application_index_url(){
+    $appconfig = get_session("application");
+    $content = "";
+    if($appconfig['urlbase'] != ""){
+        $content = file_get_contents("templates/index.url.txt");        
+        $content = str_replace("[URL_BASE]", $appconfig['urlbase'], $content);    
+        $content = str_replace("[HIDE_INDEX]", (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')?'false':'true', $content);    
+    }
+    return $content;
+}
+
+function get_application_index_social(){
+    $appconfig = get_session("application");
+    $content = "";
+    if($appconfig['social']){
+        $content = file_get_contents("templates/index.social.txt");                
+    }
+    return $content;
 }
 
 function init_check() {
@@ -81,7 +114,11 @@ function init() {
     $_SESSION['installer'] = array(
         'dbconn' => array('server' => 'localhost', 'password' => '', 'username' => 'root'),
         'dbase' => array('dbname' => 'simbola_db', 'dbcreate' => 'NO'),
-        'application' => array('app_name' => 'Simbola Application', 'execute' => 'NO'),
+        'application' => array(
+            'name' => 'Simbola Application', 
+            'execute' => 'NO',
+            'social' => false,
+            'urlbase' => get_urlbase()),
     );
 
     foreach (array('dbconn','dbase','application') as $baseKey) {
@@ -91,6 +128,12 @@ function init() {
             }
         }
     }   
+}
+
+function get_urlbase(){
+    $url = $_SERVER['REQUEST_URI'];
+    $pos = strpos($url, "/installer");
+    return trim(substr($url, 0, $pos),"/");
 }
 
 function get_session($name){
