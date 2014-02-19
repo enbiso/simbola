@@ -14,6 +14,7 @@ class Social extends \simbola\core\component\system\lib\Component {
             'ENABLE' => false,            
             'FILE' => "./".\simbola\Simbola::app()->getParam('BASE')."/social.logs"
         ));
+        $this->setParamDefault("PROVIDERS", array());
     }
 
     public function init() {

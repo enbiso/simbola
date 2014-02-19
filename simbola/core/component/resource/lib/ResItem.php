@@ -52,11 +52,13 @@ class ResItem {
         if(\simbola\Simbola::app()->resource->getParam('MODE') == "DEV"){
             $this->initLoad();
         }
+        $url = "/resource/{$this->module}/{$this->name}";
         if($absolute){
-            return \simbola\Simbola::app()->url->getBaseUrl() . $this->getUrl();
+            $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
         }else{
-            return \simbola\Simbola::app()->url->getAppUrlBase() . "/resource/{$this->module}/{$this->name}";
+            $url = \simbola\Simbola::app()->url->getAppUrlBase() . $url;
         }
+        return $url;
     }
 
     function initLoad() {
