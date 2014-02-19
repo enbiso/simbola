@@ -19,6 +19,10 @@ class Page {
         'action' => null,
         'params' => array(),
     );
+    
+    public function getActionFunction() {
+        return "action".ucfirst($this->action);
+    }
 
     public function __get($name) {
         if (array_key_exists($name, $this->data)) {
