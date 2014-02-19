@@ -25,13 +25,13 @@ class Url extends \simbola\core\component\system\lib\Component {
     }
 
     public function getBaseUrl() {
-        return 'http' . ((!empty($_SERVER['HTTPS'])) ? "s" : "") . "://" . $_SERVER['SERVER_NAME'];
+        return 'http' . ((!empty($_SERVER['HTTPS'])) ? "s" : "") . "://" . $_SERVER['SERVER_NAME'] . "/" . $this->getAppUrlBase();
     }
     
     public function getAppUrlBase() {
         $postFix = "";
         if($this->getParam("URL_BASE")){
-            $postFix = "/".$this->getParam("URL_BASE");
+            $postFix = $this->getParam("URL_BASE");
         }
         return $postFix;
     }
