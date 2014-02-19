@@ -9,6 +9,22 @@ namespace application\developer\service;
  */
 class IdeService extends \simbola\core\application\AppService {
 
+    public $schema_promoteFile = array(
+        'req' => array('params' => array('path', 'promotePath')),
+        'res' => array('status'),
+        'err' => array('PROMOTE_FAILED')
+    );
+    
+    public function actionPromoteFile() {
+        $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $this->_req_params('path');
+        $promotePath = $this->_req_params('promotePath');
+        if(!sstring_starts_with(DIRECTORY_SEPARATOR, $promotePath)){
+            $promotePath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $promotePath;
+        }
+        $dest = $promotePath . DIRECTORY_SEPARATOR . $this->_req_params('path');
+        sfile_copy_recursive($path, $dest);
+    }
+    
     public $schema_createFile = array(
         'req' => array('params' => array('path', 'name', 'type')),
         'res' => array('status'),
