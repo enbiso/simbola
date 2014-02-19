@@ -32,6 +32,7 @@
     <li class="rename separator"><a href="#rename">Rename</a></li>
     <li class="upload separator"><a href="#upload">Upload</a></li>  
     <li class="download"><a href="#download">Download</a></li>  
+    <li class="promote separator"><a href="#promote">Promote</a></li>  
     <li class="cut separator"><a href="#cut">Cut</a></li>
     <li class="copy"><a href="#copy">Copy</a></li>
     <li class="paste"><a href="#paste">Paste</a></li>
@@ -199,6 +200,17 @@
             });
         });
     }
+    
+    //Promote-------------------------------------------------------------------
+    function promoteFile(node, promotePath){
+        set_cursor_busy();
+        simbola.call.service('developer', 'ide', 'promoteFile', {path: node.data.key, promotePath: promotePath}, function(data) {
+            node.getParent().reloadChildren(function(node, isOk) {
+                node.getParent().expand();
+                set_cursor_auto();
+            });
+        });
+    }
 
     //Context Menu--------------------------------------------------------------
     var command;
@@ -238,6 +250,12 @@
                         });
                     }
                     command = null;
+                    break;
+                case "promote":
+                    create_modal("Promote Files", "Path of promotion", function() {
+                        promoteFile(node, create_modal_data('name'));
+                        create_modal_close();
+                    },'promote');
                     break;
                 case "delete":
                     node.select(false);
@@ -411,6 +429,12 @@
                 $('#webcode-context .new_controller').show();
             } else {
                 $('#webcode-context .new_controller').hide();
+            }
+            //PROMOTE
+            if (key.match('application*')) {
+                $('#webcode-context .promote').show();
+            } else {
+                $('#webcode-context .promote').hide();
             }
         });
     }
