@@ -1,6 +1,10 @@
-<h2>Default Simbola: Login.</h2>
-<h2><small>To customize, configure params of 'Auth' component</small></h2>
+<h1>Simbola Login.</h1>
+To customize, configure params of 'Auth' component, <strong>Default login ' admin / admin '</strong>
+<hr/>
 <div class="row">
+    <?php if($this->isDataSet('errorMessage')): ?>
+    <div class="alert alert-warning"><?= $this->errorMessage ?></div>
+    <?php endif;?>
     <form method="POST" role="form" class="col-md-4">
         <div class="form-group">
             <label>Username</label>

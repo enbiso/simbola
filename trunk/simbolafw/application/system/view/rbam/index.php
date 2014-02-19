@@ -1,12 +1,12 @@
 <?php $url = simbola\Simbola::app()->url; ?>
 <div id="tabs-rbam-main">
     <ul>
-        <li><a href="/system/rbam/tabUsers">Users</a></li>
-        <li><a href="/system/rbam/tabRoles">Roles</a></li>
-        <li><a href="/system/rbam/tabUserRole">User - Role</a></li>	
-        <li><a href="/system/rbam/tabRoleRole">Role - Role</a></li>
-        <li><a href="/system/rbam/tabRoleAccessObj">Role - Access Object</a></li>
-        <li><a href="/system/rbam/tabManAccessObj">Manage Access Objects</a></li>
+        <li><?= shtml_action_link("Users", array('/system/rbam/tabUsers')) ?></li>
+        <li><?= shtml_action_link("Roles", array('/system/rbam/tabRoles')) ?></li>
+        <li><?= shtml_action_link("User - Role", array('/system/rbam/tabUserRole')) ?></li>
+        <li><?= shtml_action_link("Role - Role", array('/system/rbam/tabRoleRole')) ?></li>
+        <li><?= shtml_action_link("Role - Access Object", array('/system/rbam/tabRoleAccessObj')) ?></li>
+        <li><?= shtml_action_link("Manage Access Objects", array('/system/rbam/tabManAccessObj')) ?></li>
     </ul>
 </div>
 <script>

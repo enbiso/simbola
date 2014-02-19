@@ -1,11 +1,13 @@
 <?php
+
 namespace application\system\controller;
+
 /**
  * Description of AuthController
  *
  * @author Faraj
  */
-class AuthController extends \simbola\core\application\AppController{
+class AuthController extends \simbola\core\application\AppController {
 
     public function actionSocial() {
         \Hybrid_Endpoint::process($_REQUEST);
@@ -22,7 +24,7 @@ class AuthController extends \simbola\core\application\AppController{
         header('Content-type: application/json');
         $this->json($auth->updateSession($this->post('username'), $this->post('skey')));
     }
-    
+
     public function actionLogin() {
         if ($this->issetPost(array('username', 'password'))) {
             try {
@@ -30,16 +32,19 @@ class AuthController extends \simbola\core\application\AppController{
                     'username' => $this->post('username'),
                     'password' => $this->post('password'),
                 ));
-                $this->view('auth/loginSuccess');
+                $this->redirect('/system/www/index');
             } catch (\Exception $ex) {
                 $this->setViewData("errorMessage", $ex->getMessage());
-                $this->view('auth/loginFailed');
             }
-        } else {
-            $this->view('auth/login');
         }
+        $this->view('auth/login');
     }
-    
+
+    public function actionLogout() {
+        $this->invoke("system", "auth", "logout", array());
+        $this->redirect('/system/www/index');
+    }
+
 }
 
 ?>
