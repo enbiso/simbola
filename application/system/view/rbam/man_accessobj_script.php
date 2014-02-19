@@ -1,7 +1,6 @@
-<?php $url = simbola\Simbola::app()->url; ?>
 <script>    
     $(function(){
-    var ur_url = "/system/rbam/accessObjects";
+    var ur_url = '<?= surl_geturl(array("/system/rbam/accessObjects")) ?>';
     $("#access_obj_list").dynatree({
         debugLevel: 2,
         persist: false,
@@ -14,10 +13,8 @@
 <script>
 
 function registerModule(){
-    var name = $('#select_modules').val();
-    <?php $page = new \simbola\core\component\url\lib\Page;
-          $page->loadFromArray(array('system/rbam/registerModule', 'module' => '__MDL__')); ?>
-    var url = "<?php echo $page->getUrl(); ?>";
+    var name = $('#select_modules').val();              
+    var url = '<?= surl_geturl(array('system/rbam/registerModule', 'module' => '__MDL__')) ?>';
     url = url.replace("__MDL__",name);
     $("body").css("cursor", "progress");
     $.post(url, function(data){
@@ -28,7 +25,7 @@ function registerModule(){
 }
 
 function registerAllModules(){    
-    var url = "/system/rbam/registerAllModules";    
+    var url = '<?= surl_geturl(array("/system/rbam/registerAllModules")) ?>';    
     $("body").css("cursor", "progress");
     $.post(url, function(data){
         $("body").css("cursor", "auto");
@@ -46,7 +43,7 @@ function removeObjs(){
         'objs': selKeys            
     };
     $("body").css("cursor", "progress");
-    $.post("/system/rbam/unregister", post_data, function(data){
+    $.post('<?= surl_geturl(array("/system/rbam/unregister")) ?>', post_data, function(data){
         $("body").css("cursor", "auto");
         $.pnotify(data);
         $("#access_obj_list").dynatree('getTree').reload();
