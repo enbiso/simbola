@@ -1,23 +1,22 @@
 <?php
 
-function sfile_copy_recursive($source, $dest) {
-    if (is_dir($source)) {
-        $dir_handle = opendir($source);
-        $sourcefolder = basename($source);
-        if(!is_dir($dest . DIRECTORY_SEPARATOR . $sourcefolder)){
-            mkdir($dest . DIRECTORY_SEPARATOR . $sourcefolder);
+function sfile_copy_recursive($src, $dst) {
+    if (is_dir($src)) {
+        $dir = opendir($src);
+        if(!is_dir($dst)){
+            mkdir($dst);
         }
-        while ($file = readdir($dir_handle)) {
-            if ($file != "." && $file != "..") {
-                if (is_dir($source . DIRECTORY_SEPARATOR . $file)) {
-                    sfile_copy_recursive($source . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $sourcefolder);
+        while (false !== ( $file = readdir($dir))) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if (is_dir($src . '/' . $file)) {
+                    sfile_copy_recursive($src . '/' . $file, $dst . '/' . $file);
                 } else {
-                    copy($source . DIRECTORY_SEPARATOR . $file, $dest . DIRECTORY_SEPARATOR . $file);
+                    copy($src . '/' . $file, $dst . '/' . $file);
                 }
             }
         }
-        closedir($dir_handle);
-    } else {        
-        copy($source, $dest);
+        closedir($dir);
+    } else {
+        copy($src, $dst);
     }
 }
