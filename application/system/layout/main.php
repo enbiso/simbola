@@ -116,7 +116,8 @@
             <?php endif; ?>
             <?php echo $content; ?>               
             </div>        
-<?php $this->includeFile('_footer'); ?>        
+            <?php $this->includeFile('_footer'); ?>        
         </div>
+<?php init_simbola_js(); ?>
     </body>
 </html>
