@@ -205,10 +205,8 @@
     function promoteFile(node, promotePath){
         set_cursor_busy();
         simbola.call.service('developer', 'ide', 'promoteFile', {path: node.data.key, promotePath: promotePath}, function(data) {
-            node.getParent().reloadChildren(function(node, isOk) {
-                node.getParent().expand();
-                set_cursor_auto();
-            });
+            set_cursor_auto();
+            $.pnotify({title:'Promote files', text:'Files promoted to the location provided.'});            
         });
     }
 
@@ -252,7 +250,7 @@
                     command = null;
                     break;
                 case "promote":
-                    create_modal("Promote Files", "Path of promotion", function() {
+                    create_modal("Promote Files", "../prod", function() {
                         promoteFile(node, create_modal_data('name'));
                         create_modal_close();
                     },'promote');
