@@ -24,8 +24,13 @@ class Url extends \simbola\core\component\system\lib\Component {
         return $this->getBaseUrl() . $_SERVER['REQUEST_URI'];
     }
 
-    public function getBaseUrl() {
-        return 'http' . ((!empty($_SERVER['HTTPS'])) ? "s" : "") . "://" . $_SERVER['SERVER_NAME'] . "/" . $this->getAppUrlBase();
+    public function getBaseUrl() {        
+        $url = 'http' . ((!empty($_SERVER['HTTPS'])) ? "s" : "") . "://" . $_SERVER['SERVER_NAME'];
+        $appBaseUrl = $this->getAppUrlBase();
+        if($appBaseUrl != ""){
+            $url  = $url . "/" . $this->getAppUrlBase();
+        }
+        return $url;
     }
     
     public function getAppUrlBase() {
