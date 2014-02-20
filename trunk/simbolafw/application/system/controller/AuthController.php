@@ -9,6 +9,10 @@ namespace application\system\controller;
  */
 class AuthController extends \simbola\core\application\AppController {
 
+    public function __construct() {
+        $this->securityBypass = array('session');
+    }
+    
     public function actionSocial() {
         \Hybrid_Endpoint::process($_REQUEST);
     }
