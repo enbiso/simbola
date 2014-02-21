@@ -74,8 +74,8 @@ class Page {
             }
         }
         //add params to $_GET & $_REQUEST
-        $_GET = array_merge($_GET, $this->params);
-        $_REQUEST = array_merge($_REQUEST, $this->params);
+        $_GET = array_merge(isset($_GET)?$_GET:array(), $this->params);
+        $_REQUEST = array_merge(isset($_REQUEST)?$_REQUEST:array(), $this->params);
 
         //remove the params from url
         if (strpos($url_string, '?')) {

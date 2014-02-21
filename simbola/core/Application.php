@@ -194,7 +194,7 @@ class Application {
 
     public function getModuleConfig($moduleName) {
         if (empty($moduleName)) {            
-            throw new \Exception("Module cannot be empty");
+            throw new \Exception("Module cannot be empty", 202);
         }
         $config = null;
         if (array_key_exists($moduleName, $this->moduleConfigCache)) {
@@ -208,7 +208,7 @@ class Application {
                 $this->moduleConfigCache[$moduleName] = $config;            
             } catch (\Exception $ex){
                 $config = null;
-                throw new \Exception("Module {$moduleName} not found");
+                throw new \Exception("Module {$moduleName} not found", 202);
             }
         }
         return $config;
