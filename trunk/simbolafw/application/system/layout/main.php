@@ -118,6 +118,6 @@
             </div>        
             <?php $this->includeFile('_footer'); ?>        
         </div>
-<?php init_simbola_js(); ?>
+        <?php simbola_js_init(); ?>
     </body>
 </html>
