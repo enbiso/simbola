@@ -81,14 +81,21 @@ class Router extends \simbola\core\component\system\lib\Component {
     }
 
     private function executeService($page) {
-        $service_name = \simbola\Simbola::app()->getPageClass($page);
-        if (class_exists($service_name)) {
+        try{
+            $service_name = \simbola\Simbola::app()->getPageClass($page, true);                
             $service = new $service_name();
             $service->init();
             $service->run($page);
             $service->destroy();
-        } else {
-            throw new \Exception("Service not available");
+        }  catch (\Exception $ex) {
+            if($ex->getCode() == 202) {//from module
+                $page = new \simbola\core\component\url\lib\Page();
+                $page->loadFromUrl('system/www/service_api');
+                $this->executeController($page);
+            }else{
+                header('X-PHP-Response-Code: 501', true, 501);
+                echo "ERROR:" . $ex->getMessage();
+            }
         }
     }
 
