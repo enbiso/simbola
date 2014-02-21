@@ -26,7 +26,13 @@ class Application {
         $this->includePathSetup();
         $this->importComponents();
         $this->fetchModuleNames();
-        $this->import('core/helper');
+        $this->import('core/helper');        
+    }
+    
+    public function config($config) {
+        foreach ($config as $name => $params) {
+            $this->component($name, $params);
+        }
     }
 
     private function initParam($name, $default) {
