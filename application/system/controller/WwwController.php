@@ -17,9 +17,14 @@ class WwwController extends \simbola\core\application\AppController {
         $this->view('www/noaccess');
     }
 
-	function actionIndex() {
-		$this->view('www/index');
-	}
+    function actionIndex() {
+        $this->view('www/index');
+    }
+
+    function actionService_api() {
+        $this->view("www/service_api");
+    }
+    
 }
 
 ?>
