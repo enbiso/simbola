@@ -67,13 +67,13 @@ class Router extends \simbola\core\component\system\lib\Component {
     private function executeController($page) {
         //set default if the route is empty                
         try {
-            $controller_name = \simbola\Simbola::app()->getPageClass($page, false);
+            $controller_name = \simbola\Simbola::app()->getPageClass($page, true);
         }catch(\Exception $ex){
             $page = new \simbola\core\component\url\lib\Page();
             $page->loadFromUrl($this->params['NOPAGE']);
             $controller_name = \simbola\Simbola::app()->getPageClass($page);
         }
-        $this->params['page'] = $page;
+        $this->params['page'] = $page;            
         $controller = new $controller_name();
         $controller->init();
         $controller->run($page);
