@@ -4,6 +4,8 @@
     <div class="col-lg-8" id="display">        
         <div class="_form"></div>
         <div class="_editor"></div>
+        <img class="_image"/>
+        <div class="_video"></div>
     </div>
 </div>
 
@@ -445,6 +447,7 @@
 
     //Editor init---------------------------------------------------------------
     var currentFile;
+    var currentFileData;
     var editor = CodeMirror($('#display ._editor').get(0), {
         lineNumbers: true,
         matchBrackets: true,
@@ -471,28 +474,41 @@
             },
             onActivate: function(node) {
                 currentFile = node.data.key;
-                simbola.call.service('developer', 'ide', 'getFileContent', {path: node.data.key}, function(data) {
+                simbola.call.service('developer', 'ide', 'getFileContent', {path: node.data.key}, function(data) {                    
+                    currentFileData = data;
                     if (data.status) {
                         closeForm();
-                        switch (currentFile.slice(-3).toLowerCase()) {
-                            case "php":
-                                editor.setOption("mode", "application/x-httpd-php");
-                                break;
-                            case "sql":
-                                editor.setOption("mode", "text/x-plsql"/*"text/x-sql"*/);
-                                break;
-                            case ".js":
-                                editor.setOption("mode", "text/javascript");
-                                break;
-                            case "css":
-                                editor.setOption("mode", "text/css");
-                                break;
-                            default:
-                                editor.setOption("mode", "text/plain");
-                                break;
+                        //hide all                        
+                        $('#display ._image').hide();
+                        $('#display ._video').hide();
+                        $(editor.getWrapperElement()).hide();
+                        //display
+                        simbola.log("info","MIME Detected: " + data.mime);
+                        if(data.mime.indexOf("image") >= 0){                            
+                            $('#display ._image').show();
+                            $('#display ._image').attr('src', 'data:image/png;base64,' + data.data);
+                        }else{
+                            $(editor.getWrapperElement()).show();
+                            switch (currentFile.slice(-3).toLowerCase()) {
+                                case "php":
+                                    editor.setOption("mode", "application/x-httpd-php");
+                                    break;
+                                case "sql":
+                                    editor.setOption("mode", "text/x-plsql"/*"text/x-sql"*/);
+                                    break;
+                                case ".js":
+                                    editor.setOption("mode", "text/javascript");
+                                    break;
+                                case "css":
+                                    editor.setOption("mode", "text/css");
+                                    break;
+                                default:
+                                    editor.setOption("mode", "text/plain");
+                                    break;
+                            }
+                            editor.setValue(atob(data.data));
                         }
-                        editor.setValue(atob(data.data));
-                    } else {
+                    } else {                        
                         alert('File failed to read.');
                     }
                     set_cursor_auto();
@@ -618,7 +634,9 @@
     }
 
     function _action_save() {
-        if (currentFile === undefined) {
+        if (currentFile === undefined || //no current file loaded
+                ! currentFileData.status || // current file load with error
+                (currentFileData.mime.indexOf('image') >= 0)) { //current file is image
             return;
         }
         confirm_modal("Saving file..", "Are you sure you want to save the file, " + currentFile, function() {
@@ -626,16 +644,17 @@
                 path: currentFile,
                 data: editor.getValue()
             };
-            set_cursor_busy();
-            simbola.call.service('developer', 'ide', 'setFileContent', post_data, function(response) {
-                if (response.status) {
-                    confirm_model_alert("File Saved");
-                    confirm_modal_close();
-                } else {
-                    confirm_model_alert("Error in saving the file");
-                }
-                set_cursor_auto();
-            });
+            simbola.log('log', "Saving File :" . post_data.path);            
+            //set_cursor_busy();
+            //simbola.call.service('developer', 'ide', 'setFileContent', post_data, function(response) {
+            //    if (response.status) {
+            //        confirm_model_alert("File Saved");
+            //        confirm_modal_close();
+            //    } else {
+            //        confirm_model_alert("Error in saving the file");
+            //    }
+            //    set_cursor_auto();
+            //});
         });
     }
 </script>
