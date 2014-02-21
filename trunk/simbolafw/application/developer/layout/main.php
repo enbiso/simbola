@@ -73,9 +73,6 @@
         </style>
     </head>
     <body>
-        <script>
-            simbola.sys_params = <?php echo json_encode(\simbola\Simbola::app()->getParams()); ?>;
-        </script>
         <?php $this->includeFile('_header'); ?>
         <div class="container">
             <?php echo $content; ?>   
@@ -84,5 +81,6 @@
                 <?php $this->includeFile('_footer'); ?>
             </footer>
         </div> 
+        <?php simbola_js_init() ?>
     </body>
 </html>

@@ -12,7 +12,9 @@ class FileHandler {
     static function ReadFile($path) {
         if (file_exists($path)) {
             $data = file_get_contents($path);
-            return array('status' => true, 'data' => $data);
+            $fi = new finfo(FILEINFO_MIME,$path);
+            $mime_type = $fi->buffer($data);
+            return array('status' => true, 'data64' => base64_encode($data), 'mime' => $mime_type);
         }
         return array('status' => false);
     }
