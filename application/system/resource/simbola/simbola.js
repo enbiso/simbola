@@ -7,7 +7,7 @@ var simbola = {
     isInit: false,
     checkInit : function(){
         if(!simbola.isInit){        
-            console.error("Simbola not initialized. Add <?php init_simbola_js() ?> to your layout");            
+            console.error("Simbola not initialized. Add <?php simbola_js_init() ?> to your layout");            
         }
     },
     auth: {
@@ -37,7 +37,7 @@ var simbola = {
     init: function(params) {
         this.params = params;
         this.baseUrl = location.protocol + "//" + location.host;
-        if (this.params.url.URL_BASE !== "") {
+        if (this.params.url.URL_BASE) {
             this.baseUrl = this.baseUrl + "/" + this.params.url.URL_BASE;
         }
         if (!this.params.url.HIDE_INDEX) {
@@ -77,6 +77,7 @@ var simbola = {
     },
     call: {
         service: function(module, service, action, params, callback, managed) {
+            console.trace("SIMBOLA: Calling service " + module + "." + service + "." + action + "()")
             var url = simbola.url.service();
             if (params === undefined) {
                 params = {};
