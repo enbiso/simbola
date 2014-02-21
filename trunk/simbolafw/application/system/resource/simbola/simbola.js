@@ -5,9 +5,34 @@ var simbola = {
         url: {}
     },
     isInit: false,
-    checkInit : function(){
-        if(!simbola.isInit){        
-            console.error("Simbola not initialized. Add <?php simbola_js_init() ?> to your layout");            
+    log: function(type, message) {
+        var now = new Date(),
+                now = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds() + "." + now.getMilliseconds();
+        message = "Simbola " + now + " - " + message;
+        switch (type) {
+            case 'error':
+                console.error(message);
+                break;
+            case 'warn':
+                console.warn(message);
+                break;
+            case 'trace':
+                console.trace(message);
+                break;
+            case 'info':
+                console.info(message);
+                break;
+            case 'log':
+                console.log(message);
+                break;
+            case 'count':
+                console.count(message);
+                break;
+        }
+    },
+    checkInit: function() {
+        if (!simbola.isInit) {
+            simbola.log("error", "Simbola not initialized. Add <?php simbola_js_init() ?> to your layout");
         }
     },
     auth: {
@@ -15,7 +40,7 @@ var simbola = {
         set: function(auth_data) {
             $.cookie("auth", JSON.stringify(auth_data), {path: "/"});
         },
-        get: function() {
+        get: function() {            
             var auth_data = $.cookie('auth');
             if (auth_data === undefined) {
                 auth_data = {username: 'guest', skey: ''};
@@ -24,10 +49,10 @@ var simbola = {
             }
             return auth_data;
         },
-        isLogged: function() {
+        isLogged: function() {            
             return simbola.auth.username() === 'guest';
         },
-        username: function() {
+        username: function() {            
             return simbola.auth.get().username;
         },
         skey: function() {
@@ -35,6 +60,7 @@ var simbola = {
         }
     },
     init: function(params) {
+        simbola.log('log','simbola.init()');
         this.params = params;
         this.baseUrl = location.protocol + "//" + location.host;
         if (this.params.url.URL_BASE) {
@@ -43,9 +69,9 @@ var simbola = {
         if (!this.params.url.HIDE_INDEX) {
             this.baseUrl = this.baseUrl + "/index.php";
         }
-        console.info("base url:" + this.baseUrl);
+        simbola.log("log", "simbola.baseUrl set to :" + this.baseUrl);
         this.isInit = true;
-        setInterval(function() {
+        setInterval(function() {            
             url = simbola.url.action('system/auth/session');
             $.post(url, simbola.auth.get(), function(data) {
                 simbola.auth.set(data.auth);
@@ -54,10 +80,10 @@ var simbola = {
                 }
             }, 'json');
         }, simbola.auth.updateInterval);
-        console.info("Simbola Initialized");
+        simbola.log('info', "Simbola Initialized");
     },
     url: {
-        action: function(action, params) {            
+        action: function(action, params) {
             simbola.checkInit();
             var paramString = "";
             if (params !== undefined) {
@@ -77,7 +103,7 @@ var simbola = {
     },
     call: {
         service: function(module, service, action, params, callback, managed) {
-            console.trace("SIMBOLA: Calling service " + module + "." + service + "." + action + "()")
+            simbola.log("log", "simbola.call.service(" + module + "," + service + "," + action + ")")
             var url = simbola.url.service();
             if (params === undefined) {
                 params = {};
