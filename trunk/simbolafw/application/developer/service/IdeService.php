@@ -22,7 +22,7 @@ class IdeService extends \simbola\core\application\AppService {
             $promotePath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $promotePath;
         }
         $dest = $promotePath . DIRECTORY_SEPARATOR . $this->_req_params('path');
-        sfile_copy_recursive($path, $dest);
+        sfile_recursive_copy($path, $dest);
     }
 
     public $schema_createFile = array(
@@ -138,7 +138,7 @@ class IdeService extends \simbola\core\application\AppService {
 
     public $schema_getFileContent = array(
         'req' => array('params' => array('path')),
-        'res' => array('status', 'data', 'mime'),
+        'res' => array('status', 'mime', 'data'),
         'err' => array('FILE_NOT_EXIST')
     );
 
@@ -147,8 +147,8 @@ class IdeService extends \simbola\core\application\AppService {
         if (file_exists($path)) {
             $out = \application\developer\library\ide\FileHandler::ReadFile($path);
             $this->_res('status', $out['status']);
-            $this->_res('data', $out['data64']);
-            $this->_res('mime', $out['mime']);
+            $this->_res('mime', $out['mimeType']);
+            $this->_res('data', $out['dataB64']);
         } else {
             $this->_err('FILE_NOT_EXIST');
         }
