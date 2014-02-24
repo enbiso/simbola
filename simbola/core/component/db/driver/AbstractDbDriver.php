@@ -27,6 +27,7 @@ abstract class AbstractDbDriver {
     abstract public function tableExist($module, $lu_name, $table_name);
     abstract public function moduleExist($module);
     abstract public function moduleCreate($module);
+    abstract public function getMetaInfo($module, $lu, $name);
     abstract function directCall($func, $params = array());
     abstract function directView($view, $select = "*", $where = null, $page = null, $pageLenth = null, $order = null);        
     abstract function call($module, $lu, $func, $params = array());        
@@ -34,6 +35,9 @@ abstract class AbstractDbDriver {
     abstract function getTableName($module, $lu, $name);
     abstract function getViewName($module, $lu, $name);
     abstract function getProcedureName($module, $lu, $name);
+    abstract function getSourceFromTableName($tableName);
+    abstract function getSourceFromViewName($viewName);
+    abstract function getSourceFromProcedureName($procName);
     abstract function escapeString($string);
 
     public function executeMulti($sql) {        

@@ -19,9 +19,16 @@
     }
     
     function sstring_camelcase_to_underscore($string) {
-        $string = preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $string);
-        //$string = preg_replace('/\B([A-Z])/', '_$1',$string);
+        $string = preg_replace('/(?<=\\w)(?=[A-Z])/',"_$1", $string);        
         return strtolower($string);
+    }
+    
+    function sstring_underscore_to_space($string){
+        return str_replace("_", " ", $string);
+    }
+    
+    function  sstring_underscore_to_camelcase($string){
+        return str_replace(" ", "", ucwords($string));
     }
     
     function sstring_camelcase_to_space($string) {

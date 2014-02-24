@@ -12,7 +12,12 @@ class Resource extends \simbola\core\component\system\lib\Component{
         $resBase = $this->getResourceBase();
         if(!file_exists($resBase)){
             mkdir($resBase);
+            $this->loadCache();
         }
+    }
+    
+    public function loadCache() {
+        lib\ResItem::reloadCache();
     }
     
     public function getResourceBase() {
