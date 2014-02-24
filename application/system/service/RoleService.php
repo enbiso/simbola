@@ -17,7 +17,7 @@ class RoleService extends \simbola\core\application\AppService{
     function actionRegister() {
         $rolename = $this->_req_params('rolename');
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $rbap->create($rolename, \simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE);
+        $rbap->itemCreate($rolename, \simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE);
     }
     
     public $schema_unregister = array(
@@ -29,7 +29,7 @@ class RoleService extends \simbola\core\application\AppService{
     function actionUnregister() {
         $rolename = $this->_req_params('rolename');
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $rbap->delete($rolename);
+        $rbap->itemDelete($rolename);
     }
     
     public $schema_setType = array(

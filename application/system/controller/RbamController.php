@@ -27,14 +27,14 @@ class RbamController extends \simbola\core\application\AppController {
 
     function actionTabRoleAccessObj() {
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $data['allRoles'] = array_merge($rbap->get(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE), $rbap->get(\simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE));
+        $data['allRoles'] = array_merge($rbap->itemGet(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE), $rbap->itemGet(\simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE));
         $this->pview('rbam/role_accessobj', $data);
     }
 
     function actionTabRoleRole() {
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $data['enduserRoles'] = $rbap->get(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE);
-        $data['allRoles'] = array_merge($rbap->get(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE), $rbap->get(\simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE));
+        $data['enduserRoles'] = $rbap->itemGet(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE);
+        $data['allRoles'] = array_merge($rbap->itemGet(\simbola\core\component\auth\lib\ap\AuthType::ENDUSER_ROLE), $rbap->itemGet(\simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE));
         $this->pview('rbam/role_role', $data);
     }
 
@@ -263,6 +263,13 @@ class RbamController extends \simbola\core\application\AppController {
             ));
         }   
     }
+    
+    //import export
+    function actionExport(){
+        if($this->issetPost('fetch')){
+            
+        }
+    }
 
     private function registerPage($page) {
         $count = 0;
@@ -273,7 +280,7 @@ class RbamController extends \simbola\core\application\AppController {
                 if (sstring_starts_with($method, "action")) {
                     $page->action = lcfirst(substr($method, 6));
                     $perbObj = new \simbola\core\component\auth\lib\PermObject($page);
-                    if ($rbap->create($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
+                    if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
                         $count++;
                     }
                 }
@@ -328,7 +335,7 @@ class RbamController extends \simbola\core\application\AppController {
         foreach (array_filter(glob($dbLuBasePath), 'is_file') as $fileName) {
             $dbObjName = basename($fileName, ".php");
             $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, $dbObjType);
-            if ($rbap->create($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
+            if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
                 $count++;
             }
         }
@@ -340,7 +347,7 @@ class RbamController extends \simbola\core\application\AppController {
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
         $count = 0;
         foreach ($objs as $obj) {
-            $rbap->delete($obj);
+            $rbap->itemDelete($obj);
             $count++;
         }
         $this->json(array(
@@ -409,18 +416,18 @@ class RbamController extends \simbola\core\application\AppController {
         } else { //Access role, Access Obj
             foreach ($grants as $grantobj) {
                 if ($grantobj['state'] == 'GRANT') {
-                    if ($rbap->existRecurse($grantobj['key'], $parent)) {
+                    if ($rbap->childExistRecurse($grantobj['key'], $parent)) {
                         $this->json(array(
                             'title' => 'Failed',
                             'type' => 'failed',
                             'text' => $grantobj['key'] . ' contains ' . $parent
                         ));
                         return;
-                    } else if ($rbap->authItemExist($grantobj['key'])) {
-                        $rbap->assign($parent, $grantobj['key']);
+                    } else if ($rbap->itemExist($grantobj['key'])) {
+                        $rbap->childAssign($parent, $grantobj['key']);
                     }
                 } else {
-                    $rbap->revoke($parent, $grantobj['key']);
+                    $rbap->childRevoke($parent, $grantobj['key']);
                 }
             }
         }
@@ -433,13 +440,13 @@ class RbamController extends \simbola\core\application\AppController {
 
     private function fetchObjects($type, $assignRoleOrUser) {
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $accessObjs = $rbap->get($type);
+        $accessObjs = $rbap->itemGet($type);
         $modules = array();
         foreach ($accessObjs as $aObj) {
             $itemName = $aObj['item_name']; //get the current item_name
             if ($itemName != $assignRoleOrUser) {//self assign check disabled
                 //set if selected
-                $selected = ($rbap->userAssigned($assignRoleOrUser, $itemName) || $rbap->exist($assignRoleOrUser, $itemName));
+                $selected = ($rbap->userAssigned($assignRoleOrUser, $itemName) || $rbap->childExist($assignRoleOrUser, $itemName));
                 //set if should expand
                 $expanded = $selected;
 

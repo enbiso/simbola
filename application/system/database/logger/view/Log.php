@@ -9,6 +9,7 @@ namespace \application\system\database\logger\view;
 class Log extends \application\system\library\dbsetup\View{
 
     public function init() {
+        $this->setModule('system');
         $this->setLu("logger");
         $this->setName("log");
     }

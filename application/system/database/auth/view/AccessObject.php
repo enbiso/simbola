@@ -9,8 +9,9 @@ namespace \application\system\database\auth\view;
 class AccessObject extends \application\system\library\dbsetup\View{
 
     public function init() {
+        $this->setModule('system');
         $this->setLu("logger");
-        $this->setName("log");
+        $this->setName("access_object");
     }
     
     public function setup() { 

@@ -8,6 +8,7 @@ namespace \application\system\database\auth\table;
 class Assign extends \application\system\library\dbsetup\Table{
     
     public function init() {
+        $this->setModule('system');
         $this->setLu("auth");
         $this->setName("assign");
     }
