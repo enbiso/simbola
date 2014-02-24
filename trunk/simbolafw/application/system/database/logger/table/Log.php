@@ -8,6 +8,7 @@ namespace \application\system\database\logger\table;
 class Log extends \application\system\library\dbsetup\Table{
     
     public function init() {
+        $this->setModule('system');
         $this->setLu("logger");
         $this->setName("log");
     }

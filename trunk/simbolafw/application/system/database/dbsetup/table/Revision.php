@@ -9,6 +9,7 @@ namespace application\system\database\dbsetup\table;
 class Revision extends \application\system\library\dbsetup\Table{
     
     public function init() {
+        $this->setModule('system');
         $this->setLu("dbsetup");
         $this->setName("revision");
     }

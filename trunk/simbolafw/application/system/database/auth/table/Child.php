@@ -8,8 +8,9 @@ namespace \application\system\database\auth\table;
 class Child extends \application\system\library\dbsetup\Table{
     
     public function init() {
+        $this->setModule('system');
         $this->setLu("auth");
-        $this->setName("assign");
+        $this->setName("child");
     }
     
     public function setup() { 

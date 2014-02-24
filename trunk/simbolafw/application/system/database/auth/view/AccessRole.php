@@ -9,8 +9,9 @@ namespace \application\system\database\auth\view;
 class AccessRole extends \application\system\library\dbsetup\View{
 
     public function init() {
+        $this->setModule('system');
         $this->setLu("logger");
-        $this->setName("log");
+        $this->setName("access_role");
     }
     
     public function setup() { 
