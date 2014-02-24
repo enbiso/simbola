@@ -40,7 +40,7 @@ var simbola = {
         set: function(auth_data) {
             $.cookie("auth", JSON.stringify(auth_data), {path: "/"});
         },
-        get: function() {            
+        get: function() {
             var auth_data = $.cookie('auth');
             if (auth_data === undefined) {
                 auth_data = {username: 'guest', skey: ''};
@@ -49,10 +49,10 @@ var simbola = {
             }
             return auth_data;
         },
-        isLogged: function() {            
+        isLogged: function() {
             return simbola.auth.username() === 'guest';
         },
-        username: function() {            
+        username: function() {
             return simbola.auth.get().username;
         },
         skey: function() {
@@ -60,7 +60,7 @@ var simbola = {
         }
     },
     init: function(params) {
-        simbola.log('log','simbola.init()');
+        simbola.log('log', 'simbola.init()');
         this.params = params;
         this.baseUrl = location.protocol + "//" + location.host;
         if (this.params.url.URL_BASE) {
@@ -71,7 +71,7 @@ var simbola = {
         }
         simbola.log("log", "simbola.baseUrl set to :" + this.baseUrl);
         this.isInit = true;
-        setInterval(function() {            
+        setInterval(function() {
             url = simbola.url.action('system/auth/session');
             $.post(url, simbola.auth.get(), function(data) {
                 simbola.auth.set(data.auth);
@@ -91,7 +91,7 @@ var simbola = {
                     paramString += "[" + key + ":" + value + "]";
                 });
             }
-            return simbola.baseUrl + "/" + action + paramString;
+            return simbola.baseUrl + (action.indexOf("/") === 0 ? '' : '/') + action + paramString;
         },
         service: function() {
             simbola.checkInit();

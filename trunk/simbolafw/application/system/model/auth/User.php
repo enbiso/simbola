@@ -8,7 +8,27 @@ namespace application\system\model\auth;
  * @author Faraj
  */
 class User extends \simbola\core\component\db\activerecord\ActiveModel {
-    static $table_name,$primary_key,$class_name,$has_many,$alias_attribute;
+    static  //config params
+            $table_name, 
+            $primary_key, 
+            $class_name, 
+            //relationships
+            $has_many, 
+            $belongs_to, 
+            //alias
+            $alias_attribute,
+            //validations system
+            $validates_uneditable,
+            //validations phpAR
+            $validates_presence_of, 
+            $validates_size_of, 
+            $validates_length_of, 
+            $validates_exclusion_of,
+            $validates_inclusion_of,
+            $validates_format_of,
+            $validates_numericality_of,
+            $validates_uniqueness_of;
+    
     public static function initialize() {
         self::setClass(__CLASS__);
         self::setSource("system", "auth", "user");
