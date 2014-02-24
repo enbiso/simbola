@@ -131,6 +131,107 @@ class MySQLDriver extends AbstractDbDriver {
     public function escapeString($string) {
         return mysqli_escape_string($this->connection, $string);
     }
+    
+    public function getMetaInfo($module, $lu, $name) {
+        $tblName = $this->getTableName($module, $lu, $name);
+        //get column meta
+        $cols = array();
+        $sql = 'SELECT * 
+                FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = \'' . $this->dbname . '\' 
+                  AND TABLE_NAME = \'' . $tblName . '\'';
+        foreach ($this->query("SHOW COLUMNS FROM {$tblName}") as $colResult) {
+            $type = $colResult['Type'];
+            $length = null;
+            if(sstring_ends_with($type, ')')){
+                $type = substr($type, 0, strpos($type, "("));
+                $length = substr($type, strpos($type, "("), -1);
+            }
+            $cols[$colResult['Field']] = array(
+                'name' => $colResult['Field'],
+                'type' => $type,
+                'length' => $length,
+                'nullable' => $colResult['Null'] == 'YES',
+                'primary_key' => $colResult['Key'] == 'PRI',
+                'unique' => $colResult['Key'] == 'UNI',
+                'default' => $colResult['Default'],
+                'auto_increment' => $colResult['Extra'] == 'auto_increment',
+            );
+        }
+        //get relations
+        $belongsTo = array();
+        $sql = 'SELECT CONSTRAINT_NAME name,
+                       TABLE_NAME table_name, 
+                       COLUMN_NAME column_name, 
+                       REFERENCED_TABLE_NAME ref_table_name, 
+                       REFERENCED_COLUMN_NAME ref_column_name
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = \'' . $this->dbname . '\'
+                  AND TABLE_NAME = \'' . $tblName . '\'
+                  AND REFERENCED_TABLE_SCHEMA IS NOT NULL 
+                  AND REFERENCED_TABLE_NAME IS NOT NULL
+                  AND REFERENCED_COLUMN_NAME IS NOT NULL';
+        foreach ($this->query($sql) as $relResult) {
+            $relResult['table'] = $this->getSourceFromTableName($relResult['table_name']);
+            $relResult['ref_table'] = $this->getSourceFromTableName($relResult['ref_table_name']);
+            $belongsTo['name'] = $relResult;
+        }
+        $hasMany = array();
+        $sql = 'SELECT CONSTRAINT_NAME name,
+                       TABLE_NAME table_name, 
+                       COLUMN_NAME column_name, 
+                       REFERENCED_TABLE_NAME ref_table_name, 
+                       REFERENCED_COLUMN_NAME ref_column_name
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                WHERE REFERENCED_TABLE_SCHEMA = \'' . $this->dbname . '\'
+                  AND REFERENCED_TABLE_NAME = \'' . $tblName . '\'
+                  AND REFERENCED_TABLE_SCHEMA IS NOT NULL 
+                  AND REFERENCED_TABLE_NAME IS NOT NULL
+                  AND REFERENCED_COLUMN_NAME IS NOT NULL';
+        foreach ($this->query($sql) as $relResult) {
+            $relResult['table'] = $this->getSourceFromTableName($relResult['table_name']);
+            $relResult['ref_table'] = $this->getSourceFromTableName($relResult['ref_table_name']);
+            $hasMany['name'] = $relResult;
+        }
+        //return info
+        return array(
+            'table' => array(
+                'name' => $tblName,
+            ),
+            'columns' => $cols,
+            'relations' => array(
+                'belongs_to' => $belongsTo,
+                'has_many' => $hasMany,
+            ),
+        );
+    }
+
+    public function getSourceFromProcedureName($procName) {
+        $arr = explode("_", $procName);
+        return array(
+            'module' => $arr[0],
+            'lu' => $arr[1],
+            'name' => $arr[2],
+        );
+    }
+
+    public function getSourceFromTableName($tableName) {
+        $arr = explode("_", $tableName);
+        return array(
+            'module' => $arr[0],
+            'lu' => $arr[1],
+            'name' => $arr[3],
+        );
+    }
+
+    public function getSourceFromViewName($viewName) {
+        $arr = explode("_", $viewName);
+        return array(
+            'module' => $arr[0],
+            'lu' => $arr[1],
+            'name' => $arr[2],
+        );
+    }
 
 }
 

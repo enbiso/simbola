@@ -67,8 +67,8 @@ class ViewContent {
     public function render($print = false) {
         $data = $this->data;
         \simbola\Simbola::app()->term->loadTerm($this->moduleConfig->name, $this->viewName);
-        $content = $this->processContent();
-        if (!$this->partial) {
+        $content = $this->processContent();        
+        if (!$this->partial) {            
             if (sstring_starts_with($this->layout, DIRECTORY_SEPARATOR)) {
                 $lpath = explode(DIRECTORY_SEPARATOR, $this->layout);
                 \simbola\Simbola::app()->term->loadTerm($lpath[1]);

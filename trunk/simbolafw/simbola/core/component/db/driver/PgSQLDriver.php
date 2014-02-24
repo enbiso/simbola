@@ -135,6 +135,22 @@ class PgSQLDriver extends AbstractDbDriver {
         pg_escape_string($this->connection, $string);
     }
 
+    public function getMetaInfo($module, $lu, $name) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
+    public function getSourceFromProcedureName($procName) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
+    public function getSourceFromTableName($tableName) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
+    public function getSourceFromViewName($viewName) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
 }
 
 ?>

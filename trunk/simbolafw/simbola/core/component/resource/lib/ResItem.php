@@ -13,8 +13,8 @@ class ResItem {
     public static $TYPE_MISC = 'misc';
     public static $TYPE_CSS = 'css';
     public static $TYPE_JS = 'js';
-    private $data;    
-    
+    private $data;
+
     public function __construct($type = null, $module = null, $name = null) {
         $this->data['module'] = $module;
         $this->data['type'] = $type;
@@ -24,90 +24,63 @@ class ResItem {
     public function __set($name, $value) {
         $this->data[$name] = $value;
     }
-    
+
     public function __get($name) {
         return $this->data[$name];
     }
+    
+    function exist() {
+        $filePath = self::getSourceBase($this->module) . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR, $this->name);        
+        return file_exists($filePath);
+    }
 
-    function getSourceBase() {
-        $moduleConfig = \simbola\Simbola::app()->getModuleConfig($this->module);
+    function getUrl($absolute = false) {
+        $url = "/resource/{$this->module}/{$this->name}";
+        if ($absolute) {
+            $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
+        } else {
+            $url = "/" . \simbola\Simbola::app()->url->getAppUrlBase() . $url;
+        }
+        return $url;
+    }
+    
+    function getTag() {
+        $path = $this->getUrl(true);
+        switch ($this->type) {
+            case self::$TYPE_JS:
+                return "<script type='text/javascript' src='{$path}'></script>" . PHP_EOL;
+                break;
+            case self::$TYPE_CSS:
+                return "<link rel='stylesheet' type='text/css' href='{$path}'></link>" . PHP_EOL;
+                break;
+            default:
+                return $path;
+                break;
+        }
+    }
+    
+    //Static functions
+    static function getCacheBase($module) {
+        return \simbola\Simbola::app()->resource->getResourceBase() . DIRECTORY_SEPARATOR
+                . $module;
+    }
+    
+    static function getSourceBase($module) {
+        $moduleConfig = \simbola\Simbola::app()->getModuleConfig($module);
         $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR
                 . \simbola\Simbola::app()->getParam('BASE') . DIRECTORY_SEPARATOR
                 . $moduleConfig->name . DIRECTORY_SEPARATOR
                 . $moduleConfig->resource;
         return $path;
     }
+
     
-    function exist() {
-        $filePath = $this->getSourceBase().DIRECTORY_SEPARATOR.$this->name;
-        return file_exists($filePath);
-    }
-
-    function getCacheBase() {
-        return \simbola\Simbola::app()->resource->getResourceBase() . DIRECTORY_SEPARATOR
-                . $this->module;
-    }
-
-    function getUrl($absolute = false) {
-        if(\simbola\Simbola::app()->resource->getParam('MODE') == "DEV"){
-            $this->initLoad();
-        }
-        $url = "/resource/{$this->module}/{$this->name}";
-        if($absolute){
-            $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
-        }else{
-            $url = \simbola\Simbola::app()->url->getAppUrlBase() . $url;
-        }
-        return $url;
-    }
-
-    function initLoad() {
-        $source = $this->getSourceBase();
-        $dest = $this->getCacheBase();
-        $this->rcopy($source, $dest);
-    }
-
-    private function rcopy($source, $dest) {
-        if (is_dir($source)) {
-            $dirHandle = opendir($source);
-            while ($file = readdir($dirHandle)) {
-                if ($file != "." && $file != "..") {
-                    if (is_dir($source . "/" . $file)) {
-                        if(!file_exists($dest . "/" . $file)){
-                            mkdir($dest . "/" . $file, 0755, true);
-                        }
-                        $this->rcopy($source . "/" . $file, $dest . "/" . $file);
-                    } else {
-                        if(!file_exists($dest . "/" . $file)){
-                            if(!file_exists($dest)){
-                                mkdir($dest, 0755, true);
-                            }
-                            copy($source . "/" . $file, $dest . "/" . $file);
-                        }
-                    }
-                }
-            }
-            closedir($dirHandle);
-        } else {
-            if(!file_exists($dest)){
-                copy($source, $dest);
-            }
-        }
-    }
-
-    function getTag() {
-        $path = $this->getUrl(true);
-        switch ($this->type) {
-            case self::$TYPE_JS:
-                return "<script type='text/javascript' src='{$path}'></script>".PHP_EOL;
-                break;
-            case self::$TYPE_CSS:
-                return "<link rel='stylesheet' type='text/css' href='{$path}'></link>".PHP_EOL;
-                break;
-            default:
-                return $path;
-                break;
-        }
+    static function reloadCache() {
+        foreach (\simbola\Simbola::app()->getModuleNames() as $moduleName) {
+            $source = self::getSourceBase($moduleName);
+            $dest = self::getCacheBase($moduleName);
+            sfile_recursive_copy($source, $dest);
+        }                    
     }
 
 }

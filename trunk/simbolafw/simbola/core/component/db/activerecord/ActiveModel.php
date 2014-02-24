@@ -45,17 +45,54 @@ abstract class ActiveModel extends \ActiveRecord\Model {
         static::$primary_key = $pk;
     }
 
-    static $uneditable_attr = array();
-    public static function uneditableAttr($attrs) {
-        if (!is_array($attrs)) {
-            static::$uneditable_attr[] = $attrs;
-        } else {
-            static::$uneditable_attr = $attrs;
-        }
+    //$validates_uneditable,
+    static $validates_uneditable = array();
+    public static function validateUneditable($attr) {        
+        static::$validates_uneditable[] = $attr;
+    }
+    
+    //$validates_presence_of, 
+    public static function validatePresenceOf($attr) {        
+        static::$validates_presence_of[] = $attr;
+    }
+    
+    //$validates_size_of, 
+    public static function validateSizeOf($attr) {        
+        static::$validates_size_of[] = $attr;
+    }
+    
+    //$validates_length_of, 
+    public static function validateLengthOf($attr) {        
+        static::$validates_length_of[] = $attr;
+    }
+
+    //$validates_exclusion_of,
+    public static function validateExclusionOf($attr) {        
+        static::$validates_exclusion_of[] = $attr;
+    }
+
+    //$validates_inclusion_of,
+    public static function validateInclusionOf($attr) {        
+        static::$validates_inclusion_of[] = $attr;
+    }   
+    
+    //$validates_format_of,
+    public static function validateFormatOf($attr) {        
+        static::$validates_format_of[] = $attr;
+    }
+    
+    //$validates_numericality_of,
+    public static function validateNumericalityOf($attr) {        
+        static::$validates_numericality_of[] = $attr;
+    }
+    
+    //$validates_uniqueness_of;
+    public static function validateUniquenessOf($attr) {        
+        static::$validates_uniqueness_of[] = $attr;
     }
 
     public static function isEditable($attribute) {
-        return !(in_array($attribute, static::$uneditable_attr));
+        return !(in_array($attribute, static::$validates_uneditable));
     }
 
     public static function setClass($cname) {
@@ -107,8 +144,8 @@ abstract class ActiveModel extends \ActiveRecord\Model {
 
     //uneditable check
     public function set_attributes(array $attributes) {
-        if (!$this->is_new_record() && is_array(static::$uneditable_attr)) {
-            foreach (static::$uneditable_attr as $attr) {
+        if (!$this->is_new_record() && is_array(static::$validates_uneditable)) {
+            foreach (static::$validates_uneditable as $attr) {
                 unset($attributes[$attr]);
             }
         }
