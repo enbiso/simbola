@@ -135,7 +135,7 @@ class PgSQLDriver extends AbstractDbDriver {
         pg_escape_string($this->connection, $string);
     }
 
-    public function getMetaInfo($module, $lu, $name) {
+    public function getMetaInfo($module, $lu, $name, $allFields = false) {
         throw new \Exception(__METHOD__." not implemented");
     }
 

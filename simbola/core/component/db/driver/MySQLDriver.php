@@ -132,7 +132,7 @@ class MySQLDriver extends AbstractDbDriver {
         return mysqli_escape_string($this->connection, $string);
     }
     
-    public function getMetaInfo($module, $lu, $name) {
+    public function getMetaInfo($module, $lu, $name, $allFields = false) {
         $tblName = $this->getTableName($module, $lu, $name);
         //get column meta
         $cols = array();
@@ -141,24 +141,26 @@ class MySQLDriver extends AbstractDbDriver {
                 WHERE TABLE_SCHEMA = \'' . $this->dbname . '\' 
                   AND TABLE_NAME = \'' . $tblName . '\'';
         foreach ($this->query("SHOW COLUMNS FROM {$tblName}") as $colResult) {
-            $type = $colResult['Type'];
-            $length = null;
-            if(sstring_ends_with($type, ')')){
-                $type = substr($type, 0, strpos($type, "("));
-                $length = substr($type, strpos($type, "("), -1);
+            if($allFields || !sstring_starts_with($colResult['Field'], "_")){
+                $type = $colResult['Type'];
+                $length = null;
+                if(sstring_ends_with($type, ')')){
+                    $type = substr($colResult['Type'], 0, strpos($colResult['Type'], "("));
+                    $length = (int)substr($colResult['Type'], strpos($colResult['Type'], "(") + 1, -1);
+                }
+                $cols[$colResult['Field']] = array(
+                    'name' => $colResult['Field'],
+                    'type' => $type,
+                    'length' => $length,
+                    'nullable' => $colResult['Null'] == 'YES',
+                    'primary_key' => $colResult['Key'] == 'PRI',
+                    'unique' => $colResult['Key'] == 'UNI',
+                    'default' => $colResult['Default'],
+                    'auto_increment' => $colResult['Extra'] == 'auto_increment',
+                );
             }
-            $cols[$colResult['Field']] = array(
-                'name' => $colResult['Field'],
-                'type' => $type,
-                'length' => $length,
-                'nullable' => $colResult['Null'] == 'YES',
-                'primary_key' => $colResult['Key'] == 'PRI',
-                'unique' => $colResult['Key'] == 'UNI',
-                'default' => $colResult['Default'],
-                'auto_increment' => $colResult['Extra'] == 'auto_increment',
-            );
         }
-        //get relations
+        //get relations - belongs to
         $belongsTo = array();
         $sql = 'SELECT CONSTRAINT_NAME name,
                        TABLE_NAME table_name, 
@@ -174,8 +176,9 @@ class MySQLDriver extends AbstractDbDriver {
         foreach ($this->query($sql) as $relResult) {
             $relResult['table'] = $this->getSourceFromTableName($relResult['table_name']);
             $relResult['ref_table'] = $this->getSourceFromTableName($relResult['ref_table_name']);
-            $belongsTo['name'] = $relResult;
+            $belongsTo[$relResult['name']] = $relResult;
         }
+        //get relations - has many
         $hasMany = array();
         $sql = 'SELECT CONSTRAINT_NAME name,
                        TABLE_NAME table_name, 
@@ -191,7 +194,7 @@ class MySQLDriver extends AbstractDbDriver {
         foreach ($this->query($sql) as $relResult) {
             $relResult['table'] = $this->getSourceFromTableName($relResult['table_name']);
             $relResult['ref_table'] = $this->getSourceFromTableName($relResult['ref_table_name']);
-            $hasMany['name'] = $relResult;
+            $hasMany[$relResult['name']] = $relResult;
         }
         //return info
         return array(
@@ -211,7 +214,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => $arr[2],
+            'name' => implode("_", array_slice($arr, 2)),
         );
     }
 
@@ -220,7 +223,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => $arr[3],
+            'name' => implode("_", array_slice($arr,3)),
         );
     }
 
@@ -229,7 +232,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => $arr[2],
+            'name' => implode("_", array_slice($arr, 2)),
         );
     }
 

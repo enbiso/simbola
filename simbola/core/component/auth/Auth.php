@@ -142,7 +142,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
         $permited = false;
         $accessItem = $permObj->getAccessItem();
         foreach ($roles as $role) {
-            $permited |= $rbap->existRecurse($role, $accessItem);
+            $permited |= $rbap->childExistRecurse($role, $accessItem);
             if ($permited) {
                 return $permited;
             }
