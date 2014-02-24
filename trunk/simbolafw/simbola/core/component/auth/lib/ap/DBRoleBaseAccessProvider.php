@@ -18,7 +18,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     protected $luName = "auth";    
     
     public function itemSwitch($name, $type) {
-        if ($this->authItemExist($name)) {
+        if ($this->itemExist($name)) {
             $sql = "UPDATE {$this->getTableName($this->tblAuthItem)} 
                        SET item_type = {$type}
                      WHERE item_name = '{$name}'";
@@ -113,7 +113,27 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         }
     }
 
-    public function get($type) {
+    //import, export
+    public function import($data) {
+        
+    }
+    
+    public function export($types = array('access_object', 'access_role', 'enduser_role')) {
+        $data = array();
+        foreach ($types as $type) {
+            $data[$type] = function(){
+                switch ($type) {
+                    case 'system_user':
+                        return $this->dbQuery("SELECT user_name, user_active FROM {$this->getViewName($type)}");                        
+                    default:
+                        return $this->dbQuery("SELECT item_name FROM {$this->getViewName($type)}");                        
+                }
+            };
+        }
+        return $data;
+    }
+    
+    public function itemGet($type) {
         $sql = "SELECT item_id, item_name, item_description FROM {$this->getTableName($this->tblAuthItem)}
                 WHERE item_type = {$type}";
         $data = $this->dbQuery($sql);
@@ -144,14 +164,14 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         return $data;
     }
 
-    public function authItemExist($name) {
+    public function itemExist($name) {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$name}'";
         $data = $this->dbQuery($sql);
         return ($data[0]['row_count'] > 0);
     }
 
-    public function create($name, $type) {
-        if (!empty($name) && !$this->authItemExist($name)) {
+    public function itemCreate($name, $type) {
+        if (!empty($name) && !$this->itemExist($name)) {
             $sql = "INSERT INTO {$this->getTableName($this->tblAuthItem)} (item_name,item_type)
                         VALUES('{$name}','{$type}')";
             $this->dbExecute($sql);
@@ -161,8 +181,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         }
     }
 
-    public function delete($name) {
-        if ($this->authItemExist($name)) {
+    public function itemDelete($name) {
+        if ($this->itemExist($name)) {
             $sql = "DELETE FROM {$this->getTableName($this->tblAuthChild)} 
                      WHERE parent_id = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$name}')
                         OR child_id  = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$name}')";
@@ -175,8 +195,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         }
     }
 
-    public function rename($name, $newUsername) {
-        if ($this->authItemExist($name)) {
+    public function itemRename($name, $newUsername) {
+        if ($this->itemExist($name)) {
             $sql = "UPDATE {$this->getTableName($this->tblAuthItem)} 
                        SET item_name = '{$newUsername}'
                      WHERE item_name = '{$name}'";
@@ -184,8 +204,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         }
     }
 
-    public function assign($parent, $child) {
-        if ((!$this->exist($parent, $child)) && (!$this->existRecurse($child, $parent))) {
+    public function childAssign($parent, $child) {
+        if ((!$this->childExist($parent, $child)) && (!$this->childExistRecurse($child, $parent))) {
             $sql = "INSERT INTO {$this->getTableName($this->tblAuthChild)} (parent_id,child_id)
                         VALUES ((SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$parent}'),
                                 (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$child}'))";
@@ -193,14 +213,14 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         }
     }
 
-    public function revoke($parent, $child) {
+    public function childRevoke($parent, $child) {
         $sql = "DELETE FROM {$this->getTableName($this->tblAuthChild)} 
                 WHERE parent_id = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$parent}')
                   AND child_id  = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$child}')";
         $this->dbExecute($sql);
     }
 
-    public function exist($parent, $child) {
+    public function childExist($parent, $child) {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName($this->tblAuthChild)} 
                 WHERE parent_id = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$parent}')
                   AND child_id  = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$child}')";
@@ -208,7 +228,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         return ($data[0]['row_count'] > 0);
     }
 
-    public function existRecurse($parent, $child) {
+    public function childExistRecurse($parent, $child) {
         $sql = "SELECT count(1) AS row_count FROM {$this->getTableName($this->tblAuthChild)} 
                 WHERE parent_id = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$parent}')
                   AND child_id  = (SELECT item_id FROM {$this->getTableName($this->tblAuthItem)} WHERE item_name = '{$child}')";
@@ -219,7 +239,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $children = $this->children($parent);
             $exist = false;
             foreach ($children as $child_entry) {
-                $exist |= $this->existRecurse($child_entry['item_name'], $child);
+                $exist |= $this->childExistRecurse($child_entry['item_name'], $child);
                 if ($exist) {
                     return true;
                 }
@@ -247,8 +267,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         $this->dbExecute($sql);
         if($with_default_role){
             $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
-            if(!$this->authItemExist($default_role)){
-                $this->create($default_role, AuthType::ENDUSER_ROLE);
+            if(!$this->itemExist($default_role)){
+                $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
             }
             $this->userAssign($username, $default_role);
         }

@@ -7,8 +7,8 @@ namespace simbola\core\component\auth\lib\ap;
  */
 class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
 
-    public function create($name, $type) {
-        if (!$this->authItemExist($name)) {
+    public function itemCreate($name, $type) {
+        if (!$this->itemExist($name)) {
             $sql = "INSERT INTO {$this->getTableName($this->tblAuthItem)} (item_id,item_name,item_type)
                         VALUES(NEXTVAL('{$this->getTableName($this->tblAuthItem)}_seq'),'{$name}','{$type}')";
             $this->dbExecute($sql);

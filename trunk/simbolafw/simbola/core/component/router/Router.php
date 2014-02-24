@@ -92,9 +92,11 @@ class Router extends \simbola\core\component\system\lib\Component {
                 $page = new \simbola\core\component\url\lib\Page();
                 $page->loadFromUrl('system/www/service_api');
                 $this->executeController($page);
-            }else{
+            }else if(\simbola\Simbola::app()->isProd()){
                 header('X-PHP-Response-Code: 501', true, 501);
-                echo "ERROR:" . $ex->getMessage();
+                echo "ERROR: " . $ex->getMessage();
+            }else{
+                throw $ex;
             }
         }
     }

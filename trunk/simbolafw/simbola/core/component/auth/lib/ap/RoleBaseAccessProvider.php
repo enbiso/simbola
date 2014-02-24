@@ -11,19 +11,21 @@ namespace simbola\core\component\auth\lib\ap;
  * @author Faraj
  */
 abstract class RoleBaseAccessProvider {
-    abstract function create($name,$type);
-    abstract function authItemExist($name);
-    abstract function delete($name);
-    abstract function rename($name,$new_name);
-    abstract function assign($parent,$child);
-    abstract function revoke($parent,$child);
-    abstract function exist($parent,$child);
-    abstract function existRecurse($parent,$child);
-    abstract function children($parent);
-    abstract function get($type);
-    abstract function itemSwitch($name,$type);
     abstract function init($params);
-
+    //item
+    abstract function itemCreate($name,$type);
+    abstract function itemExist($name);
+    abstract function itemDelete($name);
+    abstract function itemRename($name,$new_name);
+    abstract function itemSwitch($name,$type);
+    abstract function itemGet($type);
+    //child
+    abstract function childAssign($parent,$child);
+    abstract function childRevoke($parent,$child);
+    abstract function childExist($parent,$child);
+    abstract function childExistRecurse($parent,$child);
+    abstract function children($parent);
+    //user
     abstract function userGet();
     abstract function userId($user_name);
     abstract function userExist($user_name);
@@ -43,5 +45,8 @@ abstract class RoleBaseAccessProvider {
     abstract function userSession($user_name);
     abstract function userSessionRevokeById($session_id,$user_id);    
     abstract function userSessionRevoke($user_name, $session_key);    
+    //import,Export
+    abstract function import($data);
+    abstract function export($types = array('access_object', 'access_role', 'enduser_role'));
 }
 ?>
