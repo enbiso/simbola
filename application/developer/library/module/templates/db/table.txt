@@ -1,0 +1,29 @@
+<?php
+namespace application\#MODULE_NAME#\database\#LU_NAME#\table;
+/**
+ * Description of #MODEL_NAME#
+ *
+ * Model 	: #MODEL_NAME#
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the table #MODEL_NAME#
+ *  
+ * @author #AUTHER#
+ */
+class #MODEL_CLASS_NAME# extends \application\system\library\dbsetup\Table{
+    
+    public function init() {
+        $this->setModule('#MODULE_NAME#');
+        $this->setLu('#LU_NAME#');
+        $this->setName('#CTU_MODEL_NAME#');
+    }
+    
+    public function setup() { 
+        //r0
+        $this->addTable();
+        //r1 - setup columns
+    }
+}

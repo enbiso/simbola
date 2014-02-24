@@ -46,9 +46,10 @@
                 $('#create_modal_grp_service').show();
             case 'service':                
                 $('#create_modal_grp_model').show();                                
-            case 'model':                
+            case 'model':                                       
                 $('#create_modal_grp_lu').show();
             case 'module':
+            case 'db_table':
                 $('#create_modal_grp_purpose').show();
                 break;
         }

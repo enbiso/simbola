@@ -5,7 +5,7 @@
  * Controller 	: #CONTROLLER_NAME#
  * View 	: update
  * Created	: #TODAY_DATE#
- * Purpose 	: #CONTROLLER_PURPOSE#
+ * Purpose 	: #PURPOSE#
  *
  * Change Logs
  * -----------------------------------------------------------

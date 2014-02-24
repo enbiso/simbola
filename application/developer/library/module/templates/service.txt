@@ -5,7 +5,7 @@ namespace application\#MODULE_NAME#\service;
  *
  * Service 	: #SERVICE_NAME#
  * Created	: #TODAY_DATE#
- * Purpose 	: #SERVICE_PURPOSE#
+ * Purpose 	: #PURPOSE#
  *
  * Change Logs
  * -----------------------------------------------------------

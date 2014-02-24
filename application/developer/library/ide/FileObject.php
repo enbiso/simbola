@@ -17,8 +17,9 @@ class FileObject {
     public $icon;    
 
     public function __construct($path) {
-        $this->path = "$path";
-        $this->key = str_replace(\simbola\Simbola::app()->getParam("BASEPATH") . "/", "", $path);
+        $this->path = $path;
+        $this->key = str_replace(\simbola\Simbola::app()->getParam("BASEPATH") . DIRECTORY_SEPARATOR, "", $path);
+        $this->key = str_replace(DIRECTORY_SEPARATOR, "/", $this->key);
         $this->isLazy = $this->isFolder = is_dir($this->path);
         $this->title = basename($this->path);
         $ext = substr($path, strrpos($path, '.') + 1);
@@ -31,11 +32,11 @@ class FileObject {
         if (!$this->isFolder) {
             $iconRes->name = "icons/{$ext}.png";
         } else {            
-            $karr = explode(DIRECTORY_SEPARATOR, $this->key);
+            $karr = explode('/', $this->key);
             if(count($karr) >= 2) {
                 $karr[1] = "MODULE";
             }
-            $key = implode(DIRECTORY_SEPARATOR, $karr);
+            $key = implode('/', $karr);
             $iconRes->name = 'icons/folder_' . str_replace("/", "_", str_replace("./", "", $key)) . ".png";            
             if (!$iconRes->exist()) {
                 $iconRes->name = "icons/folder.png";                

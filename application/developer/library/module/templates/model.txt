@@ -5,20 +5,49 @@ namespace application\#MODULE_NAME#\model\#LU_NAME#;
  *
  * Model 	: #MODEL_NAME#
  * Created	: #TODAY_DATE#
- * Purpose 	: #MODEL_PURPOSE#
+ * Purpose 	: #PURPOSE#
  *
  * Change Logs
  * -----------------------------------------------------------
  * #TODAY_DATE# #AUTHER#: Created the model #MODEL_NAME#
  *  
  * @author #AUTHER#
+ *
+ * Properties
+ * #MODEL_PROPERTIES#
  */
 class #MODEL_CLASS_NAME# extends \simbola\core\component\db\activerecord\ActiveModel{
-    //put your code here
-    static $class_name, $table_name, $belongs_to, $has_many;
+    static  //config params
+            $table_name, 
+            $primary_key, 
+            $class_name, 
+            //relationships
+            $has_many, 
+            $belongs_to, 
+            //alias
+            $alias_attribute,
+            //validations system
+            $validates_uneditable,
+            //validations php-ar 
+            $validates_presence_of, 
+            $validates_size_of, 
+            $validates_length_of, 
+            $validates_exclusion_of,
+            $validates_inclusion_of,
+            $validates_format_of,
+            $validates_numericality_of,
+            $validates_uniqueness_of;
+
     public static function initialize() {
         self::setClass(__CLASS__);
-        self::setSource("#MODULE_NAME#", '#LU_NAME#', '#TABLE_NAME#');
+        self::setSource('#MODULE_NAME#', '#LU_NAME#', '#TABLE_NAME#');
+        self::primaryKey('#MODEL_PRIMARY_KEYS#');        
+        //Relationships - Has Many
+        #MODEL_SETUP_HAS_MANY#
+        //Relationships - Belongs To
+        #MODEL_SETUP_BELONGS_TO#
+        //Validations
+        #MODEL_SETUP_VALIDATION#
     }
 }
 

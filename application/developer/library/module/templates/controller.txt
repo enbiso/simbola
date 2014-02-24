@@ -5,7 +5,7 @@ namespace application\#MODULE_NAME#\controller;
  *
  * Controller 	: #CONTROLLER_NAME#
  * Created	: #TODAY_DATE#
- * Purpose 	: #CONTROLLER_PURPOSE#
+ * Purpose 	: #PURPOSE#
  *
  * Change Logs
  * -----------------------------------------------------------
