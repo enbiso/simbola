@@ -15,10 +15,6 @@ Simbola::app()->setup(array(
 
 [URL_SETUP]
 
-Simbola::app()->component('resource', array(
-    'MODE' => 'DEV',//DEV or PROD
-));
-
 Simbola::app()->component('db', array(
     'VENDOR' => '[DB_VENDOR]',
     'SERVER' => '[DB_SERVER]',
