@@ -152,12 +152,14 @@ class IdeService extends \simbola\core\application\AppService {
     public $schema_getFileContent = array(
         'req' => array('params' => array('path')),
         'res' => array('status', 'mime', 'data'),
-        'err' => array('FILE_NOT_EXIST')
+        'err' => array('FILE_NOT_EXIST', 'FILE_IS_DIR')
     );
 
     public function actionGetFileContent() {
         $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $this->_req_params('path');
-        if (file_exists($path)) {
+        if(is_dir($path)){
+            $this->_err('FILE_IS_DIR');
+        }elseif (file_exists($path)) {
             $out = \application\developer\library\ide\FileHandler::ReadFile($path);
             $this->_res('status', $out['status']);
             $this->_res('mime', $out['mimeType']);

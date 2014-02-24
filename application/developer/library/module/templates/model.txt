@@ -39,13 +39,17 @@ class #MODEL_CLASS_NAME# extends \simbola\core\component\db\activerecord\ActiveM
             $validates_uniqueness_of;
 
     public static function initialize() {
+        //Model Setup
         self::setClass(__CLASS__);
         self::setSource('#MODULE_NAME#', '#LU_NAME#', '#TABLE_NAME#');
         self::primaryKey('#MODEL_PRIMARY_KEYS#');        
+
         //Relationships - Has Many
         #MODEL_SETUP_HAS_MANY#
+
         //Relationships - Belongs To
         #MODEL_SETUP_BELONGS_TO#
+
         //Validations
         #MODEL_SETUP_VALIDATION#
     }

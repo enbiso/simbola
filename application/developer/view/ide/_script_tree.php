@@ -14,6 +14,9 @@
                 });
             },
             onActivate: function(node) {
+                if(node.data.isFolder){
+                    return;
+                }
                 currentFile = node.data.key;
                 simbola.call.service('developer', 'ide', 'getFileContent', {path: node.data.key}, function(data) {
                     currentFileData = data;
