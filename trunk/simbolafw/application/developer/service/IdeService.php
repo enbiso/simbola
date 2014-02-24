@@ -9,6 +9,17 @@ namespace application\developer\service;
  */
 class IdeService extends \simbola\core\application\AppService {
 
+    public $schema_loadResourceCache = array(
+        'req' => array('params' => array()),
+        'res' => array('status'),
+        'err' => array('')
+    );
+
+    public function actionLoadResourceCache() {
+        \simbola\Simbola::app()->resource->loadCache();
+        $this->_res('status', true);
+    }
+
     public $schema_promoteFile = array(
         'req' => array('params' => array('path', 'promotePath')),
         'res' => array('status'),
@@ -23,6 +34,7 @@ class IdeService extends \simbola\core\application\AppService {
         }
         $dest = $promotePath . DIRECTORY_SEPARATOR . $this->_req_params('path');
         sfile_recursive_copy($path, $dest);
+        $this->_res('status', true);
     }
 
     public $schema_createFile = array(
@@ -49,17 +61,18 @@ class IdeService extends \simbola\core\application\AppService {
     }
 
     public $schema_renameFile = array(
-        'req' => array('params' => array('old_path', 'new_name')),
+        'req' => array('params' => array('key', 'new_name')),
         'res' => array('status'),
         'err' => array('FILE_NOT_EXIST', 'TARGET_EXIST')
     );
 
     public function actionRenameFile() {
         new \simbola\core\component\url\lib\Page;
-        $oldPath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $this->_req_params('old_path');
+        $key = $this->_req_params('key');
+        $key = str_replace("/", DIRECTORY_SEPARATOR, $key);
+        $oldPath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $key;
         if (file_exists($oldPath)) {
-            $newPath = substr($oldPath, 0, strlen($oldPath) - strrpos($oldPath, basename($oldPath))) . DIRECTORY_SEPARATOR
-                    . $this->_req_params('new_name');
+            $newPath = dirname($oldPath) . DIRECTORY_SEPARATOR . $this->_req_params('new_name');
             if (file_exists($newPath)) {
                 $this->_err('TARGET_EXIST');
             } else {
@@ -86,8 +99,8 @@ class IdeService extends \simbola\core\application\AppService {
             if (!sstring_ends_with(DIRECTORY_SEPARATOR, $path)) {
                 $path = DIRECTORY_SEPARATOR . $path;
             }
-            $path = \simbola\Simbola::app()->basepath('app') . $path;
-            $files = \application\developer\library\ide\FileHandler::LoadPath("{$path}/*");
+            $path = \simbola\Simbola::app()->basepath('app') . $path . DIRECTORY_SEPARATOR . "*";
+            $files = \application\developer\library\ide\FileHandler::LoadPath($path);
         } else {
             $files = array(
                 'title' => \simbola\Simbola::app()->getParam("APPNAME"),
@@ -163,7 +176,7 @@ class IdeService extends \simbola\core\application\AppService {
     public function actionSetFileContent() {
         $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $this->_req_params('path');
         if (file_exists($path)) {
-            $data = base64_decode($this->post('data'));
+            $data = base64_decode($this->_req_params('data'));
             $out = \application\developer\library\ide\FileHandler::SaveFile($path, $data);
             $this->_res('status', $out['status']);
         } else {
