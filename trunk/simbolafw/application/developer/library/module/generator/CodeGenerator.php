@@ -46,12 +46,12 @@ abstract class CodeGenerator {
         return $keysArr;
     }
 
-    function getColsArray() {
-        $class = \simbola\core\application\AppModel::getClass($this->module, $this->lu, $this->model);
+    function getColsArray() {        
         $colsArr = array();
-        foreach ($class::Columns() as $col) {
-            if (!sstring_starts_with($col->name, "_")) {
-                $colsArr[] = $col->name;
+        $tblMeta = $this->getTableMeta();
+        foreach ($tblMeta['columns'] as $col) {
+            if (!sstring_starts_with($col['name'], "_")) {
+                $colsArr[] = $col['name'];
             }
         }
         return $colsArr;
@@ -113,6 +113,9 @@ abstract class CodeGenerator {
     }
     
     public function getTableMeta() {
-        return \simbola\Simbola::app()->db->getMetaInfo($this->module, $this->lu, $this->model);
+        return \simbola\Simbola::app()->db->getMetaInfo(
+                sstring_camelcase_to_underscore($this->module), 
+                sstring_camelcase_to_underscore($this->lu), 
+                sstring_camelcase_to_underscore($this->model));
     }
 }
