@@ -275,7 +275,15 @@ class RbamController extends \simbola\core\application\AppController {
     }
     
     function actionImport(){
-        throw new \Exception(__METHOD__ . " not implemented");
+        if($this->issetFile("secFile")){
+            $file = $this->file('secFile');
+            if(\simbola\Simbola::app()->auth->getRBAP()->import(base64_decode($file['data64']))){
+                $this->setViewData("message", "Successfully imported.");
+            }else{
+                $this->setViewData("error", "Import failed.");
+            }
+        }
+        $this->pview("rbam/import_form");
     }
 
     private function registerPage($page) {
