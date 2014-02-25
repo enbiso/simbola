@@ -2,15 +2,15 @@
 $grid = new application\system\library\flexigrid\WidgetFlexiGrid('role_list',true);
 $grid->title = "Role List";
 $grid->usepager = true;
-$grid->sortname = "item_name";
+$grid->sortname = "role";
 $grid->sortorder = "asc";
 
 $grid->setDirect(true);
-$grid->setDataSource('system', 'auth', 'role', 'item_name');
-$grid->addColModel("Item Name", "item_name", "130", true, 'left');
-$grid->addColModel("Item Type", "item_type", "130", true, 'left');
+$grid->setDataSource('system', 'auth', 'role', 'role');
+$grid->addColModel("Role", "role", "130", true, 'left');
+$grid->addColModel("Type", "type", "130", true, 'left');
 
-$grid->addSearchItem("Item Name", 'item_name', true);
+$grid->addSearchItem("Role", 'role', true);
 
 $grid->addButton('Register', 'role_action');
 $grid->addButton('Unregister', 'role_action');
@@ -35,7 +35,7 @@ echo $grid->getDisplayData();
             case 'Unregister':
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleUnregister";  
-                    $.post(url,{rolename:item.item_name},function(data){
+                    $.post(url,{rolename:item.role},function(data){
                         $.pnotify(data);  
                         $('#role_list').flexReload();
                     },'json');
@@ -44,7 +44,7 @@ echo $grid->getDisplayData();
             case 'Enduser':
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleSetEnduser";  
-                    $.post(url,{rolename:item.item_name},function(data){
+                    $.post(url,{rolename:item.role},function(data){
                         $.pnotify(data);  
                         $('#role_list').flexReload();
                     },'json');
@@ -53,7 +53,7 @@ echo $grid->getDisplayData();
             case 'Access':
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleSetAccess";  
-                    $.post(url,{rolename:item.item_name},function(data){
+                    $.post(url,{rolename:item.role},function(data){
                         $.pnotify(data);  
                         $('#role_list').flexReload();
                     },'json');
