@@ -151,6 +151,10 @@ class PgSQLDriver extends AbstractDbDriver {
         throw new \Exception(__METHOD__." not implemented");
     }
 
+    public function viewExist($module, $lu_name, $view_name) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
 }
 
 ?>

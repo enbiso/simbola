@@ -94,7 +94,7 @@ class MySQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
     
-    public function createViewItemRelation() {
+    public function createViewObjectRelation() {
         $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_OBJECT_RELATION)} AS 
                     SELECT (SELECT item_name FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_id = parent_id) parent,
                            (SELECT item_name FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_id = child_id) child

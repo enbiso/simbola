@@ -107,6 +107,16 @@ class MySQLDriver extends AbstractDbDriver {
         $data = $this->query($sql);        
         return $data[0]['count'] > 0;
     }
+    
+    public function viewExist($module, $lu, $name){
+        $view_fullname = $this->getViewName($module, $lu, $name);
+        $sql = "SELECT count(*) AS count
+                FROM information_schema.views 
+                WHERE table_schema = '".$this->getDBName()."' 
+                AND table_name = '{$view_fullname}'";                
+        $data = $this->query($sql);        
+        return $data[0]['count'] > 0;
+    }
 
     public function moduleCreate($module) {
         return true;
@@ -235,7 +245,7 @@ class MySQLDriver extends AbstractDbDriver {
             'name' => implode("_", array_slice($arr, 2)),
         );
     }
-
+    
 }
 
 ?>

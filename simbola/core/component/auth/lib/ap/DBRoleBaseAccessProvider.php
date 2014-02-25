@@ -10,23 +10,23 @@ namespace simbola\core\component\auth\lib\ap;
 abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
 
     //Table names
-    const TBL_ITEM      = 'item';
-    const TBL_SESSION   = 'session';
-    const TBL_CHILD     = 'child';
-    const TBL_ASSIGN    = 'assign';
-    const TBL_USER      = 'user';
+    const TBL_ITEM = 'item';
+    const TBL_SESSION = 'session';
+    const TBL_CHILD = 'child';
+    const TBL_ASSIGN = 'assign';
+    const TBL_USER = 'user';
     //View names
-    const VIW_ROLE            = 'role';
-    const VIW_ACCESS_OBJECT   = 'access_object';
-    const VIW_ACCESS_ROLE     = 'access_role';
-    const VIW_ENDUSER_ROLE    = 'enduser_role';
-    const VIW_SYSTEM_USER     = 'system_user';
-    const VIW_USER_ROLE       = 'user_role';
+    const VIW_ROLE = 'role';
+    const VIW_ACCESS_OBJECT = 'access_object';
+    const VIW_ACCESS_ROLE = 'access_role';
+    const VIW_ENDUSER_ROLE = 'enduser_role';
+    const VIW_SYSTEM_USER = 'system_user';
+    const VIW_USER_ROLE = 'user_role';
     const VIW_OBJECT_RELATION = 'object_relation';
 
     protected $moduleName = 'system';
-    protected $luName = "auth";    
-    
+    protected $luName = "auth";
+
     public function itemSwitch($name, $type) {
         if ($this->itemExist($name)) {
             $sql = "UPDATE {$this->getTableName(SELF::TBL_ITEM)} 
@@ -38,35 +38,48 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
 
     //create table abstraction
     abstract function createTblAuthAssign();
+
     abstract function createTblAuthChild();
+
     abstract function createTblAuthItem();
+
     abstract function createTblAuthUser();
+
     abstract function createTblAuthSession();
-    
+
     //create view abstraction
     abstract function createViewAccessRole();
+
     abstract function createViewAccessObject();
+
     abstract function createViewEnduserRole();
+
     abstract function createViewRole();
+
     abstract function createViewSystemUser();
+
     abstract function createViewUserRole();
-    abstract function createViewItemRelation();
+
+    abstract function createViewObjectRelation();
 
     protected function getTableName($name) {
         return \simbola\Simbola::app()->db->getTableName($this->moduleName, $this->luName, $name);
     }
-    
+
     protected function getViewName($name) {
         return \simbola\Simbola::app()->db->getViewName($this->moduleName, $this->luName, $name);
     }
-    
+
     protected function getProcedureName($name) {
         return \simbola\Simbola::app()->db->getProcedureName($this->moduleName, $this->luName, $name);
     }
 
+    public function viewExist($view_name) {
+        return \simbola\Simbola::app()->db->viewExist($this->moduleName, $this->luName, $view_name);
+    }
 
     public function tableExist($table_name) {
-        return \simbola\Simbola::app()->db->tableExist($this->moduleName, $this->luName ,$table_name);
+        return \simbola\Simbola::app()->db->tableExist($this->moduleName, $this->luName, $table_name);
     }
 
     public function schemaExist() {
@@ -81,27 +94,42 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         if (!$this->schemaExist()) {
             $this->createSchema();
         }
+        //@performance tweak required
         if (!$this->tableExist(SELF::TBL_ITEM)) {
             $this->createTblAuthItem();
-            $this->createViewAccessObject();
-            $this->createViewAccessRole();
-            $this->createViewEnduserRole();
-            $this->createViewRole();
         }
         if (!$this->tableExist(SELF::TBL_CHILD)) {
             $this->createTblAuthChild();
-            $this->createViewItemRelation();   
         }
         if (!$this->tableExist(SELF::TBL_USER)) {
             $this->createTblAuthUser();
-            $this->createViewSystemUser();
         }
         if (!$this->tableExist(SELF::TBL_ASSIGN)) {
             $this->createTblAuthAssign();
-            $this->createViewUserRole();
         }
         if (!$this->tableExist(SELF::TBL_SESSION)) {
             $this->createTblAuthSession();
+        }
+        if (!$this->viewExist(self::VIW_ACCESS_OBJECT) ){
+            $this->createViewAccessObject();
+        }
+        if (!$this->viewExist(self::VIW_ACCESS_ROLE) ){
+            $this->createViewAccessRole();
+        }
+        if (!$this->viewExist(self::VIW_ENDUSER_ROLE) ){
+            $this->createViewEnduserRole();
+        }
+        if (!$this->viewExist(self::VIW_ROLE) ){
+            $this->createViewRole();
+        }
+        if (!$this->viewExist(self::VIW_OBJECT_RELATION) ){
+            $this->createViewObjectRelation();
+        }
+        if (!$this->viewExist(self::VIW_SYSTEM_USER) ){
+            $this->createViewSystemUser();
+        }
+        if (!$this->viewExist(self::VIW_USER_ROLE) ){
+            $this->createViewUserRole();
         }
     }
 
@@ -109,15 +137,15 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     public function import($data) {
         
     }
-    
+
     public function export($types = array('access_object', 'access_role', 'enduser_role', 'object_relation')) {
         $data = array();
         foreach ($types as $type) {
-            $data[$type] = $this->dbQuery("SELECT * FROM {$this->getViewName($type)}");                        
+            $data[$type] = $this->dbQuery("SELECT * FROM {$this->getViewName($type)}");
         }
         return $data;
     }
-    
+
     public function itemGet($type) {
         $sql = "SELECT item_id, item_name, item_description FROM {$this->getTableName(SELF::TBL_ITEM)}
                 WHERE item_type = {$type}";
@@ -128,7 +156,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     public function userId($username) {
         $sql = "SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'";
         $data = $this->dbQuery($sql);
-        if(count($data) > 0){
+        if (count($data) > 0) {
             return $data[0]['user_id'];
         }
         return false;
@@ -137,8 +165,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     public function userUsername($user_id) {
         $sql = "SELECT user_name FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_id = '{$user_id}'";
         $data = $this->dbQuery($sql);
-        if(count($data) > 0){
-            return $data[0]['user_name'];    
+        if (count($data) > 0) {
+            return $data[0]['user_name'];
         }
         return false;
     }
@@ -161,7 +189,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                         VALUES('{$name}','{$type}')";
             $this->dbExecute($sql);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -250,9 +278,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         $sql = "INSERT INTO {$this->getTableName(SELF::TBL_USER)} (user_name, user_password)
                     VALUES('{$username}',md5('{$password}'))";
         $this->dbExecute($sql);
-        if($with_default_role){
+        if ($with_default_role) {
             $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
-            if(!$this->itemExist($default_role)){
+            if (!$this->itemExist($default_role)) {
                 $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
             }
             $this->userAssign($username, $default_role);
@@ -292,27 +320,27 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                  WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
     }
-    
+
     public function userAuthenticate($username, $password = false, $session_info = '') {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_USER)} 
                 WHERE user_name = '{$username}' 
                   AND user_active = true";
-        if(is_string($password)){
+        if (is_string($password)) {
             $sql = "{$sql} AND user_password = md5('{$password}')";
         }
         $data = $this->dbQuery($sql);
-        if ($data[0]['row_count'] > 0) {            
-            if($session_info !== FALSE){
+        if ($data[0]['row_count'] > 0) {
+            if ($session_info !== FALSE) {
                 //create session
                 $session_key = uniqid("simbola.session.", TRUE);
                 $sql = "INSERT INTO {$this->getTableName(SELF::TBL_SESSION)} (client_addr, user_id, skey, description) 
                             VALUES (
                                 '" . $_SERVER['REMOTE_ADDR'] . "',
                                 (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'),
-                                '" . $session_key . "','" . $session_info . "')";            
+                                '" . $session_key . "','" . $session_info . "')";
                 $this->dbExecute($sql);
                 return $session_key;
-            }else{
+            } else {
                 //do not create session if description is set to bool FALSE                
                 return true;
             }
@@ -391,19 +419,19 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     public function userSessionRevokeById($session_id, $user_id) {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_SESSION)} WHERE id = {$session_id} AND user_id = {$user_id}";
         $data = $this->dbQuery($sql);
-        if($data[0]['row_count']>0){
+        if ($data[0]['row_count'] > 0) {
             $sql = "DELETE FROM {$this->getTableName(SELF::TBL_SESSION)} WHERE id = {$session_id} AND user_id = {$user_id}";
             $this->dbExecute($sql);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    
+
     public function userSessionRevoke($username, $session_key) {
         $sql = "DELETE FROM {$this->getTableName(SELF::TBL_SESSION)} 
                       WHERE skey = '{$session_key}'
-                        AND user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')";        
+                        AND user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')";
         $this->dbExecute($sql);
     }
 
