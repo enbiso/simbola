@@ -131,8 +131,9 @@ abstract class AppController {
             }
         } elseif(count($nameArray) == 1) {
             $file = $_FILES[$nameArray[0]];
-        }        
-        if (in_array($content, array('all', 'data64'))) {
+        }   
+        $file['data64'] = null;
+        if (in_array($content, array('all', 'data64')) && !empty($file['tmp_name'])) {
             $file['data64'] = base64_encode(file_get_contents($file['tmp_name']));
         }
         return ($content == 'all') ? $file : $file[$content];

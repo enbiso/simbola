@@ -131,7 +131,7 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
-    public function createViewItemRelation() {
+    public function createViewObjectRelation() {
         //@todo implement method
         throw new \Exception(__METHOD__. 'not implemented.');
     }

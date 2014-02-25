@@ -25,6 +25,7 @@ abstract class AbstractDbDriver {
     abstract public function _field_name($result,$index);       
     abstract public function _fetch_assoc($result);    
     abstract public function tableExist($module, $lu_name, $table_name);
+    abstract public function viewExist($module, $lu_name, $view_name);
     abstract public function moduleExist($module);
     abstract public function moduleCreate($module);
     abstract public function getMetaInfo($module, $lu, $name, $allFields = false);
