@@ -20,8 +20,8 @@ abstract class AppController {
         
     }
 
-    public function json($data = null) {
-        header('Content-Type: application/json');
+    public function json($data = null, $header = 'Content-Type: application/json') {        
+        header($header);        
         if (!isset($data)) {
             $data = $this->currentData;
         }
