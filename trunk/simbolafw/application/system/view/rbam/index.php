@@ -7,6 +7,7 @@
         <li><?= shtml_action_link("Role - Role", array('/system/rbam/tabRoleRole')) ?></li>
         <li><?= shtml_action_link("Role - Access Object", array('/system/rbam/tabRoleAccessObj')) ?></li>
         <li><?= shtml_action_link("Manage Access Objects", array('/system/rbam/tabManAccessObj')) ?></li>
+        <li><?= shtml_action_link("Import & Export", array('/system/rbam/tabImportExport')) ?></li>
     </ul>
 </div>
 <script>

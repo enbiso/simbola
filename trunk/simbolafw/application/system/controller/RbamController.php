@@ -24,6 +24,10 @@ class RbamController extends \simbola\core\application\AppController {
     function actionTabUsers() {
         $this->pview('rbam/users');
     }
+    
+    function actionTabImportExport() {
+        $this->pview('rbam/import_export');
+    }
 
     function actionTabRoleAccessObj() {
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
@@ -124,7 +128,7 @@ class RbamController extends \simbola\core\application\AppController {
             $this->json(array(
                 'title' => 'Warning',
                 'type' => 'warning',
-                'text' => $exc->getTraceAsString(),
+                'text' => $exc->getMessage(),
             ));
         }
     }
@@ -265,10 +269,13 @@ class RbamController extends \simbola\core\application\AppController {
     }
     
     //import export
-    function actionExport(){
-        if($this->issetPost('fetch')){
-            
-        }
+    function actionExport(){       
+        $header = "Content-disposition: attachment; filename=simbola_security.json";
+        $this->json(\simbola\Simbola::app()->auth->getRBAP()->export(), $header);
+    }
+    
+    function actionImport(){
+        throw new \Exception(__METHOD__ . " not implemented");
     }
 
     private function registerPage($page) {

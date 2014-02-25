@@ -2,16 +2,15 @@
 $grid = new application\system\library\flexigrid\WidgetFlexiGrid('user_list',true);
 $grid->title = "User List";
 $grid->usepager = true;
-$grid->sortname = "user_name";
+$grid->sortname = "user";
 $grid->sortorder = "asc";
 
 $grid->setDirect(true);
-$grid->setDataSource('system', 'auth', 'system_user', 'user_id');
-$grid->addColModel("ID", "user_id", "10", true, 'left');
-$grid->addColModel("User Name", "user_name", "130", true, 'left');
-$grid->addColModel("Active", "user_active", "70", true, 'left');
+$grid->setDataSource('system', 'auth', 'system_user', 'user');
+$grid->addColModel("User Name", "user", "130", true, 'left');
+$grid->addColModel("Status", "active", "70", true, 'left');
 
-$grid->addSearchItem("User Name", 'user_name', true);
+$grid->addSearchItem("User Name", 'user', true);
 
 $grid->addButton('Register', 'auth_action');
 $grid->addButton('Unregister', 'auth_action');
@@ -36,7 +35,7 @@ echo $grid->getDisplayData();
             case 'Change Password':                    
                     data = {username:''};
                     if(selectedItems.length > 0){
-                        data.username = selectedItems[0].user_name;                        
+                        data.username = selectedItems[0].user;                        
                     }
                     openDialog('Change password','rbam/dlgUserChangePassword',{
                         modal:true,
@@ -46,7 +45,7 @@ echo $grid->getDisplayData();
             case 'Unregister':                                             
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userUnregister";  
-                        $.post(url,{username:user.user_name},function(data){
+                        $.post(url,{username:user.user},function(data){
                             $.pnotify(data);  
                             $('#user_list').flexReload();
                         },'json');
@@ -55,7 +54,7 @@ echo $grid->getDisplayData();
             case 'Activate':                    
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userActivate";  
-                        $.post(url,{username:user.user_name},function(data){
+                        $.post(url,{username:user.user},function(data){
                             $.pnotify(data);  
                             $('#user_list').flexReload();
                         },'json');
@@ -64,7 +63,7 @@ echo $grid->getDisplayData();
             case 'Deactivate':                    
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userDeactivate";  
-                        $.post(url,{username:user.user_name},function(data){                            
+                        $.post(url,{username:user.user},function(data){                            
                             $.pnotify(data);                            
                             $('#user_list').flexReload();
                         },'json');
