@@ -10,7 +10,7 @@ namespace application\system\controller;
 class RbamController extends \simbola\core\application\AppController {
 
     public function __construct() {
-        $this->customLayout = "layout/rbam/main";
+        $this->customLayout = "layout/main";
     }
 
     function actionIndex() {
@@ -270,14 +270,19 @@ class RbamController extends \simbola\core\application\AppController {
     
     //import export
     function actionExport(){       
+        $types = array();
+        if($this->issetPost("type")){
+            $types = array_keys($this->post("type"));                   
+        }
+        $data = \simbola\Simbola::app()->auth->getRBAP()->export($types);
         $header = "Content-disposition: attachment; filename=simbola_security.json";
-        $this->json(\simbola\Simbola::app()->auth->getRBAP()->export(), $header);
+        $this->json($data, $header);
     }
     
     function actionImport(){
         if($this->issetFile("secFile")){
             $file = $this->file('secFile');
-            if(\simbola\Simbola::app()->auth->getRBAP()->import(base64_decode($file['data64']))){
+            if(\simbola\Simbola::app()->auth->getRBAP()->import(json_decode(base64_decode($file['data64']), true))){
                 $this->setViewData("message", "Successfully imported.");
             }else{
                 $this->setViewData("error", "Import failed.");
