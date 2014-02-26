@@ -111,7 +111,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     }
 
     public function isNewInstallation() {
-        if(is_null(\simbola\Simbola::app()->session->get('system.rbam.new_install'))){
+        $isNew = \simbola\Simbola::app()->session->get('system.rbam.new_install');
+        if(is_null($isNew) || $isNew){
             \simbola\Simbola::app()->session->set('system.rbam.new_install', !$this->tableExist(SELF::TBL_ITEM));
         }        
         return \simbola\Simbola::app()->session->get('system.rbam.new_install');
