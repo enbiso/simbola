@@ -107,12 +107,14 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $this->createViewObjectRelation();
             $this->createViewSystemUser();
             $this->createViewUserRole();            
-        }
-        parent::init($params);
+        }        
     }
 
     public function isNewInstallation() {
-        return !$this->tableExist(SELF::TBL_ITEM);
+        if(is_null(\simbola\Simbola::app()->session->get('system.rbam.new_install'))){
+            \simbola\Simbola::app()->session->set('system.rbam.new_install', !$this->tableExist(SELF::TBL_ITEM));
+        }        
+        return \simbola\Simbola::app()->session->get('system.rbam.new_install');
     }
     
     //import, export
@@ -162,7 +164,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                 case 'user_role':
                     foreach ($data as $datum) {
                         if (!$this->userAssigned($datum['user'], $datum['role'])) {
-                            $this->childAssign($datum['user'], $datum['role']);
+                            $this->userAssign($datum['user'], $datum['role']);
                         }
                     }
                     break;

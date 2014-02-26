@@ -11,6 +11,14 @@ function slog_error($msg){
     \simbola\Simbola::app()->log->error($msg);
 }
 
+function slog_log($msg){
+    \simbola\Simbola::app()->log->log($msg);
+}
+
+function slog_db($msg){
+    \simbola\Simbola::app()->log->db($msg);
+}
+
 function slog_syserror($method, $msg){
     slog_error($method.":".$msg);
 }

@@ -17,8 +17,8 @@ abstract class AbstractDbDriver {
     protected $connection;    
     
     abstract public function connect();    
-    abstract public function _execute($sql);
-    abstract public function _execute_multi($sql);
+    abstract public function _execute($sql, $params = array(), $log = true);
+    abstract public function _execute_multi($sql, $params = array(), $log = true);
     abstract public function _error();
     abstract public function _num_rows($result);            
     abstract public function _num_fields($result);       
@@ -41,13 +41,13 @@ abstract class AbstractDbDriver {
     abstract function getSourceFromProcedureName($procName);
     abstract function escapeString($string);
 
-    public function executeMulti($sql) {        
-        $result = $this->_execute_multi($sql);
+    public function executeMulti($sql, $params = array(), $log = true) {        
+        $result = $this->_execute_multi($sql, $params, $log);
         return $this->errorHandle($result,$sql);
     }
    
-    public function execute($sql) {
-        $result = $this->_execute($sql);
+    public function execute($sql, $params = array(), $log = true) {
+        $result = $this->_execute($sql, $params, $log);
         return $this->errorHandle($result,$sql);
     }
     

@@ -11,17 +11,7 @@ namespace simbola\core\component\auth\lib\ap;
  * @author Faraj
  */
 abstract class RoleBaseAccessProvider {
-    function init($params){
-        if($this->isNewInstallation()){
-            $basicSecPath = \simbola\Simbola::app()->basepath('fw') 
-                    . DIRECTORY_SEPARATOR . 'core'
-                    . DIRECTORY_SEPARATOR . 'component'
-                    . DIRECTORY_SEPARATOR . 'auth'
-                    . DIRECTORY_SEPARATOR . 'data'
-                    . DIRECTORY_SEPARATOR . 'basic_security.json';
-            $this->import(json_decode(file_get_contents($basicSecPath),true));
-        }
-    }
+    abstract function init($params);
     abstract function isNewInstallation();
     //item
     abstract function itemCreate($name,$type);
