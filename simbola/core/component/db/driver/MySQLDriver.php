@@ -1,7 +1,9 @@
 <?php
+
 namespace simbola\core\component\db\driver;
 
 use simbola\core\component\db\Database;
+
 /**
  * Description of MySQLDriver
  *
@@ -9,39 +11,67 @@ use simbola\core\component\db\Database;
  */
 class MySQLDriver extends AbstractDbDriver {
 
+    //DIRECT DB FUNCTIONS - START
     public function connect() {
-        $this->connection = mysqli_connect($this->server, $this->username, $this->password);
+        $this->connection = mysqli_connect($this->server, $this->username, $this->password);        
         mysqli_select_db($this->connection, $this->dbname);
+//        $this->connection = new \PDO("mysql:dbname={$this->dbname};host={$this->server};charset=utf8", $this->username, $this->password);
     }
 
-    public function _execute_multi($sql) {
-        return $this->_execute($sql);
+    public function _execute_multi($sql, $params = array(), $log = true) {
+        return $this->_execute($sql, $params, $log);
     }
 
-    public function _execute($sql) {
+    public function _execute($sql, $params = array(), $log = true) {
+        if ($log) {
+            slog_db($sql . " - " . var_export($params, true));
+        }
         return mysqli_query($this->connection, $sql);
+//        $stmt = $this->connection->prepare($sql);
+//        foreach ($params as $key => $value) {
+//            $stmt->bindParam(':' . $key, $value);
+//        }
+//        $stmt->execute();
+//        return $stmt;
     }
 
     public function _fetch_assoc($result) {
         return mysqli_fetch_assoc($result);
+//        $data = $result->fetchAll(\PDO::FETCH_NAMED);
+//        if(count($data) > 0){
+//            return $data[0];
+//        }else{
+//            return array();
+//        }        
     }
 
     public function _num_rows($result) {
         return mysqli_num_rows($result);
+//        return $result->rowCount();
     }
 
     public function _num_fields($result) {
         return mysqli_num_fields($result);
+//        return $result->columnCount();
     }
 
     public function _field_name($result, $index) {
         $fields = mysqli_fetch_fields($result);
         return $fields[$index]->name;
+//        $meta = $result->getColumnMeta($index);
+//        return $meta['name'];
     }
 
     public function _error() {
         return mysqli_error($this->connection);
+//        return $this->connection->errorInfo();
     }
+
+    public function _escape_string($string) {
+        return mysqli_escape_string($this->connection, $string);
+//        return $string;
+    }
+    //DIRECT DB FUNCTIONS - END
 
     public function directCall($func, $params = array()) {
         $sql = "SELECT $func(";
@@ -97,31 +127,31 @@ class MySQLDriver extends AbstractDbDriver {
         $view = $this->getViewName($module, $lu, $name);
         return $this->directView($view, $select, $where, $page, $pageLenth, $order);
     }
-    
+
     public function tableExist($module, $lu, $name) {
         $table_fullname = $this->getTableName($module, $lu, $name);
-        $sql = "SELECT count(*) AS count
+        $sql = "SELECT count(1) AS count
                 FROM information_schema.tables 
-                WHERE table_schema = '".$this->getDBName()."' 
-                AND table_name = '{$table_fullname}'";                
+                WHERE table_schema = '" . $this->getDBName() . "' 
+                AND table_name = '{$table_fullname}'";
         $data = $this->query($sql);        
         return $data[0]['count'] > 0;
     }
-    
-    public function viewExist($module, $lu, $name){
+
+    public function viewExist($module, $lu, $name) {
         $view_fullname = $this->getViewName($module, $lu, $name);
-        $sql = "SELECT count(*) AS count
+        $sql = "SELECT count(1) AS count
                 FROM information_schema.views 
-                WHERE table_schema = '".$this->getDBName()."' 
-                AND table_name = '{$view_fullname}'";                
-        $data = $this->query($sql);        
+                WHERE table_schema = '" . $this->getDBName() . "' 
+                AND table_name = '{$view_fullname}'";
+        $data = $this->query($sql);
         return $data[0]['count'] > 0;
     }
 
     public function moduleCreate($module) {
         return true;
     }
-    
+
     public function moduleExist($module) {
         return true;
     }
@@ -137,11 +167,11 @@ class MySQLDriver extends AbstractDbDriver {
     public function getViewName($module, $lu, $name) {
         return "{$module}_{$lu}_{$name}";
     }
-    
+
     public function escapeString($string) {
-        return mysqli_escape_string($this->connection, $string);
+        return $this->_escape_string($string);
     }
-    
+
     public function getMetaInfo($module, $lu, $name, $allFields = false) {
         $tblName = $this->getTableName($module, $lu, $name);
         //get column meta
@@ -151,12 +181,12 @@ class MySQLDriver extends AbstractDbDriver {
                 WHERE TABLE_SCHEMA = \'' . $this->dbname . '\' 
                   AND TABLE_NAME = \'' . $tblName . '\'';
         foreach ($this->query("SHOW COLUMNS FROM {$tblName}") as $colResult) {
-            if($allFields || !sstring_starts_with($colResult['Field'], "_")){
+            if ($allFields || !sstring_starts_with($colResult['Field'], "_")) {
                 $type = $colResult['Type'];
                 $length = null;
-                if(sstring_ends_with($type, ')')){
+                if (sstring_ends_with($type, ')')) {
                     $type = substr($colResult['Type'], 0, strpos($colResult['Type'], "("));
-                    $length = (int)substr($colResult['Type'], strpos($colResult['Type'], "(") + 1, -1);
+                    $length = (int) substr($colResult['Type'], strpos($colResult['Type'], "(") + 1, -1);
                 }
                 $cols[$colResult['Field']] = array(
                     'name' => $colResult['Field'],
@@ -233,7 +263,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => implode("_", array_slice($arr,3)),
+            'name' => implode("_", array_slice($arr, 3)),
         );
     }
 
@@ -245,7 +275,7 @@ class MySQLDriver extends AbstractDbDriver {
             'name' => implode("_", array_slice($arr, 2)),
         );
     }
-    
+
 }
 
 ?>

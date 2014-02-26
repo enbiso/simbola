@@ -163,11 +163,16 @@ class Auth extends \simbola\core\component\system\lib\Component {
         if (!isset($this->params['DB'])) {
             $this->params['DB'] = array();
         }
-        if (!isset($this->params['TYPE'])) {
-            $this->params['TYPE'] = 'RBAP';
+        if($this->rbap->isNewInstallation()){
+            $this->rbap->init($this->params['DB']);
+            $basicSecPath = \simbola\Simbola::app()->basepath('fw') 
+                    . DIRECTORY_SEPARATOR . 'core'
+                    . DIRECTORY_SEPARATOR . 'component'
+                    . DIRECTORY_SEPARATOR . 'auth'
+                    . DIRECTORY_SEPARATOR . 'data'
+                    . DIRECTORY_SEPARATOR . 'basic_security.json';
+            $this->rbap->import(json_decode(file_get_contents($basicSecPath),true));
         }
-
-        $this->rbap->init($this->params['DB']);
     }
 
     public function getRBAP() {

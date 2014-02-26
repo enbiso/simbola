@@ -13,6 +13,8 @@ class Log extends \simbola\core\component\system\lib\Component {
     const SYSTEM = 'SYSTEM';
     const DEBUG = 'DEBUG';
     const TRACE = 'TRACE';
+    const LOG = 'LOG';
+    const DB = 'DB';
 
     private $moduleName = 'system';
     private $luName = 'logger';    
@@ -50,7 +52,7 @@ class Log extends \simbola\core\component\system\lib\Component {
             $tableName = \simbola\Simbola::app()->db->getTableName($this->moduleName, $this->luName, $this->tableName);
             $info = \simbola\Simbola::app()->db->escapeString($info);
             $sql = "INSERT INTO {$tableName}(_type,_message) VALUES('{$type}','{$info}')";
-            $db->execute($sql);        
+            $db->execute($sql, array(), false);        
         }
     }
     
@@ -72,7 +74,12 @@ class Log extends \simbola\core\component\system\lib\Component {
     public function trace($info) {
         $this->add(self::TRACE, $info);
     }
-    
+    public function log($info) {
+        $this->add(self::LOG, $info);
+    }
+    public function db($info) {
+        $this->add(self::DB, $info);
+    }
 }
 
 ?>

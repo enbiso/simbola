@@ -19,11 +19,11 @@ class PgSQLDriver extends AbstractDbDriver {
         $this->connection = pg_pconnect($connStr);
     }
 
-    public function _execute_multi($sql) {
+    public function _execute_multi($sql, $params = array(), $log = true) {
         return $this->_execute($sql);
     }
 
-    public function _execute($sql) {
+    public function _execute($sql, $params = array(), $log = true) {
         return pg_query($this->connection, $sql);
     }
 
