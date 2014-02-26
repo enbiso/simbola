@@ -25,6 +25,7 @@ function setup_application() {
 
 function setup_application_htaccess(){
     copy("templates/htaccess.txt", "../.htaccess");
+    copy("templates/htaccess.deny.txt", ".htaccess");
 }
 
 function setup_application_index(){
