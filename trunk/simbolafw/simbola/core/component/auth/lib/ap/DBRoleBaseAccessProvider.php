@@ -90,52 +90,85 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         return \simbola\Simbola::app()->db->moduleCreate($this->moduleName);
     }
 
-    public function init($param) {
+    public function init($params) {
         if (!$this->schemaExist()) {
             $this->createSchema();
         }
-        //@performance tweak required
-        if (!$this->tableExist(SELF::TBL_ITEM)) {
+        if ($this->isNewInstallation()) {
             $this->createTblAuthItem();
-        }
-        if (!$this->tableExist(SELF::TBL_CHILD)) {
             $this->createTblAuthChild();
-        }
-        if (!$this->tableExist(SELF::TBL_USER)) {
             $this->createTblAuthUser();
-        }
-        if (!$this->tableExist(SELF::TBL_ASSIGN)) {
             $this->createTblAuthAssign();
-        }
-        if (!$this->tableExist(SELF::TBL_SESSION)) {
             $this->createTblAuthSession();
-        }
-        if (!$this->viewExist(self::VIW_ACCESS_OBJECT) ){
             $this->createViewAccessObject();
-        }
-        if (!$this->viewExist(self::VIW_ACCESS_ROLE) ){
             $this->createViewAccessRole();
-        }
-        if (!$this->viewExist(self::VIW_ENDUSER_ROLE) ){
             $this->createViewEnduserRole();
-        }
-        if (!$this->viewExist(self::VIW_ROLE) ){
             $this->createViewRole();
-        }
-        if (!$this->viewExist(self::VIW_OBJECT_RELATION) ){
             $this->createViewObjectRelation();
-        }
-        if (!$this->viewExist(self::VIW_SYSTEM_USER) ){
             $this->createViewSystemUser();
+            $this->createViewUserRole();            
         }
-        if (!$this->viewExist(self::VIW_USER_ROLE) ){
-            $this->createViewUserRole();
-        }
+        parent::init($params);
     }
 
+    public function isNewInstallation() {
+        return !$this->tableExist(SELF::TBL_ITEM);
+    }
+    
     //import, export
-    public function import($data) {
-        
+    public function import($allData) {         
+        foreach ($allData as $type => $data) {
+            switch ($type) {
+                case 'access_object':
+                    foreach ($data as $datum) {
+                        if (!$this->itemExist($datum['object'])) {
+                            $this->itemCreate($datum['object'], AuthType::ACCESS_OBJECT);
+                        }
+                    }
+                    break;
+                case 'access_role':
+                    foreach ($data as $datum) {
+                        if (!$this->itemExist($datum['role'])) {
+                            $this->itemCreate($datum['role'], AuthType::ACCESS_ROLE);
+                        }
+                    }
+                    break;
+                case 'enduser_role':
+                    foreach ($data as $datum) {
+                        if (!$this->itemExist($datum['role'])) {
+                            $this->itemCreate($datum['role'], AuthType::ENDUSER_ROLE);
+                        }
+                    }
+                    break;
+                case 'object_relation':
+                    foreach ($data as $datum) {
+                        if (!$this->childExist($datum['parent'], $datum['child'])) {
+                            $this->childAssign($datum['parent'], $datum['child']);
+                        }
+                    }
+                    break;
+                case 'system_user':
+                    foreach ($data as $datum) {
+                        if (!$this->userExist($datum['user'])) {
+                            $this->userCreate($datum['user']);
+                        }
+                        if($datum['active'] == 'active') {
+                            $this->userActivate($datum['user']);
+                        }  else {
+                            $this->userDeactivate($datum['user']);
+                        }
+                    }
+                    break;
+                case 'user_role':
+                    foreach ($data as $datum) {
+                        if (!$this->userAssigned($datum['user'], $datum['role'])) {
+                            $this->childAssign($datum['user'], $datum['role']);
+                        }
+                    }
+                    break;
+            }
+        }
+        return true;
     }
 
     public function export($types = array('access_object', 'access_role', 'enduser_role', 'object_relation')) {

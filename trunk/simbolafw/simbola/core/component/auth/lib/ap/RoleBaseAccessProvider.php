@@ -11,7 +11,18 @@ namespace simbola\core\component\auth\lib\ap;
  * @author Faraj
  */
 abstract class RoleBaseAccessProvider {
-    abstract function init($params);
+    function init($params){
+        if($this->isNewInstallation()){
+            $basicSecPath = \simbola\Simbola::app()->basepath('fw') 
+                    . DIRECTORY_SEPARATOR . 'core'
+                    . DIRECTORY_SEPARATOR . 'component'
+                    . DIRECTORY_SEPARATOR . 'auth'
+                    . DIRECTORY_SEPARATOR . 'data'
+                    . DIRECTORY_SEPARATOR . 'basic_security.json';
+            $this->import(json_decode(file_get_contents($basicSecPath),true));
+        }
+    }
+    abstract function isNewInstallation();
     //item
     abstract function itemCreate($name,$type);
     abstract function itemExist($name);
@@ -47,6 +58,6 @@ abstract class RoleBaseAccessProvider {
     abstract function userSessionRevoke($user_name, $session_key);    
     //import,Export
     abstract function import($data);
-    abstract function export($types = array('access_object', 'access_role', 'enduser_role'));
+    abstract function export($types);
 }
 ?>
