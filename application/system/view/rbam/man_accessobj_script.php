@@ -6,7 +6,14 @@
         persist: false,
         checkbox: true,
         selectMode: 3,
-        initAjax: { url: ur_url }
+        initAjax: { url: ur_url },
+        onSelect: function(){
+            if($("#access_obj_list").dynatree('getTree').getSelectedNodes().length <= 0){
+                $("#btn_access_obj_list_remove").addClass('disabled');
+            }else{
+                $("#btn_access_obj_list_remove").removeClass('disabled');
+            }
+        }
     });
 });
 </script>
@@ -36,6 +43,9 @@ function registerAllModules(){
     
 function removeObjs(){
     var selNodes = $("#access_obj_list").dynatree('getTree').getSelectedNodes();
+    if(selNodes.length <= 0){
+        return;
+    }
     var selKeys = $.map(selNodes, function(node){
         return node.data.key;
     });

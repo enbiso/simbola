@@ -16,6 +16,11 @@
         shtml_ecss('system', 'bootstrap/css/bootstrap.min.css');
         shtml_ecss('system', 'bootstrap/css/bootstrap-theme.min.css');
         shtml_ecss('system', 'bootstrap-notify/css/bootstrap-notify.css');
+        
+        shtml_ecss('system', 'jquery-ui/smoothness/jquery.ui.css');
+        shtml_ecss('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
+        shtml_ecss('system', 'jquery-contextmenu/jquery.contextMenu.css');
+        shtml_ecss('system', 'rbam/main.css');                
         ?>        
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -38,6 +43,13 @@
         shtml_ejs('system', 'json/json2.js');
 
         shtml_ejs('system', 'flexigrid/flexigrid.js');
+        
+        shtml_ejs('system', 'jquery-pnotify/jquery.pnotify.min.js');    
+        shtml_ejs('system', 'flexigrid/flexigrid.js');    
+        shtml_ejs('system', 'jquery-ui/jquery.ui.js');    
+        shtml_ejs('system', 'jquery-dynatree/jquery.dynatree.js');            
+        shtml_ejs('system', 'jquery-contextmenu/jquery.contextMenu.js');   
+        shtml_ejs('system', 'rbam/main.js');
 
         //setup pagemenu
         if ($this->isDataSet('page_menu')) {
