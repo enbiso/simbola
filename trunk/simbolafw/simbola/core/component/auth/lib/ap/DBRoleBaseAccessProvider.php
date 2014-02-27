@@ -111,11 +111,15 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     }
 
     public function isNewInstallation() {
-        $isNew = \simbola\Simbola::app()->session->get('system.rbam.new_install');
+        //PT002 - Performance tunning - Start
+        $session = \simbola\Simbola::app()->session;
+        $isNew = $session->get('system.rbam.new_install');
         if(is_null($isNew) || $isNew){
-            \simbola\Simbola::app()->session->set('system.rbam.new_install', !$this->tableExist(SELF::TBL_ITEM));
+            $isNew = !$this->tableExist(SELF::TBL_ITEM);
+            $session->set('system.rbam.new_install', $isNew);
         }        
-        return \simbola\Simbola::app()->session->get('system.rbam.new_install');
+        return $isNew;
+        //PT002 - Performance tunning - End
     }
     
     //import, export
