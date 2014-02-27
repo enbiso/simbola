@@ -23,19 +23,19 @@ class Log extends \simbola\core\component\system\lib\Component {
     
     public function init() {
         parent::init();        
-        $db = \simbola\Simbola::app()->db;
-        if (!$db->moduleExist($this->moduleName)) {
-            $db->moduleCreate($this->moduleName);
-        }
-        if (!$db->tableExist($this->moduleName, $this->luName, $this->tableName)) {
-            $tableName = \simbola\Simbola::app()->db->getTableName($this->moduleName, $this->luName, $this->tableName);
+        $db = \simbola\Simbola::app()->db;        
+        if ($this->isNewInstallation()) {
+            if(!$db->moduleExist($this->moduleName)){
+                $db->moduleCreate($this->moduleName);
+            }
+            $tableName = $db->getTableName($this->moduleName, $this->luName, $this->tableName);
             $sql = "CREATE TABLE {$tableName} (
                             _date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             _type VARCHAR(10),
                             _message VARCHAR(1000)
                         )";
             $db->execute($sql); 
-            $viewName = \simbola\Simbola::app()->db->getViewName($this->moduleName, $this->luName, $this->viewName);
+            $viewName = $db->getViewName($this->moduleName, $this->luName, $this->viewName);
             $sql = "CREATE OR REPLACE VIEW {$viewName} AS 
                         SELECT * FROM {$tableName} ORDER BY _date DESC";   
             $db->execute($sql); 
@@ -46,6 +46,19 @@ class Log extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    public function isNewInstallation() {
+        //PT003 - Performance tunning - Start
+        $session = \simbola\Simbola::app()->session;
+        $db = \simbola\Simbola::app()->db;
+        $isNew = $session->get('system.log.new_install');
+        if(is_null($isNew) || $isNew){
+            $isNew = !$db->tableExist($this->moduleName, $this->luName, $this->tableName);
+            $session->set('system.log.new_install', $isNew);
+        }        
+        return $isNew;     
+        //PT003 - Performance tunning - End
+    }
+    
     public function add($type, $info) {                
         if(in_array($type, $this->params['TYPES'])){            
             $db = \simbola\Simbola::app()->db;

@@ -33,7 +33,14 @@ class Auth extends \simbola\core\component\system\lib\Component {
         if (!isset($session_key)) {
             $session_key = $session->get('session_key');
         }
-        return $this->getRBAP()->userSessionCheck($username, $session_key);
+        //PT001 - Performance tunning - Start
+        $userSessionCheck = $session->get('system.auth.user_session_check');
+        if(is_null($userSessionCheck) || !$userSessionCheck){
+            $userSessionCheck = $this->getRBAP()->userSessionCheck($username, $session_key);
+            $session->set('system.auth.user_session_check', $userSessionCheck);
+        }
+        return $userSessionCheck;
+        //PT001 - Performance tunning - End
     }
 
     public function login($username, $password = false, $session_info = '') {
@@ -73,12 +80,27 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
         $session->set('username', null);
         $session->set('session_key', null);
+        //PT001 - Performance tunning - Start
+        $session->set('system.auth.user_session_check',null);
+        //PT001 - Performance tunning - End
+        //PT004 - Performance tunning - Start
+        $session->set('system.auth.user_roles', null);
+        //PT004 - Performance tunning - End
         return $this->getRBAP()->userSessionRevoke($username, $session_key);
     }
 
     public function getRoles($username = null, $session_key = null) {
         if ($this->isLogged($username, $session_key)) {
-            return $this->getRBAP()->userRoles($this->getUsername($username, $session_key));
+            //PT004 - Performance tunning - Start
+            $session = Simbola::app()->session;
+            $userRoles = $session->get('system.auth.user_roles');
+            if(is_null($userRoles)){
+                $username = $this->getUsername($username, $session_key);
+                $userRoles = $this->getRBAP()->userRoles($username);
+                $session->set('system.auth.user_roles', $userRoles);
+            }
+            return $userRoles;
+            //PT004 - Performance tunning - Start
         } else {
             return array($this->params['GUEST_ROLE']);
         }
