@@ -26,8 +26,7 @@ class Db extends \simbola\core\component\system\lib\Component {
             $this->dbDriver->setUsername($this->params['USERNAME']);
             $this->dbDriver->setPassword($this->params['PASSWORD']);            
             $this->dbDriver->setDbName($this->params['DBNAME']);
-            $this->dbDriver->setPageLength($this->params['PAGE_LENGTH']);
-            $this->dbDriver->setDebug($this->params['DEBUG']);
+            $this->dbDriver->setPageLength($this->params['PAGE_LENGTH']);            
             $this->dbDriver->connect();
         }
 

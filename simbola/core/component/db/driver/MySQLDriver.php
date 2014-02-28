@@ -27,49 +27,31 @@ class MySQLDriver extends AbstractDbDriver {
             slog_db($sql . " - " . var_export($params, true));
         }
         return mysqli_query($this->connection, $sql);
-//        $stmt = $this->connection->prepare($sql);
-//        foreach ($params as $key => $value) {
-//            $stmt->bindParam(':' . $key, $value);
-//        }
-//        $stmt->execute();
-//        return $stmt;
     }
 
     public function _fetch_assoc($result) {
         return mysqli_fetch_assoc($result);
-//        $data = $result->fetchAll(\PDO::FETCH_NAMED);
-//        if(count($data) > 0){
-//            return $data[0];
-//        }else{
-//            return array();
-//        }        
     }
 
     public function _num_rows($result) {
         return mysqli_num_rows($result);
-//        return $result->rowCount();
     }
 
     public function _num_fields($result) {
         return mysqli_num_fields($result);
-//        return $result->columnCount();
     }
 
     public function _field_name($result, $index) {
         $fields = mysqli_fetch_fields($result);
         return $fields[$index]->name;
-//        $meta = $result->getColumnMeta($index);
-//        return $meta['name'];
     }
 
     public function _error() {
         return mysqli_error($this->connection);
-//        return $this->connection->errorInfo();
     }
 
     public function _escape_string($string) {
         return mysqli_escape_string($this->connection, $string);
-//        return $string;
     }
     //DIRECT DB FUNCTIONS - END
 

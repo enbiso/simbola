@@ -9,6 +9,7 @@ namespace simbola\core\component\system\lib;
  */
 abstract class Component {
 
+    protected $isInit = false;
     protected $params = array();
 
     public function setParams($params = array()) {
@@ -47,7 +48,7 @@ abstract class Component {
 
     //called before the application execution
     public function init() {
-        
+        $this->isInit = true;
     }
 
     //called after the execution
