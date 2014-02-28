@@ -11,7 +11,7 @@ namespace simbola\core\component\auth\lib\ap;
  * @author Faraj
  */
 abstract class RoleBaseAccessProvider {
-    abstract function init($params);
+    abstract function init();
     abstract function isNewInstallation();
     //item
     abstract function itemCreate($name,$type);

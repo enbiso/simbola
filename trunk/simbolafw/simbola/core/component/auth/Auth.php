@@ -8,9 +8,13 @@ use simbola\Simbola;
  * Description of Auth
  *
  * @author Faraj
+ *  
  */
 class Auth extends \simbola\core\component\system\lib\Component {
-
+    
+    const USERNAME = 'system.username';
+    const SESSION_KEY = 'system.session_key';
+    
     private $rbap = null;
     
     public function setupDefault() {
@@ -25,109 +29,99 @@ class Auth extends \simbola\core\component\system\lib\Component {
         return $this->getParam('DEFAULT_ROLE');
     }
 
-    public function isLogged($username = null, $session_key = null) {
+    public function getUserSession($username = null, $sessionKey = null) {
         $session = Simbola::app()->session;
+        $data = array(self::USERNAME => $username, self::SESSION_KEY => $sessionKey);
         if (!isset($username)) {
-            $username = $session->get('username');
+            $data[self::USERNAME] = $session->get(self::USERNAME);
         }
-        if (!isset($session_key)) {
-            $session_key = $session->get('session_key');
+        if (!isset($sessionKey)) {
+            $data[self::SESSION_KEY] = $session->get(self::SESSION_KEY);
         }
-        //PT001 - Performance tunning - Start
-        $userSessionCheck = $session->get('system.auth.user_session_check');
-        if(is_null($userSessionCheck) || !$userSessionCheck){
-            $userSessionCheck = $this->getRBAP()->userSessionCheck($username, $session_key);
-            $session->set('system.auth.user_session_check', $userSessionCheck);
-        }
-        return $userSessionCheck;
-        //PT001 - Performance tunning - End
+        return $data;
+    }
+    
+    public function isLogged($username = null, $sessionKey = null) {             
+        $params = $this->getUserSession($username, $sessionKey);
+        return $this->getRBAP()->userSessionCheck($params[self::USERNAME], $params[self::SESSION_KEY]);        
     }
 
-    public function login($username, $password = false, $session_info = '') {
-        $session_key = $this->getRBAP()->userAuthenticate($username, $password, $session_info);
-        slog_debug($session_key);
-        if ($session_key) {
+    public function login($username, $password = false, $sessionInfo = '') {
+        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo);        
+        if ($sessionKey) {
             $session = Simbola::app()->session;
-            $session->set('username', $username);
-            $session->set('session_key', $session_key);
-            return $session_key;
+            $session->set(self::USERNAME, $username);
+            $session->set(self::SESSION_KEY, $sessionKey);
+            return $sessionKey;
         } else {
             return false;
         }
     }
 
-    public function updateSession($username, $session_key) {
+    public function updateSession($username, $sessionKey) {
         $session = Simbola::app()->session;
-        if ($this->isLogged()) {
-            return array('auth' => array('username' => $session->get('username'), 'skey' => $session->get('session_key')), 'reload' => false);
-        } elseif ($this->getRBAP()->userSessionCheck($username, $session_key)) {
-            $session->set('username', $username);
-            $session->set('session_key', $session_key);
-            return array('auth' => array('username' => $session->get('username'), 'skey' => $session->get('session_key')), 'reload' => true);
+        if ($this->isLogged()) {            
+            return array('auth' => array(
+                            'username' => $session->get(self::USERNAME), 
+                            'skey' => $session->get(self::SESSION_KEY)), 
+                         'reload' => false);
+        } elseif ($this->getRBAP()->userSessionCheck($username, $sessionKey)) {            
+            $session->set(self::USERNAME, $username);
+            $session->set(self::SESSION_KEY, $sessionKey);
+            return array('auth' => array(
+                            'username' => $session->get(self::USERNAME), 
+                            'skey' => $session->get(self::SESSION_KEY)), 
+                         'reload' => true);
         } else {
-            return array('auth' => array('username' => $this->params['GUEST_USERNAME'], 'skey' => ''), 'reload' => false);
+            return array('auth' => array(
+                            'username' => $this->params['GUEST_USERNAME'], 
+                            'skey' => ''), 
+                         'reload' => false);
         }
     }
 
-    public function logout($username = null, $session_key = null) {
+    public function logout($username = null, $sessionKey = null) {
         //get username and session key associated
         $session = Simbola::app()->session;
-        if (!isset($username)) {
-            $username = $session->get('username');
-        }
-        if (!isset($session_key)) {
-            $session_key = $session->get('session_key');
-        }
-        $session->set('username', null);
-        $session->set('session_key', null);
-        //PT001 - Performance tunning - Start
-        $session->set('system.auth.user_session_check',null);
-        //PT001 - Performance tunning - End
-        //PT004 - Performance tunning - Start
-        $session->set('system.auth.user_roles', null);
-        //PT004 - Performance tunning - End
-        return $this->getRBAP()->userSessionRevoke($username, $session_key);
+        $session->set(self::USERNAME, null);
+        $session->set(self::SESSION_KEY, null);
+        $sParams = $this->getUserSession($username, $sessionKey);
+        return $this->getRBAP()->userSessionRevoke($sParams[self::USERNAME], $sParams[self::SESSION_KEY]);
     }
 
-    public function getRoles($username = null, $session_key = null) {
-        if ($this->isLogged($username, $session_key)) {
-            //PT004 - Performance tunning - Start
-            $session = Simbola::app()->session;
-            $userRoles = $session->get('system.auth.user_roles');
-            if(is_null($userRoles)){
-                $username = $this->getUsername($username, $session_key);
-                $userRoles = $this->getRBAP()->userRoles($username);
-                $session->set('system.auth.user_roles', $userRoles);
-            }
-            return $userRoles;
-            //PT004 - Performance tunning - Start
+    public function getRoles($username = null, $sessionKey = null) {
+        if ($this->isLogged($username, $sessionKey)) {
+            $params = $this->getUserSession($username, $sessionKey);
+            $username = $this->getUsername($params[self::USERNAME], $params[self::SESSION_KEY]);
+            return $this->getRBAP()->userRoles($username);
         } else {
             return array($this->params['GUEST_ROLE']);
         }
     }
 
-    public function getSessionKey($username = null, $session_key = null) {
-        if (isset($username) && isset($session_key)) {
-            return $session_key;
+    public function getSessionKey($username = null, $sessionKey = null) {
+        if (isset($username) && isset($sessionKey)) {
+            return $sessionKey;
         } else {
             $session = Simbola::app()->session;
-            $skey = $this->isLogged() ? $session->get('session_key') : '';
+            $skey = $this->isLogged() ? $session->get(self::SESSION_KEY) : '';
             return $skey;
         }
     }
 
-    public function getUsername($username = null, $session_key = null) {
-        if (isset($username) && isset($session_key)) {            
+    public function getUsername($username = null, $sessionKey = null) {
+        if (isset($username) && isset($sessionKey)) {            
             return $username;
         } else {
             $session = Simbola::app()->session;
-            $uname = $this->isLogged() ? $session->get('username') : $this->params['GUEST_USERNAME'];
+            $uname = $this->isLogged() ? $session->get(self::USERNAME) : $this->params['GUEST_USERNAME'];
             return $uname;
         }
     }
 
-    public function getId($username = null, $session_key = null) {
-        return $this->getRBAP()->userId($this->getUsername($username, $session_key));
+    public function getId($username = null, $sessionKey = null) {
+        $params = $this->getUserSession($username, $sessionKey);
+        $this->getRBAP()->userId($this->getUsername($params[self::USERNAME]));
     }
     
     public function checkPermissionByUrl($url_string, $username = null, $session_key = null) {                    
@@ -162,7 +156,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
         $rbap = $this->getRBAP();
         //check if permitted        
         $permited = false;
-        $accessItem = $permObj->getAccessItem();
+        $accessItem = $permObj->getAccessItem();        
         foreach ($roles as $role) {
             $permited |= $rbap->childExistRecurse($role, $accessItem);
             if ($permited) {
@@ -197,6 +191,10 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Get attached RBAP
+     * @return lib\ap\RoleBaseAccessProvider
+     */
     public function getRBAP() {
         return $this->rbap;
     }

@@ -53,12 +53,8 @@ abstract class AbstractDbDriver {
     
     public function errorHandle($result,$sql) {
         if(Simbola::app()->isDev()){
-            if($this->debug || !$result){
-                echo '<pre>Sql: '.$sql.'</pre>';        
-            }
             if(!$result){            
-                $message = '<div>Error: '. $this->_error() .'</div>';
-                die($message);
+                throw new \Exception($this->_error());    
             }
         }
         return $result;   
@@ -93,10 +89,6 @@ abstract class AbstractDbDriver {
     
     public function getDbName() {
         return $this->dbname;
-    }
-    
-    public function setDebug($debug) {
-        $this->debug = $debug;
     }
     
     public function setDbName($dbname) {
