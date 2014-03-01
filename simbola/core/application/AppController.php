@@ -14,8 +14,7 @@ abstract class AppController {
 
     /**
      * Data to be passed to the view when rendering
-     * 
-     * @access protected
+     *      
      * @var array() 
      */
     protected $viewData = array();
@@ -30,8 +29,7 @@ abstract class AppController {
     /**
      * Setup security bypassing actions in this controller, If given in the array, these 
      * actions wont be checked using the Role base access provider to verify the security
-     * 
-     * @access protected
+     *      
      * @var array/boolean 
      */
     protected $securityBypass = false;
@@ -39,16 +37,14 @@ abstract class AppController {
     /**
      * Used to define the custom layout path for this specific controller
      * /[module]/layout/[layout name]
-     * 
-     * @access protected
+     *      
      * @var string
      */
     protected $customLayout = null;
 
     /**
      * Used to render the output as JSON
-     * 
-     * @access protected
+     *      
      * @param array $data the data to process along with the $viewData
      * @param string $header The PHP HTML header default to application/json
      */
@@ -60,8 +56,7 @@ abstract class AppController {
 
     /**
      * Fetch the custom layout defined for this controller
-     * 
-     * @access public     
+     *      
      * @return string
      */
     public function getCustomLayout() {
@@ -79,8 +74,7 @@ abstract class AppController {
 
     /**
      * Set the view data that should be passed when rendering the view
-     * 
-     * @access protected
+     *      
      * @param string $name name of the data
      * @param type $value value of the data
      */
@@ -90,15 +84,14 @@ abstract class AppController {
 
     /**
      * Used to render the view with layout by default
-     * 
-     * @access protected
+     *      
      * @param string $viewPath The path of the view from the module view folder     
      * @param array $data data to be processed along with the viewData when rendering
      * @param boolean $print TRUE - output the render, FALSE - return the render content as string
      * @param boolean $partial TRUE - render without the layout, FALSE - render with the layout
      * @return type render content
      */
-    protected function view($viewPath, $data = array(), $print = true, $partial = false) {
+    public function view($viewPath, $data = array(), $print = true, $partial = false) {
         $data = array_merge($data, $this->viewData);
         $viewContent = new \simbola\core\component\system\lib\ViewContent($this, $viewPath, $partial);
         $viewContent->setData($data);
@@ -108,20 +101,18 @@ abstract class AppController {
     /**
      * Renders the view without the layout
      * 
-     * @access protected
      * @param string $viewPath The path of the view from the module view folder     
      * @param array $data data to be processed along with the viewData when rendering
      * @param boolean $print TRUE - output the render, FALSE - return the render content as string
      * @return type render content
      */
-    protected function pview($viewPath, $data = array(), $print = true) {
+    public function pview($viewPath, $data = array(), $print = true) {
         return $this->view($viewPath, $data, $print, true);
     }
 
     /**
      * Check if the page is the login page
-     * 
-     * @access public
+     *      
      * @param \simbola\core\component\url\lib\Page $page
      * @return boolean
      */
@@ -133,8 +124,7 @@ abstract class AppController {
 
     /**
      * Used to run the controller with the given page action
-     * 
-     * @access public
+     *      
      * @param \simbola\core\component\url\lib\Page $page the Page of execution
      */
     public function run($page) {
@@ -158,8 +148,7 @@ abstract class AppController {
 
     /**
      * Checks if the given action is defined in the security bypass action list
-     * 
-     * @access public
+     *      
      * @param string $action action name
      * @return boolean
      */
@@ -181,8 +170,7 @@ abstract class AppController {
      * Redirects to the given page. If the $page param is a string, the $params
      * paramater can be used to define the array of url params which will be used to 
      * generate the Page object
-     * 
-     * @access protected     
+     *      
      * @param \simbola\core\component\url\lib\Page $page
      * @param array $params
      */
@@ -208,8 +196,7 @@ abstract class AppController {
 
     /**
      * Check if the $_POST isset for the given keys
-     * 
-     * @access protected
+     *      
      * @param mixed $keys Can be a string name of the key or an array of key names
      * @return bool
      */
@@ -273,6 +260,12 @@ abstract class AppController {
         return isset($_GET[$key]) ? $_GET[$key] : null;
     }
 
+    /**
+     * Check if the given name or names were isset in $_FILE request object
+     * 
+     * @param array $names Name or Array of names that to be isset check in $_FILE
+     * @return boolean 
+     */
     protected function issetFile($names) {
         if(is_string($names) && sstring_contains($names, "[") && sstring_ends_with($names, "]")){
             $namearr = explode("[", $names);
@@ -286,6 +279,13 @@ abstract class AppController {
         return $isset;
     }
 
+    /**
+     * Implementation function used in issetXXXX() methods
+     * 
+     * @param array $array Array to check
+     * @param array $names Array of names to check
+     * @return boolean
+     */
     private function issetArray($array, $names) {
         if (!is_array($names)) {
             $names = array($names);
@@ -297,30 +297,59 @@ abstract class AppController {
         return $isset;
     }
 
+    /**
+     * Initialization method of the Controller. Can be overriden to 
+     * implement custom initializations
+     */
     public function init() {
         
     }
 
+    /**
+     * Destroy method of the Controller. Can be overriden to 
+     * implement custom detroy
+     */
     public function destroy() {
         
     }
 
+    /**
+     * Invoked before the page action execution. Can be overriden to 
+     * implement custom functionality.
+     * 
+     * @param \simbola\core\component\url\lib\Page $page Page object of execution
+     */
     protected function preAction($page) {
         
     }
 
+    /**
+     * Invoked after the page action execution. Can be overriden to 
+     * implement custom functionality.
+     * 
+     * @param \simbola\core\component\url\lib\Page $page Page object of execution
+     */
     protected function postAction($page) {
         
     }
 
-    protected function getTerm($term_path, $data = array()) {
-        return \simbola\core\component\term\Term::Get($term_path, $data);
-    }
-
-    protected function echoTerm($term_path, $data = array()) {
-        return \simbola\core\component\term\Term::eGet($term_path, $data);
-    }
-
+    /**
+     * This method can be used to invoke the service layer actions inside the controller
+     * actions.
+     * 
+     * @param string $module Module name of the service
+     * @param string $service Service name of the service
+     * @param string $action Action name of the service
+     * @param array $params Parameters to pass inside the service call
+     * @return mixed The output of the service 
+     *              ( header => array( version      => [VER],
+     *                                 timestamp    => [TIMESTAMP],
+     *                                 status       => [CODE],
+     *                                 status_text  => [STATUS],
+     *                                 service      => [SERVICE_PATH]),
+     *                body   => array( response     => [RESPONSE_DATA],
+     *                                 message      => [RESPONSE_MESSAGE]))
+     */
     protected function invoke($module, $service, $action, $params) {
         $serviceClient = new \simbola\core\component\system\lib\ServiceClient();
         $serviceClient->module = $module;
