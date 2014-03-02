@@ -1,17 +1,23 @@
 <?php
 namespace simbola\core\component\db;
+
+include_once 'activerecord/ActiveRecord.php';
 /**
  * Description of Database
  *
- * @author Faraj
+ * @author Faraj 
  */
 class Db extends \simbola\core\component\system\lib\Component {
 
-    public static $NUMBER = 'num';
-    public static $STRING = 'str';
-    public static $DATE = 'dat';
+    /**
+     * Database driver
+     * @var driver\AbstractDbDriver
+     */
     private $dbDriver;
 
+    /**
+     * Setup the component
+     */
     public function setup() {                
         switch ($this->params['VENDOR']) {
             case 'MYSQL':
@@ -41,20 +47,31 @@ class Db extends \simbola\core\component\system\lib\Component {
                 });
     }
 
+    /**
+     * Get database username
+     * 
+     * @return string
+     */
     public function getUsername() {
         return $this->params['USERNAME'];
     }
 
+    /**
+     * Get the database ventor
+     * 
+     * @return string MYSQL/PGSQL
+     */
     public function getVendor() {
         return $this->params['VENDOR'];
     }
-
-    public function __call($name, $arguments) {           
-        if(method_exists($this->dbDriver, $name)){
-            return call_user_func_array(array($this->dbDriver, $name), $arguments);        
-        }else{
-            throw new \Exception("Method not found {$name}");
-        }
+    
+    /**
+     * Gets the database driver
+     * 
+     * @return driver\AbstractDbDriver
+     */
+    public function getDriver() {
+        return $this->dbDriver;
     }
 }
 

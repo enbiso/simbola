@@ -5,56 +5,129 @@ namespace simbola\core\component\db\driver;
 use simbola\core\component\db\Database;
 
 /**
- * Description of MySQLDriver
+ * MySQL Driver definitions
  *
- * @author farflk
+ * @author Faraj Farook
  */
 class MySQLDriver extends AbstractDbDriver {
 
-    //DIRECT DB FUNCTIONS - START
+    /**
+     * Connect to MySQL database
+     * This is a framework function. Do not use this function on implementations.
+     */
     public function connect() {
         $this->connection = mysqli_connect($this->server, $this->username, $this->password);        
         mysqli_select_db($this->connection, $this->dbname);
-//        $this->connection = new \PDO("mysql:dbname={$this->dbname};host={$this->server};charset=utf8", $this->username, $this->password);
     }
 
-    public function _execute_multi($sql, $params = array(), $log = true) {
+    /**
+     * Implementation execute multiple query strings
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param string $sql Query string
+     * @param array $params Parameters
+     * @param boolean $log Used to setup the logging on database query execution
+     *          TRUE  - enable DB logs on execution (default)
+     *          FALSE - disable DB logs on execution 
+     * @return \mysqli_result MySQLi result
+     */
+    protected function _execute_multi($sql, $params = array(), $log = true) {
         return $this->_execute($sql, $params, $log);
     }
 
-    public function _execute($sql, $params = array(), $log = true) {
+    /**
+     * Implementation execute function of query
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param string $sql Query string
+     * @param array $params Parameters
+     * @param boolean $log Used to setup the logging on database query execution
+     *          TRUE  - enable DB logs on execution (default)
+     *          FALSE - disable DB logs on execution 
+     * @return \mysqli_result MySQLi result
+     */
+    protected function _execute($sql, $params = array(), $log = true) {
         if ($log) {
             slog_db($sql . " - " . var_export($params, true));
         }
         return mysqli_query($this->connection, $sql);
     }
 
-    public function _fetch_assoc($result) {
+    /**
+     * Fetch the data as an associate array
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param \mysqli_result $result
+     * @return array
+     */
+    protected function _fetch_assoc($result) {
         return mysqli_fetch_assoc($result);
     }
 
-    public function _num_rows($result) {
+    /**
+     * Number of rows in the result object
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param \mysqli_result $result
+     * @return integet
+     */
+    protected function _num_rows($result) {
         return mysqli_num_rows($result);
     }
 
-    public function _num_fields($result) {
+    /**
+     * Number of fields in the result
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param \mysqli_result $result
+     * @return integer
+     */
+    protected function _num_fields($result) {
         return mysqli_num_fields($result);
     }
 
-    public function _field_name($result, $index) {
+    /**
+     * Name of the field specified by the column index
+     * This is a framework function. Do not use this function on implementations. 
+     * 
+     * @param \mysqli_result $result
+     * @param integer $index The index of the column
+     * @return type
+     */
+    protected function _field_name($result, $index) {
         $fields = mysqli_fetch_fields($result);
         return $fields[$index]->name;
     }
 
-    public function _error() {
+    /**
+     * Returns the string description of the last error
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @return string
+     */
+    protected function _error() {
         return mysqli_error($this->connection);
     }
 
-    public function _escape_string($string) {
+    /**
+     * Returns the escaped string representation of the string provided
+     * This is a framework function. Do not use this function on implementations. 
+     * 
+     * @param string $string
+     * @return string Escaped string for the query
+     */
+    protected function _escape_string($string) {
         return mysqli_escape_string($this->connection, $string);
     }
-    //DIRECT DB FUNCTIONS - END
+    
 
+    /**
+     * Directly call the mysql functions from the full qualify names
+     * 
+     * @param string $func Function name in full
+     * @param array $params Function parameters
+     * @return mixed
+     */
     public function directCall($func, $params = array()) {
         $sql = "SELECT $func(";
         foreach ($params as $key => $value) {
@@ -75,6 +148,17 @@ class MySQLDriver extends AbstractDbDriver {
         return $dataArray[0]['data'];
     }
 
+    /**
+     * Fetch the fully qualified view according to the parameters
+     * 
+     * @param string $view Fully qualified view name
+     * @param string $select Select statement entries
+     * @param string $where Where clause 
+     * @param int $page Page number to display
+     * @param int $pageLenth Page length
+     * @param string $order Order by clause
+     * @return array Data array
+     */
     public function directView($view, $select = "*", $where = null, $page = null, $pageLenth = null, $order = null) {
         $where = isset($where) ? " WHERE $where" : "";
         $order = isset($order) ? " ORDER BY $order" : "";
@@ -100,16 +184,14 @@ class MySQLDriver extends AbstractDbDriver {
         return $records;
     }
 
-    public function call($module, $lu, $name, $params = array()) {
-        $func = $this->getProcedureName($module, $lu, $name);
-        return $this->directCall($func, $params);
-    }
-
-    public function view($module, $lu, $name, $select = "*", $where = null, $page = null, $pageLenth = null, $order = null) {
-        $view = $this->getViewName($module, $lu, $name);
-        return $this->directView($view, $select, $where, $page, $pageLenth, $order);
-    }
-
+    /**
+     * Check the table exist in the database
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Table name
+     * @return boolean
+     */
     public function tableExist($module, $lu, $name) {
         $table_fullname = $this->getTableName($module, $lu, $name);
         $sql = "SELECT count(1) AS count
@@ -120,6 +202,14 @@ class MySQLDriver extends AbstractDbDriver {
         return $data[0]['count'] > 0;
     }
 
+    /**
+     * Check if the view exist in the database
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name View name
+     * @return type
+     */
     public function viewExist($module, $lu, $name) {
         $view_fullname = $this->getViewName($module, $lu, $name);
         $sql = "SELECT count(1) AS count
@@ -130,30 +220,76 @@ class MySQLDriver extends AbstractDbDriver {
         return $data[0]['count'] > 0;
     }
 
+    /**
+     * Create the module in the mysql database
+     * 
+     * @param string $module Module name
+     * @return boolean
+     */
     public function moduleCreate($module) {
         return true;
     }
 
+    /**
+     * Check if the module exist in the mysql database
+     * 
+     * @param string $module Module name
+     * @return boolean
+     */
     public function moduleExist($module) {
         return true;
     }
 
+    /**
+     * Get the procedure fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Method name
+     * @return string
+     */
     public function getProcedureName($module, $lu, $name) {
         return "{$module}_{$lu}_{$func}";
     }
 
+    /**
+     * Get the table fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Table name
+     * @return string
+     */
     public function getTableName($module, $lu, $name) {
         return "{$module}_{$lu}_tbl_{$name}";
     }
 
+    /**
+     * Get the view fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name View name
+     * @return string
+     */
     public function getViewName($module, $lu, $name) {
         return "{$module}_{$lu}_{$name}";
     }
 
-    public function escapeString($string) {
-        return $this->_escape_string($string);
-    }
-
+    /**
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Table name     
+     * @param boolean $allFields Specifies if the framework fields should be ignored.
+     * @return array The meta data in the following format
+     *                  array( 'table'  => array(
+     *                              'name' => [TABLE NAME]),
+     *                         'columns'   => [COLUMNS],
+     *                         'relations' => array(
+     *                              'belongs_to' => [BELONGS TO],
+     *                              'has_many'   => [HAS MANY]),
+     */
     public function getMetaInfo($module, $lu, $name, $allFields = false) {
         $tblName = $this->getTableName($module, $lu, $name);
         //get column meta
@@ -231,8 +367,14 @@ class MySQLDriver extends AbstractDbDriver {
         );
     }
 
-    public function getSourceFromProcedureName($procName) {
-        $arr = explode("_", $procName);
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @param string $fullName Fully qualifed procedure/function name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromProcedureName($fullName) {
+        $arr = explode("_", $fullName);
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
@@ -240,8 +382,14 @@ class MySQLDriver extends AbstractDbDriver {
         );
     }
 
-    public function getSourceFromTableName($tableName) {
-        $arr = explode("_", $tableName);
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @param string $fullName Fully qualifed table name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromTableName($fullName) {
+        $arr = explode("_", $fullName);
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
@@ -249,8 +397,14 @@ class MySQLDriver extends AbstractDbDriver {
         );
     }
 
-    public function getSourceFromViewName($viewName) {
-        $arr = explode("_", $viewName);
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @param string $fullName Fully qualifed view name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromViewName($fullName) {
+        $arr = explode("_", $fullName);
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
