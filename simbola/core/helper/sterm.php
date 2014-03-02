@@ -1,11 +1,21 @@
 <?php
-
-function sterm_get($name, $data = array()) {
-    return simbola\core\component\term\Term::Get($name, $data);
+/**
+ * Translate the term
+ * 
+ * @param string $term Term name 
+ * @return string Translations
+ */
+function sterm_get($term) {
+    return \simbola\core\component\term\Term::Get($term);
 }
 
-function sterm_show($name, $data = array()) {
-    \simbola\core\component\term\Term::eGet($name, $data);
+/**
+ * Translate the term and echo
+ * 
+ * @param string $term Term name  
+ */
+function sterm_show($term) {
+    echo sterm_get($term);
 }
 
 ?>

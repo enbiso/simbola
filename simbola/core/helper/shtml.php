@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Create HTML Tag with an untag
+ * 
+ * @param string $tag Tag name
+ * @param array $opts Tag options
+ * @return string HTML tag with an untag
+ */
 function shtml_taged($tag, $opts = array()) {
     $options = "";
     foreach ($opts as $name => $value) {
@@ -8,6 +15,13 @@ function shtml_taged($tag, $opts = array()) {
     return "<{$tag}{$options}/>";
 }
 
+/**
+ * Create HTML Tag open
+ * 
+ * @param string $tag Tag name
+ * @param array $opts Tag options
+ * @return string HTML tag open
+ */
 function shtml_tag($tag, $opts = array()) {
     $options = "";
     foreach ($opts as $name => $value) {
@@ -16,33 +30,82 @@ function shtml_tag($tag, $opts = array()) {
     return "<{$tag}{$options}>";
 }
 
+/**
+ * Create an HTML close tag 
+ * 
+ * @param string $tag Tag name
+ * @return string HTML tag close
+ */
 function shtml_untag($tag) {
     return "</{$tag}>";
 }
 
+/**
+ * Create HTML CSS tag
+ * 
+ * @param string $module Module name
+ * @param string $name Resource path/name
+ * @return HTML tag for CSS
+ */
 function shtml_css($module, $name) {
     return \simbola\Simbola::app()->resource->getResourceTag(
-                    simbola\core\component\resource\lib\ResItem::$TYPE_CSS, $module, $name);
+                    simbola\core\component\resource\lib\ResItem::TYPE_CSS, $module, $name);
 }
 
+/**
+ * Create HTML CSS tag and echo
+ * 
+ * @param string $module Module name
+ * @param string $name Resource path/name 
+ */
 function shtml_ecss($module, $name) {
     echo shtml_css($module, $name);
 }
 
+/**
+ * Create HTML JS tag
+ * 
+ * @param string $module Module name
+ * @param string $name Resource path/name
+ * @return HTML tag for JS
+ */
 function shtml_js($module, $name) {
     return \simbola\Simbola::app()->resource->getResourceTag(
-                    simbola\core\component\resource\lib\ResItem::$TYPE_JS, $module, $name);
+                    simbola\core\component\resource\lib\ResItem::TYPE_JS, $module, $name);
 }
 
+/**
+ * Returns the resource URL
+ * 
+ * @param string $module Module name
+ * @param string $name Resource path/name
+ * @return string Resourec URL
+ */
 function shtml_resurl($module, $name) {
     return \simbola\Simbola::app()->resource->getResourceTag(
-                    simbola\core\component\resource\lib\ResItem::$TYPE_MISC, $module, $name);
+                    simbola\core\component\resource\lib\ResItem::TYPE_MISC, $module, $name);
 }
 
+/**
+ * Create HTML JS tag and echo
+ * 
+ * @param string $module Module name
+ * @param string $name Resource path/name 
+ */
 function shtml_ejs($module, $name) {
     echo shtml_js($module, $name);
 }
 
+/**
+ * Creates HTML anchor tag
+ * 
+ * @param string $value Link text
+ * @param string $link URL of href
+ * @param array $opts Options
+ * @param string $icon Icon name
+ * @param string $tooltip Tool tip
+ * @return string HTML Tag for the link
+ */
 function shtml_link($value, $link, $opts = array(), $icon = null, $tooltip = null) {
     $value = shtml_translate($value);
     $opts['href'] = $link;
@@ -64,17 +127,37 @@ function shtml_link($value, $link, $opts = array(), $icon = null, $tooltip = nul
     return $code;
 }
 
+/**
+ * Translate the text
+ * 
+ * @param string $value Term name starting from 'TERM:xxxxx'
+ * @return string Translated text
+ */
 function shtml_translate($value) {
     if (sstring_starts_with($value, "TERM:")) {
-        $value = shtml_term(str_replace("TERM:", "", $value));
+        $value = sterm_get(str_replace("TERM:", "", $value));
     }
     return $value;
 }
 
+/**
+ * Translate and echo the text
+ * 
+ * @param string $value Term name starting from 'TERM:xxxxx'
+ */
 function shtml_etranslate($value) {
     echo shtml_translate($value);
 }
 
+/**
+ * 
+ * @param string $value Display text
+ * @param mixed $url Array/Page object representing the link
+ * @param array $opts Options
+ * @param string $icon Icon name
+ * @param string $tooltip Tool tip
+ * @return string HTML Tag for the link
+ */
 function shtml_action_link($value, $url, $opts = array(), $icon = null, $tooltip = null) {
     if ($url instanceof \simbola\core\component\url\lib\Page) {
         $page = $url;
@@ -88,52 +171,73 @@ function shtml_action_link($value, $url, $opts = array(), $icon = null, $tooltip
     return shtml_Link($value, $page->getUrl(), $opts, $icon, $tooltip);
 }
 
+/**
+ * 
+ * @param array $buttons Array of HTML representing strings of buttons
+ * 
+ * @return string button group HTML
+ */
+function shtml_buttongroup($buttons){
+    $content = shtml_tag('div',array('class'=>'btn-group'));
+    foreach ($buttons as $button) {
+        $content .= $button;
+    }
+    $content .= shtml_untag('div');
+    return $content;
+}
+
+/**
+ * Create the HTML tags for the bootstrap tab
+ * 
+ * @param string $id Tab ID
+ * @param array $params Parameters
+ */
 function shtml_tab($id, $params) {
     $opts['class'] = isset($params['class']) ? $params['class'] . " " : "";
     $opts['class'] .= "tabbable";
-    echo shtml_tag('div', $opts);
-    echo shtml_tag('ul', array('class' => 'nav nav-tabs'));
+    $data = '';
+    $data .= shtml_tag('div', $opts);
+    $data .= shtml_tag('ul', array('class' => 'nav nav-tabs'));
     foreach ($params['tabs'] as $tab_id => $tab) {
         if (\simbola\Simbola::app()->auth->checkPermissionByUrl($tab['permission'])) {
-            echo shtml_tag('li');
+            $data .= shtml_tag('li');
             $linkopts = array(
                 'id' => "nav_{$id}_{$tab_id}",
                 'href' => "#tab_{$id}_{$tab_id}",
                 'data-toggle' => 'tab'
             );
-            echo shtml_tag('a', $linkopts);
-            echo $tab['title'];
-            echo shtml_untag('a');
-            echo shtml_untag('li');
+            $data .= shtml_tag('a', $linkopts);
+            $data .= $tab['title'];
+            $data .= shtml_untag('a');
+            $data .= shtml_untag('li');
         }
     }
-    echo shtml_untag('ul');
-    echo shtml_tag('div', array('class' => 'tab-content'));
+    $data .= shtml_untag('ul');
+    $data .= shtml_tag('div', array('class' => 'tab-content'));
     foreach ($params['tabs'] as $tab_id => $tab) {
         if (\simbola\Simbola::app()->auth->checkPermissionByUrl($tab['permission'])) {
-            echo shtml_tag('div', array('class' => 'tab-pane', 'id' => "tab_{$id}_{$tab_id}"));
-            echo $tab['content'];
-            echo shtml_untag('div');
+            $data .= shtml_tag('div', array('class' => 'tab-pane', 'id' => "tab_{$id}_{$tab_id}"));
+            $data .= $tab['content'];
+            $data .= shtml_untag('div');
         }
     }
-    echo shtml_untag('div');
-    echo shtml_untag('div');
-    echo shtml_tag('script');
+    $data .= shtml_untag('div');
+    $data .= shtml_untag('div');
+    $data .= shtml_tag('script');
     $tab_ids = array_keys($params['tabs']);
     $params['default'] = isset($params['default']) ? $params['default'] : $tab_ids[0];
     $openId = "#nav_{$id}_{$params['default']}";
-    echo '$(function () { $("' . $openId . '").tab("show");})';
-    echo shtml_untag('script');
+    $data .= '$(function () { $("' . $openId . '").tab("show");})';
+    $data .= shtml_untag('script');
+    return $data;
 }
 
-function shtml_term($term) {
-    return \simbola\core\component\term\Term::Get($term);
-}
-
-function shtml_eterm($term) {
-    echo shtml_term($term);
-}
-
+/**
+ * Encode to html string
+ * 
+ * @param string $value String value to encode for html
+ * @return string encoded string
+ */
 function shtml_encode($value) {
     if (!isset($value)) {
         $value = "--";
@@ -141,10 +245,21 @@ function shtml_encode($value) {
     return htmlspecialchars($value);
 }
 
+/**
+ * Encode to html string and echo
+ * 
+ * @param string $value String value to encode for html 
+ */
 function shtml_eencode($value) {
     echo shtml_encode($value);
 }
 
+/**
+ * Create bootstrap breadcrumb
+ * 
+ * @param array $values Breadcrumb data
+ * @return string HTML tag
+ */
 function shtml_breadcrumb($values) {
     $val = "";
     $val .= shtml_tag("ol", array('class' => 'breadcrumb'));
@@ -162,6 +277,12 @@ function shtml_breadcrumb($values) {
     return $val;
 }
 
+/**
+ * Create bootstrap dropdown menu
+ * 
+ * @param array $values Dropmenu data
+ * @return string HTML tag
+ */
 function shtml_dropmenu($values) {
     $val = shtml_tag('div', array('class' => 'btn-group'));
     $val .= shtml_tag('button', array('type' => 'button', 'class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown'));
@@ -185,6 +306,12 @@ function shtml_dropmenu($values) {
     return $val;
 }
 
+/**
+ * Create bootstrap button group menu
+ * 
+ * @param type $values Button group data
+ * @return string HTML tag
+ */
 function shtml_btngroupmenu($values) {
     $val = shtml_tag('div', array('class' => 'btn-group'));
     foreach ($values as $key => $value) {
