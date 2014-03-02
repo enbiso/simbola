@@ -5,10 +5,22 @@ namespace simbola\core\component\social;
 include_once 'Hybrid/Auth.php';
 include_once 'Hybrid/Endpoint.php';
 
+/**
+ * Social Component Definitions
+ *
+ * @author Faraj Farook
+ */
 class Social extends \simbola\core\component\system\lib\Component {
 
+    /**
+     * Hybrid auth object
+     * @var \Hybrid_Auth 
+     */
     protected $hybrid;
     
+    /**
+     * Setup default component values
+     */
     public function setupDefault() {
         $this->setParamDefault('DEBUG', array(
             'ENABLE' => false,            
@@ -17,11 +29,14 @@ class Social extends \simbola\core\component\system\lib\Component {
         $this->setParamDefault("PROVIDERS", array());
     }
 
+    /**
+     * Intilialize the component
+     */
     public function init() {
         parent::init();
         if(!isset($this->params['BASE_URL'])){            
             $socialPage = new \simbola\core\component\url\lib\Page();
-            $socialPage->type = \simbola\core\component\url\lib\Page::$TYPE_CONTROLLER;
+            $socialPage->type = \simbola\core\component\url\lib\Page::TYPE_CONTROLLER;
             $socialPage->logical_unit = "system";
             $socialPage->action = "social";            
             $this->params['BASE_URL'] = $socialPage->getUrlWithBaseUrl();
@@ -40,6 +55,12 @@ class Social extends \simbola\core\component\system\lib\Component {
         $this->hybrid = new \Hybrid_Auth($config);
     }
 
+    /**
+     * Returns the Hybrid social object accoridng to the given provider name     
+     * 
+     * @param string $provider Hybrid Social provider name
+     * @return type
+     */
     public function get($provider) {
         return $this->hybrid->authenticate($provider);  
     }

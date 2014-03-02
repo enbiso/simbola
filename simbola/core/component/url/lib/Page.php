@@ -3,15 +3,26 @@
 namespace simbola\core\component\url\lib;
 
 /**
- * Description of Page
+ * Page
  *
- * @author farflk
+ * @author Faraj Farook
+ * 
+ * @property string $type Page type - CONTROLLER / SERVICE
+ * @property string $module Page module name
+ * @property string $logicalUnit Page logical unit name
+ * @property string $action Page action name
+ * @property array $params Page arguments
  */
 class Page {
-
-    public static $TYPE_CONTROLLER = "CONTROLLER";
-    public static $TYPE_SERVICE = "SERVICE";
     
+    const TYPE_CONTROLLER = "CONTROLLER";
+    const TYPE_SERVICE = "SERVICE";    
+    
+    /**
+     * Contains the page data
+     *  
+     * @var array
+     */
     private $data = array(
         'type' => null,
         'module' => null,
@@ -20,10 +31,21 @@ class Page {
         'params' => array(),
     );
     
+    /**
+     * Returns the function name of the action
+     * 
+     * @return string
+     */
     public function getActionFunction() {
         return "action".ucfirst($this->action);
     }
 
+    /**
+     * PHP interpreter funtion to represent the page data as properties
+     * 
+     * @param string $name Property name
+     * @return mixed
+     */
     public function __get($name) {
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
@@ -31,17 +53,35 @@ class Page {
             return null;
         }
     }
-
+    
+    /**
+     * PHP interpreter funtion to represent the page data as properties
+     * 
+     * @param string $name Property name
+     * @param mixed $value Property value     
+     */
     public function __set($name, $value) {
         $this->data[$name] = $value;
     }
 
+    /**
+     * Used to set the default page parameters
+     * 
+     * @param string $name
+     * @param mixed $value
+     */
     public function setDefault($name, $value) {
         if (empty($this->data[$name])) {
             $this->data[$name] = $value;
         }
     }
 
+    /**
+     * Load page data from the array representation of the URL
+     * array([PATH],[KEY_1] => [VALUE_1], [KEY_2] => [VALUE_2],... )
+     * 
+     * @param array $url
+     */
     public function loadFromArray($url) {
         if (count($url) > 0) {
             $this->loadFromUrl($url[0]);
@@ -51,19 +91,26 @@ class Page {
         }
     }
 
-    public function loadFromUrl($url_string) {
-        $url_string = urldecode($url_string);                
-        if(strlen($url_string)==0){
+    /**
+     * Load the page data from the string representation of the URL
+     * 
+     * http://www.example.com/app/index.php/www/site/index[KEY:VALUE]...
+     * @param string $urlString String representation of the URL
+     * @throws \Exception URL String is empty
+     */
+    public function loadFromUrl($urlString) {
+        $urlString = urldecode($urlString);                
+        if(strlen($urlString)==0){
             throw new \Exception("URL String empty");
         }
-        $url_string = ($url_string[0] == '/') ? substr($url_string, 1) : $url_string;
-        if (($pos = strpos($url_string, "[")) > 0) {
-            $temp_url = substr($url_string, 0, $pos);
-            $param_string = str_replace($temp_url, "", $url_string);
-            $url_string = $temp_url;
-            $rpos = strrpos($param_string, "]");
-            $param_string = substr($param_string, 1, $rpos - 1);
-            $params = explode("][", $param_string);
+        $urlString = ($urlString[0] == '/') ? substr($urlString, 1) : $urlString;
+        if (($pos = strpos($urlString, "[")) > 0) {
+            $temp_url = substr($urlString, 0, $pos);
+            $paramString = str_replace($temp_url, "", $urlString);
+            $urlString = $temp_url;
+            $rpos = strrpos($paramString, "]");
+            $paramString = substr($paramString, 1, $rpos - 1);
+            $params = explode("][", $paramString);
             foreach ($params as $param) {
                 $tempArr = explode(":", $param);
                 if (count($tempArr) == 1) {
@@ -78,41 +125,52 @@ class Page {
         $_REQUEST = array_merge(isset($_REQUEST)?$_REQUEST:array(), $this->params);
 
         //remove the params from url
-        if (strpos($url_string, '?')) {
-            $url_string = substr($url_string, 0, strpos($url_string, '?'));
+        if (strpos($urlString, '?')) {
+            $urlString = substr($urlString, 0, strpos($urlString, '?'));
         }
         
         //remove index.php if exist
-        $url_string = str_replace(array("index.php/","index.php"), "", $url_string);
+        $urlString = str_replace(array("index.php/","index.php"), "", $urlString);
         
         //remove url_base if exist
         $url_base = \simbola\Simbola::app()->url->getParam('URL_BASE');
         if($url_base){
-            $url_string = str_replace($url_base."/", "", $url_string);
+            $urlString = str_replace($url_base."/", "", $urlString);
         }
                 
-        if ($url_string == \simbola\Simbola::app()->getParam('SERVICE_API')) {
-            //service
-            $req = \simbola\Simbola::app()->request;
-            $this->type = Page::$TYPE_SERVICE;
-            $this->module = $req->post('module');
-            $this->logicalUnit = $req->post('service');
-            $this->action = $req->post('action');
-            $this->params = $req->post('params');            
+        if ($urlString == \simbola\Simbola::app()->getParam('SERVICE_API')) {
+            //service            
+            $this->type = Page::TYPE_SERVICE;
+            $this->module = $_POST['module'];
+            $this->logicalUnit = $_POST['service'];
+            $this->action = $_POST['action'];
+            $this->params = $_POST['params'];            
         } else {
             //controller
-            $this->type = Page::$TYPE_CONTROLLER;
-            $urlData = explode("/", $url_string);
+            $this->type = Page::TYPE_CONTROLLER;
+            $urlData = explode("/", $urlString);
             $this->module = empty($urlData[0]) ? null : $urlData[0];
             $this->logicalUnit = empty($urlData[1]) ? null : $urlData[1];
             $this->action = empty($urlData[2]) ? null : $urlData[2];
         }
     }
 
+    /**
+     * Check if the parameter is set for the given name
+     * 
+     * @param string $key Param key name
+     * @return boolean
+     */
     public function issetParam($key) {
         return array_key_exists($key, $this->params);
     }
     
+    /**
+     * Get the URL string
+     *  www/site/index[KEY:VALUE]
+     * 
+     * @return string
+     */
     public function getUrl() {
         $path = \simbola\Simbola::app()->url->getBaseUrl() . "/" . $this->encode();
         foreach ($this->params as $key => $value) {
@@ -121,7 +179,12 @@ class Page {
         return $path;
     }
 
-    public function encode() {
+    /**
+     * Implementation function of the URL string generator
+     * 
+     * @return string
+     */
+    private function encode() {
         $path = "";
         if (!\simbola\Simbola::app()->url->getParam('HIDE_INDEX')) {
             $path = "index.php/";
@@ -136,14 +199,20 @@ class Page {
         if($this->action != null){    
             $action .= "/{$this->action}";
         }
-        if ($this->type == self::$TYPE_CONTROLLER) {
+        if ($this->type == self::TYPE_CONTROLLER) {
             $path .= "$action";
-        } else if($this->type == self::$TYPE_SERVICE) {
+        } else if($this->type == self::TYPE_SERVICE) {
             $path .= \simbola\Simbola::app()->getParam("SERVICE_API");
         }
         return $path;
     }
 
+    /**
+     * Returns the URL string representation with the base URL
+     *  http://www.example.com/app/index.php/www/site/index[KEY:VALUE]
+     * 
+     * @return string
+     */
     public function getUrlWithBaseUrl() {
         return \simbola\Simbola::app()->url->getBaseUrl() . "/" . $this->getUrl();
     }

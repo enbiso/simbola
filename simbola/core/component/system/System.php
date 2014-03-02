@@ -1,9 +1,9 @@
 <?php
 namespace simbola\core\component\system;
 /**
- * Description of System
+ * System Component Definitions
  *
- * @author farflk
+ * @author Faraj Farook
  */
 class System extends lib\Component{
     

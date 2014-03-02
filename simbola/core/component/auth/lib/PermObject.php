@@ -3,14 +3,22 @@
 namespace simbola\core\component\auth\lib;
 
 /**
- * Description of PermObject
+ * Permision Object deifnitions
  *
- * @author farflk
+ * @author Faraj Farook
  */
 class PermObject {
 
     private $module, $logicalUnit, $object, $type;    
 
+    /**
+     * Contructor
+     * 
+     * @param \simbola\core\component\auth\lib\Page $mobj Module or page object
+     * @param string $logicalUnit Logical unit name
+     * @param string $object Object name
+     * @param ap\AuthType $type
+     */
     public function __construct($mobj, $logicalUnit = null, $object = null, $type = null) {
         if($mobj instanceof \simbola\core\component\url\lib\Page){
             $this->logicalUnit = $mobj->logicalUnit;
@@ -25,6 +33,11 @@ class PermObject {
         }
     }
     
+    /**
+     * Gets the access item string
+     * 
+     * @return string
+     */
     public function getAccessItem() {                
         $accessItem = "{$this->module}.{$this->type}.{$this->logicalUnit}";
         if (!is_null($this->object)) {

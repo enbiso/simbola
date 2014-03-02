@@ -5,19 +5,39 @@ namespace simbola\core\component\term;
 use simbola\Simbola;
 
 /**
- * Description of Term
+ * Term component definitions
  *
  * @author Faraj
  */
 class Term extends \simbola\core\component\system\lib\Component {
 
-    private $term_cache = array();
+    const SESSION_TERM_LANGUAGE = 'system.term.language';
+    
+    /**
+     * Term cache variable
+     * 
+     * @var array 
+     */
+    private $termCache = array();
+    
+    /**
+     * Loaded model names of the terms
+     * 
+     * @var array
+     */
+    private $loadedModels = array();
 
+    /**
+     * Setup the default component values
+     */
     public function setupDefault() {
         parent::setupDefault();
         $this->setParamDefault('DEFAULT_LANG', 'en_US');
     }
 
+    /**
+     * Initialize the component
+     */
     public function init() {
         parent::init();
         $lng = $this->getLanguage();
@@ -26,14 +46,31 @@ class Term extends \simbola\core\component\system\lib\Component {
         }
     }
 
-    public function setLanguage($lang_code) {
-        Simbola::app()->session->set('TERM_LANGUAGE', $lang_code);
+    /**
+     * Set the session language 
+     * ie, en_US, en_GB
+     * 
+     * @param type $langCode
+     */
+    public function setLanguage($langCode) {
+        Simbola::app()->session->set(self::SESSION_TERM_LANGUAGE, $langCode);
     }
 
+    /**
+     * Gets the session language
+     * 
+     * @return string
+     */
     public function getLanguage() {
-        return Simbola::app()->session->get('TERM_LANGUAGE');
+        return Simbola::app()->session->get(self::SESSION_TERM_LANGUAGE);
     }
 
+    /**
+     * Load the view terms specified
+     * 
+     * @param string $moduleName Module name
+     * @param string $viewName View name
+     */
     public function loadTerm($moduleName, $viewName = null) {
         $moduleTermFile = $this->getModuleTermPath($moduleName);
         $this->importTermFile($moduleTermFile);
@@ -43,10 +80,22 @@ class Term extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Loads the layout terms specified
+     * 
+     * @todo Implement the function
+     * @param string $layoutPath Layout path
+     */
     public function loadLayoutTerm($layoutPath) {
-        
+        throw new \Exception(__METHOD__."not implemented");
     }
 
+    /**
+     * Implementation function of loading the term files
+     * 
+     * @param string $termFile term file name
+     * @throws \Exception No term file found
+     */
     private function importTermFile($termFile) {
         $__term = array();
         if (file_exists($termFile)) {
@@ -54,13 +103,26 @@ class Term extends \simbola\core\component\system\lib\Component {
         } else {
             throw new \Exception("No term file found : {$termFile}");
         }
-        $this->term_cache = array_merge($this->term_cache, $__term);
+        $this->termCache = array_merge($this->termCache, $__term);
     }
 
+    /**
+     * Returns the module term file path
+     * 
+     * @param type $moduleName Module name
+     * @return type
+     */
     private function getModuleTermPath($moduleName) {
         return $this->getViewTermPath($moduleName, "common");
     }
 
+    /**
+     * Returns the view term file path
+     * 
+     * @param string $moduleName Module name
+     * @param string $viewName View name
+     * @return string
+     */
     private function getViewTermPath($moduleName, $viewName) {
         $moduleConfig = \simbola\Simbola::app()->getModuleConfig($moduleName);
         $path = $this->getTermBase($moduleName)
@@ -69,8 +131,11 @@ class Term extends \simbola\core\component\system\lib\Component {
         return $path;
     }
 
-    private $loadedModels = array();
-
+    /**
+     * Load the model term file according to the given model class name
+     * 
+     * @param string $className
+     */
     public function loadModelTerm($className) {
         if (!array_search($className, $this->loadedModels)) {
             $classArray = explode("\\", $className);
@@ -82,7 +147,13 @@ class Term extends \simbola\core\component\system\lib\Component {
         }
     }
 
-    public function getTermBase($moduleName) {
+    /**
+     * Get the module term base path
+     * 
+     * @param string $moduleName Module name
+     * @return string Path
+     */
+    private function getTermBase($moduleName) {
         $app = Simbola::app();
         $moduleConfig = Simbola::app()->getModuleConfig($moduleName);
         return $app->getParam('BASEPATH') . DIRECTORY_SEPARATOR
@@ -92,11 +163,25 @@ class Term extends \simbola\core\component\system\lib\Component {
                 . $this->getLanguage() . DIRECTORY_SEPARATOR;
     }
 
+    /**
+     * Get the term for the given field in the model
+     * 
+     * @param string $modelClass Model class name
+     * @param string $name Model field name
+     * @return string Term
+     */
     public function getModelTerm($modelClass, $name) {
         $this->loadModelTerm($modelClass);
         return $this->getTerm($this->getModelTermName($modelClass, $name));
     }
 
+    /**
+     * Returns the model term name of the model class and field name given
+     * 
+     * @param string $modelClass Model class name
+     * @param string $name Field name
+     * @return string
+     */
     public function getModelTermName($modelClass, $name) {
         $sliceIndex = sstring_starts_with($modelClass, "\\") ? 2 : 1;
         $modelName = implode('.', array_slice(explode("\\", $modelClass), $sliceIndex));
@@ -105,20 +190,44 @@ class Term extends \simbola\core\component\system\lib\Component {
         return "{$modelName}.{$name}";
     }
 
-    public function getTerm($name) {
-        return isset($this->term_cache[$name]) ? $this->term_cache[$name] : "#" . $name . "#";
-    }
-
-    public static function Get($name, $data = array()) {
-        $term = Simbola::app()->term->getTerm($name);
-        for ($index = 0; $index < count($data); $index++) {
-            $term = str_replace("{" . $index . "}", $data[$index], $term);
+    /**
+     * Returns the term for the given term name
+     * 
+     * @param string $name Term name
+     * @param array $params Term parameters
+     * @return string
+     */
+    public function getTerm($name, $params = array()) {
+        $term = "#" . $name . "#";
+        if(isset($this->termCache[$name])){
+            $term = $this->termCache[$name];
+            for ($index = 0; $index < count($params); $index++) {
+                $term = str_replace("{" . $index . "}", $params[$index], $term);
+            }
         }
-        return isset($term) ? $term : "T:" . $name;
+        return $term;
     }
 
-    public static function eGet($name, $data = array()) {
-        echo Term::Get($name, $data);
+    /**
+     * Returns the term for the given term name
+     * 
+     * @param string $name Term name
+     * @param array $params Term parameters     
+     * @return string
+     */
+    public static function Get($name, $params = array()) {
+        return Simbola::app()->term->getTerm($name, $params);
+        
+    }
+
+    /**
+     * Echo the term for the given term name
+     * 
+     * @param string $name Term name
+     * @param array $params Term parameters          
+     */
+    public static function eGet($name, $params = array()) {
+        echo Term::Get($name, $params);
     }
 
 }
