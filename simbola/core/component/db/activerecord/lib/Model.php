@@ -71,7 +71,7 @@ namespace ActiveRecord;
  * @see Serialization
  * @see Validations
  */
-class Model extends \simbola\core\application\AppModel
+class Model
 {
 	/**
 	 * An instance of {@link Errors} and will be instantiated once a write method is called.
