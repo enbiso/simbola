@@ -7,7 +7,7 @@ namespace application\system\model\auth;
  *
  * @author Faraj
  */
-class User extends \simbola\core\component\db\activerecord\ActiveModel {
+class User extends \simbola\core\application\AppModel {
     static  //config params
             $table_name, 
             $primary_key, 

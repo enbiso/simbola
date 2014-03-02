@@ -28,7 +28,7 @@ class FileObject {
         }
         $iconRes = new \simbola\core\component\resource\lib\ResItem;
         $iconRes->module = "developer";
-        $iconRes->type = \simbola\core\component\resource\lib\ResItem::$TYPE_IMAGE;
+        $iconRes->type = \simbola\core\component\resource\lib\ResItem::TYPE_IMAGE;
         if (!$this->isFolder) {
             $iconRes->name = "icons/{$ext}.png";
         } else {            

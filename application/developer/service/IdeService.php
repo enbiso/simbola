@@ -16,7 +16,7 @@ class IdeService extends \simbola\core\application\AppService {
     );
 
     public function actionLoadResourceCache() {
-        \simbola\Simbola::app()->resource->loadCache();
+        \simbola\Simbola::app()->resource->reloadCache();
         $this->_res('status', true);
     }
 
