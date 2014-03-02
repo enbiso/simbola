@@ -2,8 +2,7 @@
 
 namespace simbola\core\application;
 
-/**
- * AppService
+/** 
  * The abstract base class that should be used to define the Application Service
  *
  * @author Faraj Farook
