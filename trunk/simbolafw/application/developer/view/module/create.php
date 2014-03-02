@@ -1,10 +1,10 @@
 <h3>Create Module</h3>
 <?php
-echo shtmlform_start_service_proxy(
-        "developer_module_create", array(
-    'module' => 'developer',
-    'service' => 'module',
-    'action' => 'create'), "developer/module/index");
+echo shtmlform_start_service_proxy( "developer_module_create", 
+        array('module' => 'developer',
+              'service' => 'module',
+              'action' => 'create'), 
+        "developer/module/index");
 ?>
 <div>
     <?php echo shtmlform_label('TERM:developer.module.create.moduleName'); ?>

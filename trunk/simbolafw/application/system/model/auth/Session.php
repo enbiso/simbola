@@ -5,7 +5,7 @@ namespace application\system\model\auth;
  *
  * @author Faraj
  */
-class Session extends \simbola\core\component\db\activerecord\ActiveModel {
+class Session extends \simbola\core\application\AppModel {
     static $table_name,$primary_key,$class_name,$belongs_to;
     public static function initialize() {
         self::setClass(__CLASS__);

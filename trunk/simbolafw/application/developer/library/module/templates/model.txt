@@ -16,7 +16,7 @@ namespace application\#MODULE_NAME#\model\#LU_NAME#;
  * Properties
  * #MODEL_PROPERTIES#
  */
-class #MODEL_CLASS_NAME# extends \simbola\core\component\db\activerecord\ActiveModel{
+class #MODEL_CLASS_NAME# extends \simbola\core\application\AppModel{
     static  //config params
             $table_name, 
             $primary_key, 
