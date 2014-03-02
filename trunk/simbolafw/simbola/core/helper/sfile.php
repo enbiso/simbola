@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Find the MIME of the given filename
+ * 
+ * @param string $filename File path
+ * @return string
+ */
 function sfile_mime_type($filename) {
     $mime_types = array(
         'txt' => 'text/plain',
@@ -64,6 +70,12 @@ function sfile_mime_type($filename) {
     }
 }
 
+/**
+ * Recursive copy
+ * 
+ * @param string $src Source path
+ * @param string $dst Destination path
+ */
 function sfile_recursive_copy($src, $dst) {
     if (is_dir($src)) {
         $dir = opendir($src);
@@ -85,29 +97,39 @@ function sfile_recursive_copy($src, $dst) {
     }
 }
 
-function sfile_recursive_move($dirsource, $dirdest) {
-    // recursive function to copy
-    // all subdirectories and contents:
-    if (is_dir($dirsource))
-        $dir_handle = opendir($dirsource);
-    $dirname = substr($dirsource, strrpos($dirsource, "/") + 1);
+/**
+ * Recursive move
+ * 
+ * @param string $src Source path
+ * @param string $dst Destination path
+ */
+function sfile_recursive_move($src, $dst) {
+    if (is_dir($src))
+        $dir_handle = opendir($src);
+    $dirname = substr($src, strrpos($src, "/") + 1);
 
-    mkdir($dirdest . "/" . $dirname, 0750);
+    mkdir($dst . "/" . $dirname, 0750);
     while ($file = readdir($dir_handle)) {
         if ($file != "." && $file != "..") {
-            if (!is_dir($dirsource . "/" . $file)) {
-                copy($dirsource . "/" . $file, $dirdest . "/" . $dirname . "/" . $file);
-                unlink($dirsource . "/" . $file);
+            if (!is_dir($src . "/" . $file)) {
+                copy($src . "/" . $file, $dst . "/" . $dirname . "/" . $file);
+                unlink($src . "/" . $file);
             } else {
-                $dirdest1 = $dirdest . "/" . $dirname;
-                sfile_recursive_move($dirsource . "/" . $file, $dirdest1);
+                $dirdest1 = $dst . "/" . $dirname;
+                sfile_recursive_move($src . "/" . $file, $dirdest1);
             }
         }
     }
     closedir($dir_handle);
-    rmdir($dirsource);
+    rmdir($src);
 }
 
+/**
+ * Recursive remove directory
+ * 
+ * @param string $directory Directory path
+ * @param boolean $empty Removes the empty directory
+ */
 function sfile_recursive_remdir($directory, $empty = FALSE) {
     if (substr($directory, -1) == '/') {
         $directory = substr($directory, 0, -1);

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Simbola javascript initialization. Have to place it in the end of the layout
+ */
 function simbola_js_init(){
     $params = array(
         'sys' => simbola\Simbola::app()->getParams(),

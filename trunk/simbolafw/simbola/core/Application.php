@@ -13,9 +13,7 @@ namespace simbola\core;
  * @property component\email\Email $email Email component
  * @property component\log\Log $log Log component
  * @property component\request\Request $request Request component
- * @property component\resource\Resource $resource Resource component
- * @property component\router\Router $router Router component
- * @property component\shell\Shell $shell Shell component
+ * @property component\router\Router $router Router component 
  * @property component\social\Social $cosial Social component
  * @property component\system\System $system System component
  * @property component\term\Term $term Term component
@@ -38,7 +36,7 @@ class Application {
     /**
      * Do not call this. Contructor is called as a singleton in the Simbola class
      */
-    public function __construct() {
+    public function __construct() {        
         $this->import('core/initlib/include');        
     }
     
@@ -342,7 +340,7 @@ class Application {
             $component->init();
         }
         // run the dispatcher
-        $this->router->route();
+        $this->router->dispatch();
         // cleanup components
         foreach ($this->components as $module) {
             $module->destroy();
@@ -419,7 +417,7 @@ class Application {
     public function getPageClass($page, $safeCheck = false) {
         $app = \simbola\Simbola::app();
         $moduleConfig = $this->getModuleConfig($page->module);
-        if ($page->type == component\url\lib\Page::$TYPE_CONTROLLER) {
+        if ($page->type == component\url\lib\Page::TYPE_CONTROLLER) {
             $class = $moduleConfig->getNamespace('controller') . '\\' . ucfirst($page->logicalUnit) . "Controller";
         } else {
             $class = $moduleConfig->getNamespace('service') . '\\' . ucfirst($page->logicalUnit) . "Service";
