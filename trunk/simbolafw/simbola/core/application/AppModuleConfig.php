@@ -2,8 +2,7 @@
 
 namespace simbola\core\application;
 
-/**
- * AppModuleConfig
+/** 
  * The abstract base class that should be used to define the Application Module 
  * configuration 
  *

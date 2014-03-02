@@ -4,8 +4,7 @@ namespace simbola\core\application;
 
 use simbola\Simbola;
 
-/**
- * AppController
+/** 
  * The abstract base class that should be used to define the Application Controllers
  *
  * @author Faraj Farook
