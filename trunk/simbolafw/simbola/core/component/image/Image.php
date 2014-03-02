@@ -1,9 +1,9 @@
 <?php
 namespace simbola\core\component\image;
 /**
- * Description of Image
+ * Image component definitions
  *
- * @author FARFLK
+ * @author Faraj Farook
  */
 include_once 'lib/WideImage.php';
 

@@ -1,26 +1,58 @@
 <?php
+
 namespace simbola\core\component\auth\lib\ap;
+
 /**
- * Description of MySQLRoleBaseAccessProvider
+ * PGSQL Role based access provider
  *
- * @author Faraj
+ * @author Faraj Farook
  */
 class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
 
+    /**
+     * Create an auth tem
+     * 
+     * @param string $name Auth item
+     * @param AuthType $type Auth Item type
+     * @return boolean
+     */
     public function itemCreate($name, $type) {
         if (!$this->itemExist($name)) {
             $sql = "INSERT INTO {$this->getTableName(SELF::TBL_ITEM)} (item_id,item_name,item_type)
                         VALUES(NEXTVAL('{$this->getTableName(SELF::TBL_ITEM)}_seq'),'{$name}','{$type}')";
             $this->dbExecute($sql);
+            return true;
+        }else{
+            return false;
         }
     }
-
-    public function userCreate($user_name) {
+    /**
+     * Create a new user
+     * 
+     * @param string $username Username
+     * @param string $password Password if not provided defaults to the username
+     * @param boolean $with_default_role Assigned to the default role
+     * @return boolean
+     */
+    public function userCreate($username, $password = null, $with_default_role = false) {
+        $password = is_null($password) ? $username : $password;
         $sql = "INSERT INTO {$this->getTableName(SELF::TBL_USER)} (user_id,user_name,user_password)
-                    VALUES(NEXTVAL('{$this->getTableName(SELF::TBL_USER)}_seq'),'{$user_name}',md5('{$user_name}'))";
+                    VALUES(NEXTVAL('{$this->getTableName(SELF::TBL_USER)}_seq'),'{$username}',md5('{$password}'))";
         $this->dbExecute($sql);
+        if ($with_default_role) {
+            $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
+            if (!$this->itemExist($default_role)) {
+                $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
+            }
+            $this->userAssign($username, $default_role);
+        }
+        return true;
     }
 
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
     public function createTblAuthUser() {
         $sql = "CREATE TABLE {$this->getTableName(SELF::TBL_USER)} (                     
                     user_id INTEGER PRIMARY KEY,
@@ -34,8 +66,12 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                     SET DEFAULT NEXTVAL('{$this->getTableName(SELF::TBL_USER)}_seq')";
         $this->dbExecute($sql);
     }
-    
-    public function createTblAuthSession() {        
+
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
+    public function createTblAuthSession() {
         $sql = "CREATE TABLE {$this->getTableName(SELF::TBL_SESSION)} (  
                     id INTEGER PRIMARY KEY,
                     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -48,9 +84,13 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                 ALTER TABLE {$this->getTableName(SELF::TBL_SESSION)} 
                     ALTER COLUMN id 
                     SET DEFAULT NEXTVAL('{$this->getTableName(SELF::TBL_SESSION)}_seq')";
-        $this->dbExecute($sql);    
+        $this->dbExecute($sql);
     }
 
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
     public function createViewSystemUser() {
         $sql = "CREATE OR REPLACE VIEW {$this->getViewName('system_user')} AS 
                     SELECT user_id,user_name,
@@ -59,6 +99,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
     public function createTblAuthItem() {
         $sql = "CREATE TABLE {$this->getTableName(SELF::TBL_ITEM)} (                     
                     item_id INTEGER PRIMARY KEY,
@@ -73,6 +117,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
     public function createViewAccessRole() {
         $sql = "CREATE OR REPLACE VIEW {{$this->getViewName(self::VIW_ACCESS_ROLE)} AS 
                     SELECT item_id,item_name 
@@ -81,6 +129,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
     public function createViewAccessObject() {
         $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ACCESS_OBJECT)} AS 
                     SELECT item_id,item_name 
@@ -89,6 +141,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
     public function createViewEnduserRole() {
         $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ENDUSER_ROLE)} AS 
                     SELECT item_id,item_name 
@@ -96,7 +152,11 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                     WHERE item_type = " . AuthType::ENDUSER_ROLE . "";
         $this->dbExecute($sql);
     }
-    
+
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
     public function createViewRole() {
         $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ROLE)} AS 
                     SELECT item_id,item_name,
@@ -108,6 +168,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
     public function createTblAuthChild() {
         $sql = "CREATE TABLE {$this->getTableName(SELF::TBL_CHILD)} (                     
                     parent_id INTEGER REFERENCES {$this->getTableName(SELF::TBL_ITEM)}(item_id),
@@ -117,6 +181,10 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
     public function createTblAuthAssign() {
         $sql = "CREATE TABLE {$this->getTableName(SELF::TBL_ASSIGN)} (                     
                     user_id INTEGER REFERENCES {$this->getTableName(SELF::TBL_USER)}(user_id),
@@ -126,19 +194,24 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         $this->dbExecute($sql);
     }
 
-    public function userRemove($user_name) {
-        $sql = "DELETE FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$user_name}'";
-        $this->dbExecute($sql);
-    }
-
+    /**
+     * Create view
+     * Framework function. Do not use.
+     * 
+     * @todo Need to implement
+     */
     public function createViewObjectRelation() {
-        //@todo implement method
-        throw new \Exception(__METHOD__. 'not implemented.');
+        throw new \Exception(__METHOD__ . 'not implemented.');
     }
 
+    /**
+     * Create view
+     * Framework function. Do not use.
+     * 
+     * @todo Need to implement
+     */
     public function createViewUserRole() {
-        //@todo implement method
-        throw new \Exception(__METHOD__. 'not implemented.');
+        throw new \Exception(__METHOD__ . 'not implemented.');
     }
 
 }

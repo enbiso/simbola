@@ -5,20 +5,30 @@ namespace simbola\core\component\email;
 include_once 'phpmailer/class.phpmailer.php';
 
 /**
- * Description of Email
+ * Email component definitions
  *
  * @author Faraj
  */
 class Email extends \simbola\core\component\system\lib\Component {
 
+    /**
+     * PHPMailer object
+     * @var \PHPMailer
+     */
     private $mailer;
 
+    /**
+     * Setup deafult data
+     */
     public function setupDefault() {
         $this->setParamDefault('SMTP', null);
         $this->setParamDefault('GENERAL', array());
         $this->setParamDefault('DEBUG', false);        
     }
     
+    /**
+     * Initialize the component
+     */
     public function init() {        
         $this->mailer = new \PHPMailer($this->params['DEBUG']);
         if (isset($this->params['SMTP'])) {
@@ -36,6 +46,18 @@ class Email extends \simbola\core\component\system\lib\Component {
         $this->mailer->FromName = parent::GetValue($this->params['GENERAL'], 'FromName', '');
     }
 
+    /**
+     * Send email
+     * 
+     * @param array $email Email definitions
+     *                     data  ( Address => email / array of emails
+     *                             From => email / array of emails
+     *                             ReplyTo => email
+     *                             Subject => email subject
+     *                             AltBody => alt body information
+     *                             Msg => message
+     *                             Attachment => attachment / array of attachment );
+     */
     public function send($email) {
         $address = is_array($email['Address']) ? $email['Address'] : array($email['Address']);        
         foreach ($address as $name => $address) {

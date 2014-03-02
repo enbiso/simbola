@@ -5,9 +5,9 @@ namespace simbola\core\component\auth;
 use simbola\Simbola;
 
 /**
- * Description of Auth
+ * Auth component definitions
  *
- * @author Faraj
+ * @author Faraj Farook
  *  
  */
 class Auth extends \simbola\core\component\system\lib\Component {
@@ -15,8 +15,15 @@ class Auth extends \simbola\core\component\system\lib\Component {
     const USERNAME = 'system.username';
     const SESSION_KEY = 'system.session_key';
     
+    /**
+     * Role based access provider
+     * @var lib\ap\RoleBaseAccessProvider 
+     */
     private $rbap = null;
     
+    /**
+     * Setup default component values
+     */
     public function setupDefault() {
         parent::setupDefault();
         $this->setParamDefault('BYPASS', false);           
@@ -25,11 +32,23 @@ class Auth extends \simbola\core\component\system\lib\Component {
         $this->setParamDefault('GUEST_USERNAME', 'guest'); 
     }
     
+    /**
+     * Get default user role
+     * 
+     * @return string
+     */
     public function getDefaultRole() {
         return $this->getParam('DEFAULT_ROLE');
     }
 
-    public function getUserSession($username = null, $sessionKey = null) {
+    /**
+     * Gets user session information
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return array
+     */
+    private function getUserSession($username = null, $sessionKey = null) {
         $session = Simbola::app()->session;
         $data = array(self::USERNAME => $username, self::SESSION_KEY => $sessionKey);
         if (!isset($username)) {
@@ -41,11 +60,26 @@ class Auth extends \simbola\core\component\system\lib\Component {
         return $data;
     }
     
+    /**
+     * Check if is logged
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return boolean
+     */
     public function isLogged($username = null, $sessionKey = null) {             
         $params = $this->getUserSession($username, $sessionKey);
         return $this->getRBAP()->userSessionCheck($params[self::USERNAME], $params[self::SESSION_KEY]);        
     }
 
+    /**
+     * User login 
+     * 
+     * @param string $username Username
+     * @param string $password Password
+     * @param string $sessionInfo Session Information
+     * @return boolean
+     */
     public function login($username, $password = false, $sessionInfo = '') {
         $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo);        
         if ($sessionKey) {
@@ -58,6 +92,13 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Update the user session and returns the session data
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return array
+     */
     public function updateSession($username, $sessionKey) {
         $session = Simbola::app()->session;
         if ($this->isLogged()) {            
@@ -80,6 +121,13 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * User logout
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return boolean
+     */
     public function logout($username = null, $sessionKey = null) {
         //get username and session key associated
         $session = Simbola::app()->session;
@@ -89,6 +137,13 @@ class Auth extends \simbola\core\component\system\lib\Component {
         return $this->getRBAP()->userSessionRevoke($sParams[self::USERNAME], $sParams[self::SESSION_KEY]);
     }
 
+    /**
+     * Get user roles
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return array
+     */
     public function getRoles($username = null, $sessionKey = null) {
         if ($this->isLogged($username, $sessionKey)) {
             $params = $this->getUserSession($username, $sessionKey);
@@ -99,6 +154,13 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Gets the session key
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return string Session Key
+     */
     public function getSessionKey($username = null, $sessionKey = null) {
         if (isset($username) && isset($sessionKey)) {
             return $sessionKey;
@@ -109,6 +171,13 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Gets the username
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return string Username
+     */
     public function getUsername($username = null, $sessionKey = null) {
         if (isset($username) && isset($sessionKey)) {            
             return $username;
@@ -119,23 +188,54 @@ class Auth extends \simbola\core\component\system\lib\Component {
         }
     }
 
+    /**
+     * Gets the user ID
+     * 
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return integer User ID
+     */
     public function getId($username = null, $sessionKey = null) {
         $params = $this->getUserSession($username, $sessionKey);
-        $this->getRBAP()->userId($this->getUsername($params[self::USERNAME]));
+        return $this->getRBAP()->userId($this->getUsername($params[self::USERNAME]));
     }
     
-    public function checkPermissionByUrl($url_string, $username = null, $session_key = null) {                    
+    /**
+     * Check the permission for the user for the given URL
+     * 
+     * @param string $urlString URL String
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return boolean
+     */
+    public function checkPermissionByUrl($urlString, $username = null, $sessionKey = null) {                    
         $page = new \simbola\core\component\url\lib\Page();
-        $page->loadFromUrl($url_string);
-        return $this->checkPermissionByPage($page, $username, $session_key);
+        $page->loadFromUrl($urlString);
+        return $this->checkPermissionByPage($page, $username, $sessionKey);
     }
     
-    public function checkPermissionByPage($page, $username = null, $session_key = null) {
+    /**
+     * Check the permission for the user for the given page object
+     * 
+     * @param \simbola\core\component\url\lib\Page $page
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return boolean
+     */
+    public function checkPermissionByPage($page, $username = null, $sessionKey = null) {
         $permObj = new lib\PermObject($page);        
-        return $this->checkPermission($permObj, $username, $session_key);
+        return $this->checkPermission($permObj, $username, $sessionKey);
     }
     
-    public function checkPermission($permObj, $username = null, $session_key = null) {                            
+    /**
+     * Check the permission for the user for the given permission object
+     * 
+     * @param lib\PermObject $permObj Permision object
+     * @param string $username Username
+     * @param string $sessionKey Session Key
+     * @return boolean
+     */
+    public function checkPermission($permObj, $username = null, $sessionKey = null) {                            
         if(!$permObj instanceof lib\PermObject){
             throw new \Exception("Perm Object Invalid");
         }
@@ -148,11 +248,11 @@ class Auth extends \simbola\core\component\system\lib\Component {
         if (!isset($username)) {
             $username = $session->get('username');
         }
-        if (!isset($session_key)) {
-            $session_key = $session->get('session_key');
+        if (!isset($sessionKey)) {
+            $sessionKey = $session->get('session_key');
         }
         //get roles
-        $roles = $this->getRoles($username, $session_key);
+        $roles = $this->getRoles($username, $sessionKey);
         $rbap = $this->getRBAP();
         //check if permitted        
         $permited = false;
@@ -166,6 +266,9 @@ class Auth extends \simbola\core\component\system\lib\Component {
         return $permited;
     }
 
+    /**
+     * Initialize the component
+     */
     public function init() {
         parent::init();
         switch (Simbola::app()->db->getVendor()) {
@@ -193,6 +296,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
 
     /**
      * Get attached RBAP
+     * 
      * @return lib\ap\RoleBaseAccessProvider
      */
     public function getRBAP() {

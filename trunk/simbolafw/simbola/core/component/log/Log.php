@@ -3,44 +3,66 @@
 namespace simbola\core\component\log;
 
 /**
- * Description of Log
+ * Log component definitions
  *
- * @author farflk
+ * @author Faraj Farook
  */
 class Log extends \simbola\core\component\system\lib\Component {
 
-    const INFO = 'INFO';
-    const WARN = 'WARN';
-    const ERROR = 'ERROR';
-    const SYSTEM = 'SYSTEM';
-    const DEBUG = 'DEBUG';
-    const TRACE = 'TRACE';
-    const LOG = 'LOG';
-    const DB = 'DB';
+    const TYPE_INFO = 'INFO';
+    const TYPE_WARN = 'WARN';
+    const TYPE_ERROR = 'ERROR';
+    const TYPE_SYSTEM = 'SYSTEM';
+    const TYPE_DEBUG = 'DEBUG';
+    const TYPE_TRACE = 'TRACE';
+    const TYPE_LOG = 'LOG';
+    const TYPE_DB = 'DB';
 
+    /**
+     * Module name
+     * @var string 
+     */
     private $moduleName = 'system';
+    
+    /**
+     * Logical unit name
+     * @var string 
+     */
     private $luName = 'logger';
+    
+    /**
+     * Table name
+     * @var string 
+     */
     private $tableName = 'log';
+    
+    /**
+     * View name
+     * @var string 
+     */
     private $viewName = 'log';
 
+    /**
+     * Initialization of the component
+     */
     public function init() {
-        $db = \simbola\Simbola::app()->db;
+        $dbDriver = \simbola\Simbola::app()->db->getDriver();
         if ($this->isNewInstallation()) {
-            if (!$db->moduleExist($this->moduleName)) {
-                $db->moduleCreate($this->moduleName);
+            if (!$dbDriver->moduleExist($this->moduleName)) {
+                $dbDriver->moduleCreate($this->moduleName);
             }
-            $tableName = $db->getTableName($this->moduleName, $this->luName, $this->tableName);
+            $tableName = $dbDriver->getTableName($this->moduleName, $this->luName, $this->tableName);
             $sql = "CREATE TABLE {$tableName} (
                             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                             type VARCHAR(10),
                             trace VARCHAR(1000),
                             message VARCHAR(1000)
                         )";
-            $db->execute($sql);
-            $viewName = $db->getViewName($this->moduleName, $this->luName, $this->viewName);
+            $dbDriver->execute($sql);
+            $viewName = $dbDriver->getViewName($this->moduleName, $this->luName, $this->viewName);
             $sql = "CREATE OR REPLACE VIEW {$viewName} AS 
                         SELECT * FROM {$tableName} ORDER BY date DESC";
-            $db->execute($sql);
+            $dbDriver->execute($sql);
         }
 
         if (!isset($this->params['TYPES'])) {
@@ -49,57 +71,107 @@ class Log extends \simbola\core\component\system\lib\Component {
         parent::init();
     }
 
+    /**
+     * Check if the component database object exist
+     * 
+     * @return boolean
+     */
     public function isNewInstallation() {
-        $db = \simbola\Simbola::app()->db;
-        return !$db->tableExist($this->moduleName, $this->luName, $this->tableName);
+        $dbDriver = \simbola\Simbola::app()->db->getDriver();
+        return !$dbDriver->tableExist($this->moduleName, $this->luName, $this->tableName);
     }
 
-    public function add($type, $info) {
+    /**
+     * Add log message
+     * 
+     * @param string $type Type of log Log::TYPE_*
+     * @param string $message Log message
+     */
+    public function add($type, $message) {
         if (in_array($type, $this->params['TYPES']) && $this->isInit) {
-            $db = \simbola\Simbola::app()->db;
-            $tableName = \simbola\Simbola::app()->db->getTableName($this->moduleName, $this->luName, $this->tableName);
-            $info = \simbola\Simbola::app()->db->escapeString($info);
+            $dbDriver = \simbola\Simbola::app()->db->getDriver();
+            $tableName = $dbDriver->getTableName($this->moduleName, $this->luName, $this->tableName);
+            $message = $dbDriver->escapeString($message);
             $traceArray = array_reverse(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
             $traces = array();
             foreach ($traceArray as $trace) {
                 $traces[] = (isset($trace['class'])?$trace['class'].".":'') . $trace['function'] . "()";                                    
             }            
-            $traces = \simbola\Simbola::app()->db->escapeString(implode("\n", $traces));
-            $sql = "INSERT INTO {$tableName}(type, message, trace) VALUES('{$type}','{$info}','{$traces}')";
+            $traces = $dbDriver->escapeString(implode("\n", $traces));
+            $sql = "INSERT INTO {$tableName}(type, message, trace) VALUES('{$type}','{$message}','{$traces}')";
             $db->execute($sql, array(), false);
         }
     }
 
-    public function system($info) {
-        $this->add(self::SYSTEM, $info);
+    /**
+     * Add system logs
+     * 
+     * @param string $message
+     */
+    public function system($message) {
+        $this->add(self::TYPE_SYSTEM, $message);
     }
 
-    public function info($info) {
-        $this->add(self::INFO, $info);
+    /**
+     * Add info logs
+     * 
+     * @param string $message
+     */
+    public function info($message) {
+        $this->add(self::TYPE_INFO, $message);
     }
 
-    public function error($info) {
-        $this->add(self::ERROR, $info);
+    /**
+     * Add error logs
+     * 
+     * @param string $message
+     */
+    public function error($message) {
+        $this->add(self::TYPE_ERROR, $message);
     }
 
-    public function warn($info) {
-        $this->add(self::WARN, $info);
+    /**
+     * Add warn logs
+     * 
+     * @param string $message
+     */
+    public function warn($message) {
+        $this->add(self::TYPE_WARN, $message);
     }
 
-    public function debug($info) {
-        $this->add(self::DEBUG, $info);
+    /**
+     * Add debug logs
+     * 
+     * @param string $message
+     */
+    public function debug($message) {
+        $this->add(self::TYPE_DEBUG, $message);
     }
 
-    public function trace($info) {
-        $this->add(self::TRACE, $info);
+    /**
+     * Add trace logs
+     * 
+     * @param string $message
+     */
+    public function trace($message) {
+        $this->add(self::TYPE_TRACE, $message);
+    }
+/**
+     * Add default logs
+     * 
+     * @param string $message
+     */
+    public function log($message) {
+        $this->add(self::TYPE_LOG, $message);
     }
 
-    public function log($info) {
-        $this->add(self::LOG, $info);
-    }
-
-    public function db($info) {
-        $this->add(self::DB, $info);
+    /**
+     * Add database logs
+     * 
+     * @param string $message
+     */
+    public function db($message) {
+        $this->add(self::TYPE_DB, $message);
     }
 
 }
