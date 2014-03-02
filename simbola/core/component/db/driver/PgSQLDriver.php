@@ -1,12 +1,16 @@
 <?php
 namespace simbola\core\component\db\driver;
 /**
- * Description of PgSQLDriver
+ * PGSQL Driver definitions
  *
- * @author Faraj
+ * @author Faraj Farook
  */
 class PgSQLDriver extends AbstractDbDriver {
 
+    /**
+     * Connect to PGSQL database
+     * This is a framework function. Do not use this function on implementations.
+     */
     public function connect() {
         $port = "5432"; // default port
         $server = $this->server;
@@ -19,34 +23,102 @@ class PgSQLDriver extends AbstractDbDriver {
         $this->connection = pg_pconnect($connStr);
     }
 
-    public function _execute_multi($sql, $params = array(), $log = true) {
+    /**
+     * Implementation execute multiple query strings
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param string $sql Query string
+     * @param array $params Parameters
+     * @param boolean $log Used to setup the logging on database query execution
+     *          TRUE  - enable DB logs on execution (default)
+     *          FALSE - disable DB logs on execution 
+     * @return resource PGSQL result
+     */
+    protected function _execute_multi($sql, $params = array(), $log = true) {
         return $this->_execute($sql);
     }
 
-    public function _execute($sql, $params = array(), $log = true) {
+    /**
+     * Implementation execute function of query
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param string $sql Query string
+     * @param array $params Parameters
+     * @param boolean $log Used to setup the logging on database query execution
+     *          TRUE  - enable DB logs on execution (default)
+     *          FALSE - disable DB logs on execution 
+     * @return resource PGSQL result
+     */
+    protected function _execute($sql, $params = array(), $log = true) {
         return pg_query($this->connection, $sql);
     }
 
-    public function _error() {
+    /**
+     * Returns the string description of the last error
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @return string
+     */
+    protected function _error() {
         return pg_errormessage($this->connection);
     }
 
-    public function _num_rows($result) {
+    /**
+     * Number of rows in the result object
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param resource $result
+     * @return integet
+     */
+    protected function _num_rows($result) {
         return pg_num_rows($result);
     }
 
-    public function _fetch_assoc($result) {
+    /**
+     * Fetch the data as an associate array
+     * This is a framework function. Do not use this function on implementations.
+     * 
+     * @param resource $result
+     * @return array
+     */
+    protected function _fetch_assoc($result) {
         return pg_fetch_assoc($result);
     }
 
-    public function _field_name($result, $index) {
+    /**
+     * Name of the field specified by the column index
+     * This is a framework function. Do not use this function on implementations. 
+     * 
+     * @param resource $result
+     * @param integer $index The index of the column
+     * @return type
+     */
+    protected function _field_name($result, $index) {
         return pg_field_name($result, $index);
     }
 
-    public function _num_fields($result) {
+    protected function _num_fields($result) {
         return pg_num_fields($result);
     }
 
+    /**
+     * Returns the escaped string representation of the string provided
+     * This is a framework function. Do not use this function on implementations. 
+     * 
+     * @param string $string
+     * @return string Escaped string for the query
+     */
+    protected function _escape_string($string) {
+        return pg_escape_string($this->connection, $string);
+    }
+    
+    /**
+     * Directly call the mysql functions from the full qualify names
+     * 
+     * @param string $func Function name in full
+     * @param array $params Function parameters
+     * @return mixed
+     */
     public function directCall($func, $params = array()) {
         $sql = "SELECT $func(";
         foreach ($params as $key => $value) {
@@ -67,6 +139,17 @@ class PgSQLDriver extends AbstractDbDriver {
         return $dataArray[0]['data'];
     }
 
+    /**
+     * Fetch the fully qualified view according to the parameters
+     * 
+     * @param string $view Fully qualified view name
+     * @param string $select Select statement entries
+     * @param string $where Where clause 
+     * @param int $page Page number to display
+     * @param int $pageLenth Page length
+     * @param string $order Order by clause
+     * @return array Data array
+     */
     public function directView($view, $select = "*", $where = null, $page = null, $pageLenth = null, $order = null) {
         $where = isset($where) ? " WHERE $where" : "";
         $order = isset($order) ? " ORDER BY $order" : "";
@@ -91,67 +174,135 @@ class PgSQLDriver extends AbstractDbDriver {
         $records['current_page'] = $page;
         return $records;
     }
-
-    public function call($module, $lu, $name, $params = array()) {
-        $func = $this->getProcedureName($module, $lu, $name);
-        return $this->directCall($func, $params);
-    }
-
-    public function view($module, $lu, $name, $select = "*", $where = null, $page = null, $pageLenth = null, $order = null) {
-        $view = $this->getViewName($module, $lu, $name);
-        return $this->directView($view, $select, $where, $page, $pageLenth, $order);
-    }
     
+    /**
+     * Check the table exist in the database
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Table name
+     * @return boolean
+     */
     public function tableExist($module, $lu, $name) {
         $sql = "SELECT count(1) FROM pg_tables WHERE schemaname='{$module}' AND tablename='{$lu}_tbl_{$name}'";
         $data = $this->query($sql);
         return $data[0]['count'] > '0';
     }
-
+    
+    /**
+     * Check if the module exist in the mysql database
+     * 
+     * @param string $module Module name
+     * @return boolean
+     */
     public function moduleExist($module) {
         $sql = "SELECT count(*) FROM pg_namespace WHERE nspname = '{$module}'";
         $data = $this->query($sql);
         return $data[0]['count'] > '0';
     }
 
+    /**
+     * Check if the view exist in the database
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name View name
+     * @return type
+     */
+    public function viewExist($module, $lu, $name) {
+        throw new \Exception(__METHOD__." not implemented");
+    }
+
+    /**
+     * Create the module in the mysql database
+     * 
+     * @param string $module Module name
+     * @return boolean
+     */
     public function moduleCreate($module) {
         $sql = "CREATE SCHEMA \"{$module}\"";
         $this->execute($sql);
     }
 
+    /**
+     * Get the procedure fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Method name
+     * @return string
+     */
     public function getProcedureName($module, $lu, $name) {
         return "{$module}.{$lu}_{$func}";
     }
-
+    
+    /**
+     * Get the table fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name Table name
+     * @return string
+     */
     public function getTableName($module, $lu, $name) {
         return "{$module}.{$lu}_tbl_{$name}";
     }
 
+    /**
+     * Get the view fully qualified name
+     * 
+     * @param string $module Module name
+     * @param string $lu Logical unit name
+     * @param string $name View name
+     * @return string
+     */
     public function getViewName($module, $lu, $name) {
         return "{$module}.{$lu}_{$name}";
     }
 
-    public function escapeString($string) {
-        pg_escape_string($this->connection, $string);
-    }
-
+    /**
+     * 
+     * @todo Implement me
+     * @param type $module
+     * @param type $lu
+     * @param type $name
+     * @param type $allFields
+     * @throws \Exception
+     */
     public function getMetaInfo($module, $lu, $name, $allFields = false) {
         throw new \Exception(__METHOD__." not implemented");
     }
 
-    public function getSourceFromProcedureName($procName) {
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @todo Need to implement
+     * @param string $fullName Fully qualifed procedure/function name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromProcedureName($fullName) {
         throw new \Exception(__METHOD__." not implemented");
     }
 
-    public function getSourceFromTableName($tableName) {
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @todo Need to implement
+     * @param string $fullName Fully qualifed table name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromTableName($fullName) {
         throw new \Exception(__METHOD__." not implemented");
     }
 
-    public function getSourceFromViewName($viewName) {
-        throw new \Exception(__METHOD__." not implemented");
-    }
-
-    public function viewExist($module, $lu_name, $view_name) {
+    /**
+     * Gets the Module, LU and Name from the fully qualifed name
+     * 
+     * @todo Need to implement
+     * @param string $fullName Fully qualifed view name
+     * @return array Associate array of module, lu and name
+     */
+    public function getSourceFromViewName($fullName) {
         throw new \Exception(__METHOD__." not implemented");
     }
 
