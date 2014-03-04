@@ -1,14 +1,14 @@
 <script>
 
-    //Init Tree-----------------------------------------------------------------
+    //Init Tree-----------------------------------------------------------------    
     $(document).ready(function() {
         $('#file_browser').dynatree({
             initAjax: {
-                url: simbola.url.action("/developer/ide/getFileList")
+                url: simbola.url.action("developer/ide/getFileList")
             },
             onLazyRead: function(node) {
                 node.appendAjax({
-                    url: simbola.url.action("/developer/ide/getFileList"),
+                    url: simbola.url.action("developer/ide/getFileList"),
                     data: {path: node.data.key},
                     type: 'POST'
                 });
