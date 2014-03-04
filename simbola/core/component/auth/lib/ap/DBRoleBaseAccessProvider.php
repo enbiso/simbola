@@ -56,7 +56,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function itemSwitch($name, $type) {
         if ($this->itemExist($name)) {
-            $sql = "UPDATE {$this->getTableName(SELF::TBL_ITEM)} 
+            $sql = "UPDATE {$this->getTableName(self::TBL_ITEM)} 
                        SET item_type = {$type}
                      WHERE item_name = '{$name}'";
             $this->dbExecute($sql);
@@ -167,7 +167,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $this->createViewObjectRelation();
             $this->createViewSystemUser();
             $this->createViewUserRole();            
-        }        
+        }
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function isNewInstallation() {
-        return !$this->tableExist(SELF::TBL_ITEM);            
+        return !$this->tableExist(self::TBL_ITEM);            
     }
     
     /**
@@ -261,7 +261,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return array
      */
     public function itemGet($type) {
-        $sql = "SELECT item_id, item_name, item_description FROM {$this->getTableName(SELF::TBL_ITEM)}
+        $sql = "SELECT item_id, item_name, item_description FROM {$this->getTableName(self::TBL_ITEM)}
                 WHERE item_type = {$type}";
         $data = $this->dbQuery($sql);
         return $data;
@@ -274,7 +274,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return integer
      */
     public function userId($username) {
-        $sql = "SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'";
+        $sql = "SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'";
         $data = $this->dbQuery($sql);
         if (count($data) > 0) {
             return $data[0]['user_id'];
@@ -289,7 +289,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userUsername($userId) {
-        $sql = "SELECT user_name FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_id = '{$userId}'";
+        $sql = "SELECT user_name FROM {$this->getTableName(self::TBL_USER)} WHERE user_id = '{$userId}'";
         $data = $this->dbQuery($sql);
         if (count($data) > 0) {
             return $data[0]['user_name'];
@@ -303,7 +303,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return array
      */
     public function userGet() {
-        $sql = "SELECT user_id, user_name, user_active FROM {$this->getTableName(SELF::TBL_USER)}";
+        $sql = "SELECT user_id, user_name, user_active FROM {$this->getTableName(self::TBL_USER)}";
         $data = $this->dbQuery($sql);
         return $data;
     }
@@ -315,7 +315,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function itemExist($name) {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$name}'";
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}'";
         $data = $this->dbQuery($sql);
         return ($data[0]['row_count'] > 0);
     }
@@ -329,7 +329,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function itemCreate($name, $type) {
         if (!empty($name) && !$this->itemExist($name)) {
-            $sql = "INSERT INTO {$this->getTableName(SELF::TBL_ITEM)} (item_name,item_type)
+            $sql = "INSERT INTO {$this->getTableName(self::TBL_ITEM)} (item_name,item_type)
                         VALUES('{$name}','{$type}')";
             $this->dbExecute($sql);
             return true;
@@ -345,14 +345,14 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function itemDelete($name) {
         if ($this->itemExist($name)) {
-            $sql = "DELETE FROM {$this->getTableName(SELF::TBL_CHILD)} 
-                     WHERE parent_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$name}')
-                        OR child_id  = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$name}')";
+            $sql = "DELETE FROM {$this->getTableName(self::TBL_CHILD)} 
+                     WHERE parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}')
+                        OR child_id  = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}')";
             $this->dbExecute($sql);
-            $sql = "DELETE FROM {$this->getTableName(SELF::TBL_ASSIGN)} 
-                     WHERE item_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$name}')";
+            $sql = "DELETE FROM {$this->getTableName(self::TBL_ASSIGN)} 
+                     WHERE item_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}')";
             $this->dbExecute($sql);
-            $sql = "DELETE FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$name}'";
+            $sql = "DELETE FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}'";
             $this->dbExecute($sql);
         }
     }
@@ -365,7 +365,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function itemRename($name, $newUsername) {
         if ($this->itemExist($name)) {
-            $sql = "UPDATE {$this->getTableName(SELF::TBL_ITEM)} 
+            $sql = "UPDATE {$this->getTableName(self::TBL_ITEM)} 
                        SET item_name = '{$newUsername}'
                      WHERE item_name = '{$name}'";
             $this->dbExecute($sql);
@@ -380,9 +380,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function childAssign($parent, $child) {
         if ((!$this->childExist($parent, $child)) && (!$this->childExistRecurse($child, $parent))) {
-            $sql = "INSERT INTO {$this->getTableName(SELF::TBL_CHILD)} (parent_id,child_id)
-                        VALUES ((SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$parent}'),
-                                (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$child}'))";
+            $sql = "INSERT INTO {$this->getTableName(self::TBL_CHILD)} (parent_id,child_id)
+                        VALUES ((SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}'),
+                                (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$child}'))";
             $this->dbExecute($sql);
         }
     }
@@ -394,9 +394,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $child Child name
      */
     public function childRevoke($parent, $child) {
-        $sql = "DELETE FROM {$this->getTableName(SELF::TBL_CHILD)} 
-                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$parent}')
-                  AND child_id  = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$child}')";
+        $sql = "DELETE FROM {$this->getTableName(self::TBL_CHILD)} 
+                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}')
+                  AND child_id  = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$child}')";
         $this->dbExecute($sql);
     }
 
@@ -408,9 +408,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function childExist($parent, $child) {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_CHILD)} 
-                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$parent}')
-                  AND child_id  = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$child}')";
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_CHILD)} 
+                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}')
+                  AND child_id  = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$child}')";
         $data = $this->dbQuery($sql);
         return ($data[0]['row_count'] > 0);
     }
@@ -423,9 +423,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function childExistRecurse($parent, $child) {
-        $sql = "SELECT count(1) AS row_count FROM {$this->getTableName(SELF::TBL_CHILD)} 
-                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$parent}')
-                  AND child_id  = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$child}')";
+        $sql = "SELECT count(1) AS row_count FROM {$this->getTableName(self::TBL_CHILD)} 
+                WHERE parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}')
+                  AND child_id  = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$child}')";
         $data = $this->dbQuery($sql);
         if ($data[0]['row_count'] > 0) {
             return true;
@@ -452,8 +452,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         $sql = "SELECT ai.item_id AS item_id,
                        ai.item_name AS item_name,
                        ai.item_type AS item_type
-                FROM {$this->getTableName(SELF::TBL_CHILD)} ac, {$this->getTableName(SELF::TBL_ITEM)} ai
-                WHERE ac.parent_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$parent}')
+                FROM {$this->getTableName(self::TBL_CHILD)} ac, {$this->getTableName(self::TBL_ITEM)} ai
+                WHERE ac.parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}')
                   AND ac.child_id = ai.item_id
                   AND ( NOT ai.item_type = " . AuthType::ACCESS_OBJECT . " )";
         $data = $this->dbQuery($sql);
@@ -470,7 +470,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userCreate($username, $password = null, $with_default_role = false) {
         $password = is_null($password) ? $username : $password;
-        $sql = "INSERT INTO {$this->getTableName(SELF::TBL_USER)} (user_name, user_password)
+        $sql = "INSERT INTO {$this->getTableName(self::TBL_USER)} (user_name, user_password)
                     VALUES('{$username}',md5('{$password}'))";
         $this->dbExecute($sql);
         if ($with_default_role) {
@@ -489,7 +489,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $username Username
      */
     public function userRemove($username) {
-        $sql = "DELETE FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'";
+        $sql = "DELETE FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
     }
 
@@ -500,7 +500,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $newUsername New username
      */
     public function userRename($username, $newUsername) {
-        $sql = "UPDATE {$this->getTableName(SELF::TBL_USER)} 
+        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
                    SET user_name = '{$newUsername}'
                  WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
@@ -513,7 +513,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $newPassword New password
      */
     public function userResetPassword($username, $newPassword) {
-        $sql = "UPDATE {$this->getTableName(SELF::TBL_USER)} 
+        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
                    SET user_password = md5('{$newPassword}')
                  WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
@@ -525,7 +525,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $username Username
      */
     public function userActivate($username) {
-        $sql = "UPDATE {$this->getTableName(SELF::TBL_USER)} 
+        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
                    SET user_active = true
                  WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
@@ -537,7 +537,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $username Username
      */
     public function userDeactivate($username) {
-        $sql = "UPDATE {$this->getTableName(SELF::TBL_USER)} 
+        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
                    SET user_active = false
                  WHERE user_name = '{$username}'";
         $this->dbExecute($sql);
@@ -552,7 +552,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userAuthenticate($username, $password = false, $sessionInfo = '') {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_USER)} 
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_USER)} 
                 WHERE user_name = '{$username}' 
                   AND user_active = true";
         if (is_string($password)) {
@@ -563,10 +563,10 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             if ($sessionInfo !== FALSE) {
                 //create session
                 $session_key = uniqid("simbola.session.", TRUE);
-                $sql = "INSERT INTO {$this->getTableName(SELF::TBL_SESSION)} (client_addr, user_id, skey, description) 
+                $sql = "INSERT INTO {$this->getTableName(self::TBL_SESSION)} (client_addr, user_id, skey, description) 
                             VALUES (
                                 '" . $_SERVER['REMOTE_ADDR'] . "',
-                                (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'),
+                                (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'),
                                 '" . $session_key . "','" . $sessionInfo . "')";
                 $this->dbExecute($sql);
                 return $session_key;
@@ -586,9 +586,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return string Session key
      */
     public function userSession($username) {
-        $sql = "SELECT skey FROM {$this->getTableName(SELF::TBL_SESSION)} 
+        $sql = "SELECT skey FROM {$this->getTableName(self::TBL_SESSION)} 
                     WHERE user_id = (SELECT user_id 
-                                     FROM {$this->getTableName(SELF::TBL_USER)} 
+                                     FROM {$this->getTableName(self::TBL_USER)} 
                                      WHERE user_name = '{$username}')";
         $data = $this->dbQuery($sql);
         if (count($data) > 0) {
@@ -606,9 +606,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userSessionCheck($username, $sessionKey) {
-        $sql = "SELECT COUNT(1) AS row_count  FROM {$this->getTableName(SELF::TBL_SESSION)} 
+        $sql = "SELECT COUNT(1) AS row_count  FROM {$this->getTableName(self::TBL_SESSION)} 
                     WHERE user_id = (SELECT user_id 
-                                     FROM {$this->getTableName(SELF::TBL_USER)} 
+                                     FROM {$this->getTableName(self::TBL_USER)} 
                                      WHERE user_name = '{$username}')
                       AND skey = '{$sessionKey}'";
         $data = $this->dbQuery($sql);
@@ -623,10 +623,10 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userAssign($username, $role) {
         if (!$this->userAssigned($username, $role)) {
-            $sql = "INSERT INTO {$this->getTableName(SELF::TBL_ASSIGN)} (user_id,item_id)
+            $sql = "INSERT INTO {$this->getTableName(self::TBL_ASSIGN)} (user_id,item_id)
                         VALUES (
-                            (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'),
-                            (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$role}'))";
+                            (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'),
+                            (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$role}'))";
             $this->dbExecute($sql);
         }
     }
@@ -639,9 +639,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userAssigned($username, $role) {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_ASSIGN)} 
-                WHERE user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')
-                  AND item_id  = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$role}')";
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_ASSIGN)} 
+                WHERE user_id = (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}')
+                  AND item_id  = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$role}')";
         $data = $this->dbQuery($sql);
         return ($data[0]['row_count'] > 0);
     }
@@ -653,9 +653,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $role Role item name
      */
     public function userRevoke($username, $role) {
-        $sql = "DELETE FROM {$this->getTableName(SELF::TBL_ASSIGN)}
-                    WHERE user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')
-                      AND item_id = (SELECT item_id FROM {$this->getTableName(SELF::TBL_ITEM)} WHERE item_name = '{$role}')";
+        $sql = "DELETE FROM {$this->getTableName(self::TBL_ASSIGN)}
+                    WHERE user_id = (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}')
+                      AND item_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$role}')";
         $this->dbExecute($sql);
     }
 
@@ -667,8 +667,8 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userRoles($username) {
         $sql = "SELECT ai.item_name AS item_name
-                FROM {$this->getTableName(SELF::TBL_ASSIGN)} aa, {$this->getTableName(SELF::TBL_ITEM)} ai
-                WHERE aa.user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')
+                FROM {$this->getTableName(self::TBL_ASSIGN)} aa, {$this->getTableName(self::TBL_ITEM)} ai
+                WHERE aa.user_id = (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}')
                   AND aa.item_id = ai.item_id";
         $data = $this->dbQuery($sql);
         $roles = array();
@@ -685,7 +685,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userExist($username) {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}'";
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'";
         $data = $this->dbQuery($sql);
         return ($data[0]['row_count'] > 0);
     }
@@ -698,10 +698,10 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userSessionRevokeById($sessionId, $userId) {
-        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(SELF::TBL_SESSION)} WHERE id = {$sessionId} AND user_id = {$userId}";
+        $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_SESSION)} WHERE id = {$sessionId} AND user_id = {$userId}";
         $data = $this->dbQuery($sql);
         if ($data[0]['row_count'] > 0) {
-            $sql = "DELETE FROM {$this->getTableName(SELF::TBL_SESSION)} WHERE id = {$sessionId} AND user_id = {$userId}";
+            $sql = "DELETE FROM {$this->getTableName(self::TBL_SESSION)} WHERE id = {$sessionId} AND user_id = {$userId}";
             $this->dbExecute($sql);
             return true;
         } else {
@@ -716,9 +716,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $sessionKey Session key
      */
     public function userSessionRevoke($username, $sessionKey) {
-        $sql = "DELETE FROM {$this->getTableName(SELF::TBL_SESSION)} 
+        $sql = "DELETE FROM {$this->getTableName(self::TBL_SESSION)} 
                       WHERE skey = '{$sessionKey}'
-                        AND user_id = (SELECT user_id FROM {$this->getTableName(SELF::TBL_USER)} WHERE user_name = '{$username}')";
+                        AND user_id = (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}')";
         $this->dbExecute($sql);
     }
 

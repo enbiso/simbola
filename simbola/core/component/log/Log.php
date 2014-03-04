@@ -99,7 +99,7 @@ class Log extends \simbola\core\component\system\lib\Component {
             }            
             $traces = $dbDriver->escapeString(implode("\n", $traces));
             $sql = "INSERT INTO {$tableName}(type, message, trace) VALUES('{$type}','{$message}','{$traces}')";
-            $db->execute($sql, array(), false);
+            $dbDriver->execute($sql, array(), false);
         }
     }
 

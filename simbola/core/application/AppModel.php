@@ -16,8 +16,8 @@ class AppModel extends \ActiveRecord\Model{
      * @param string $fieldName
      * @return string
      */
-    public static function Term($fieldName) {        
-        return \simbola\Simbola::app()->term->getModelTerm(static::$class_name, $field_name);
+    public static function term($fieldName) {        
+        return \simbola\Simbola::app()->term->getModelTerm(static::$class_name, $fieldName);
     }
     
     /**
@@ -69,7 +69,7 @@ class AppModel extends \ActiveRecord\Model{
     /**
      * Override this function to setup the model initializations.
      */
-    public static function initialize();
+    public static function initialize(){}
     
     /**
      * Framework function used to initialize automatically
@@ -86,7 +86,7 @@ class AppModel extends \ActiveRecord\Model{
      * @param string $name Table name
      */
     public static function setSource($module, $lu, $name) {
-        static::$table_name = \simbola\Simbola::app()->db->getTableName($module, $lu, $name);
+        static::$table_name = \simbola\Simbola::app()->db->getDriver()->getTableName($module, $lu, $name);
     }
 
     /**
@@ -135,6 +135,18 @@ class AppModel extends \ActiveRecord\Model{
         static::$alias_attribute[$alias] = $name;
     }
 
+    /**
+     * Add PHP active record delegate
+     * 
+     * array('name', 'to' => 'host', 'prefix' => 'woot')     
+     * $person->woot_name is same as $person->host->name
+     * 
+     * @param array $delegate PHP AR Delegate entry          
+     */
+    public static function delegate($delegate) {
+        static::$delegate[] = $delegate;
+    }
+    
     /**
      * Set the primary key of the table
      * 

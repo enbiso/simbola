@@ -75,10 +75,11 @@ class ResItem {
      */
     function getUrl($absolute = false) {
         $url = "/resource/{$this->module}/{$this->name}";
+        $appUrlBase = \simbola\Simbola::app()->url->getAppUrlBase();
         if ($absolute) {
             $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
-        } else {
-            $url = "/" . \simbola\Simbola::app()->url->getAppUrlBase() . $url;
+        } else if(!empty($appUrlBase)) {            
+            $url = "/" . $appUrlBase . $url;
         }
         return $url;
     }
