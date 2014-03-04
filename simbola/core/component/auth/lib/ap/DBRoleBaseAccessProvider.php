@@ -176,7 +176,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function isNewInstallation() {
-        return !$this->tableExist(self::TBL_ITEM);            
+        !$this->tableExist(self::TBL_ITEM);            
     }
     
     /**
