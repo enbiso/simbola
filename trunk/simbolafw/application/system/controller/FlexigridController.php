@@ -3,11 +3,32 @@ namespace application\system\controller;
 
 class FlexigridCOntroller extends \simbola\core\application\AppController {
 
+    /**
+     * Database Driver
+     * @var \simbola\core\component\db\driver\AbstractDbDriver
+     */
+    private $dbDriver;
+    
+    /**
+     * Constructor
+     */
     public function __construct() {
         $this->name = "flexigrid";
         $this->securityBypass = true;
+        $this->dbDriver = \simbola\Simbola::app()->db->getDriver();
     }
 
+    /**
+     * Fetch the data for the given params
+     * 
+     * @param string $module Module
+     * @param string $lu Logical Unit
+     * @param string $view View Name
+     * @param string $id Identification
+     * @param string $filter Filter string
+     * @param boolean $direct Direct DB call
+     * @return array Data array
+     */
     public function data($module, $lu, $view, $id, $filter, $direct) {
         $page = isset($_POST['page']) ? $_POST['page'] : 1;
         $rp = isset($_POST['rp']) ? $_POST['rp'] : null;        
@@ -45,10 +66,10 @@ class FlexigridCOntroller extends \simbola\core\application\AppController {
         }
         
         if ($direct) {
-            $view_fullname = \simbola\Simbola::app()->db->getViewName($module, $lu, $view);
-            $rdata = \simbola\Simbola::app()->db->directView($view_fullname, $select, $where, $page, $rp, $order);
+            $view_fullname = $this->dbDriver->getViewName($module, $lu, $view);
+            $rdata = $this->dbDriver->directView($view_fullname, $select, $where, $page, $rp, $order);
         } else {
-            $rdata = \simbola\Simbola::app()->db->view($module, $lu, $view, $select, $where, $page, $rp, $order);
+            $rdata = $this->dbDriver->view($module, $lu, $view, $select, $where, $page, $rp, $order);
         }
         $data['page'] = $page;
         $data['total'] = $rdata['total_rows'];
@@ -60,6 +81,12 @@ class FlexigridCOntroller extends \simbola\core\application\AppController {
         return $data;
     }
     
+    /**
+     * Check Security for the page
+     * 
+     * @param \simbola\core\component\url\lib\Page $page Page
+     * @return boolean
+     */
     public function checkSecurity($page) {
         $permObj = new \simbola\core\component\auth\lib\PermObject(
                 $this->get('module'), 
@@ -68,6 +95,9 @@ class FlexigridCOntroller extends \simbola\core\application\AppController {
         return parent::checkSecurity($page) && \simbola\Simbola::app()->auth->checkPermission($permObj);
     }
 
+    /**
+     * Returns the access data
+     */
     public function actionData() {
         if($this->issetGet(array('module', 'lu', 'view', 'id'))){ 
             $direct = $this->issetGet(array('direct')) ? $this->get('direct') == 'true' : false;
