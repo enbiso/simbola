@@ -144,7 +144,7 @@ class Page {
             $this->module = $_POST['module'];
             $this->logicalUnit = $_POST['service'];
             $this->action = $_POST['action'];
-            $this->params = $_POST['params'];            
+            $this->params = isset($_POST['params'])?$_POST['params']:array();            
         } else {
             //controller
             $this->type = Page::TYPE_CONTROLLER;

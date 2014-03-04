@@ -101,7 +101,7 @@ function shtmlform_input_hidden_for($object, $fieldName, $dataName = 'data'){
  */
 function shtmlform_readonly_text_for($object, $fieldName, $opts = array()) {
     $input_opts = array(        
-        'value' => $object->$fieldName,
+        'value' => (is_null($object))?'':$object->$fieldName,
         'class' => 'form-control',
         'readonly' => 'true',
     );
@@ -120,11 +120,11 @@ function shtmlform_readonly_text_for($object, $fieldName, $opts = array()) {
 function shtmlform_input_text_for($object, $fieldName, $dataName = 'data', $opts = array()) {
     $input_opts = array(
         'name' => "{$dataName}[{$fieldName}]",
-        'value' => $object->$fieldName,
+        'value' => (is_null($object))?'':$object->$fieldName,
         'class' => 'form-control',
         'placeholder' => $object->term($fieldName)
     );
-    if(!$object->isEditable($fieldName)){
+    if(!$object->isEditable($fieldName) && !$object->is_new_record()){
         $input_opts['readonly'] = 'true';
     }
     $opts = array_merge($input_opts, $opts);
