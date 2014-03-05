@@ -177,10 +177,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function isNewInstallation() {
         return !$this->tableExist(self::TBL_ITEM);            
-<<<<<<< .mine        return !$this->tableExist(self::TBL_ITEM);            
-=======        !$this->tableExist(self::TBL_ITEM);            
->>>>>>> .theirs    }
-    
+    }
     /**
      * Import RBAP Data to the system
      * 
