@@ -68,7 +68,7 @@ function get_application_index_social(){
 function init_check() {
     $data = array();
     //PHP version check
-    $data['PHP'] = phpversion() >= 5.4;
+    $data['PHP'] = phpversion() >= 5.3;
     //MY SQL check        
     $dbconfig = get_session("dbconn");
     $conn = mysqli_connect($dbconfig['server'], $dbconfig['username'], $dbconfig['password']);
@@ -112,15 +112,17 @@ function view($view, $data = array()) {
 }
 
 function init() {
-    $_SESSION['installer'] = array(
-        'dbconn' => array('server' => 'localhost', 'password' => '', 'username' => 'root'),
-        'dbase' => array('dbname' => 'simbola_db', 'dbcreate' => 'NO'),
-        'application' => array(
-            'name' => 'Simbola Application', 
-            'execute' => 'NO',
-            'social' => false,
-            'urlbase' => get_urlbase()),
-    );
+    if(!isset($_SESSION['installer'])){
+        $_SESSION['installer'] = array(
+            'dbconn' => array('server' => 'localhost', 'password' => '', 'username' => 'root'),
+            'dbase' => array('dbname' => 'simbola_db', 'dbcreate' => 'NO'),
+            'application' => array(
+                'name' => 'Simbola Application', 
+                'execute' => 'NO',
+                'social' => false,
+                'urlbase' => get_urlbase()),
+        );
+    }
 
     foreach (array('dbconn','dbase','application') as $baseKey) {
         if (isset($_POST[$baseKey])) {
