@@ -42,6 +42,12 @@ abstract class AppController {
     protected $customLayout = null;
 
     /**
+     * Service client
+     * @var \simbola\core\component\system\lib\ServiceClient 
+     */
+    protected $serviceClient;
+    
+    /**
      * Used to render the output as JSON
      *      
      * @param array $data the data to process along with the $viewData
@@ -350,14 +356,13 @@ abstract class AppController {
      *                                 message      => [RESPONSE_MESSAGE]))
      */
     protected function invoke($module, $service, $action, $params) {
-        $serviceClient = new \simbola\core\component\system\lib\ServiceClient();
-        $serviceClient->module = $module;
-        $serviceClient->service = $service;
-        $serviceClient->action = $action;
-        $serviceClient->params = $params;
-        return $serviceClient->execute();
+        $this->serviceClient = new \simbola\core\component\system\lib\ServiceClient();
+        $this->serviceClient->module = $module;
+        $this->serviceClient->service = $service;
+        $this->serviceClient->action = $action;
+        $this->serviceClient->params = $params;
+        return $this->serviceClient->execute();
     }
-
 }
 
 ?>

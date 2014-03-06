@@ -336,4 +336,17 @@ function shtml_btngroupmenu($values) {
     return $val;
 }
 
+function shtml_ul($data, $opts = array()){
+    if(is_string($data)){
+        $data = array($data);
+    }
+    $output = shtml_tag("ul", $opts);
+    foreach ($data as $value) {
+        $output .= shtml_tag("li");
+        $output .= shtml_encode($value);
+        $output .= shtml_untag("li");
+    }
+    $output .= shtml_untag("ul");
+    return $output;
+}
 ?>

@@ -118,6 +118,19 @@ function shtmlform_readonly_text_for($object, $fieldName, $opts = array()) {
  * @return string HTML Tag
  */
 function shtmlform_input_text_for($object, $fieldName, $dataName = 'data', $opts = array()) {
+    return shtmlform_input_for('text', $object, $fieldName, $dataName, $opts);
+}
+
+/**
+ * Create an input text field for the AppModel
+ * 
+ * @param \simbola\core\application\AppModel $object Model object
+ * @param string $type text, password, datetime, datetime-local, date, month, time, week, number, email, url, search, tel, and colo
+ * @param string $fieldName Field name
+ * @param string $dataName Postback data name
+ * @return string HTML Tag
+ */
+function shtmlform_input_for($type, $object, $fieldName, $dataName = 'data', $opts = array()) {
     $input_opts = array(
         'name' => "{$dataName}[{$fieldName}]",
         'value' => (is_null($object))?'':$object->$fieldName,
@@ -128,7 +141,7 @@ function shtmlform_input_text_for($object, $fieldName, $dataName = 'data', $opts
         $input_opts['readonly'] = 'true';
     }
     $opts = array_merge($input_opts, $opts);
-    return shtmlform_input('text', $opts);
+    return shtmlform_input($type, $opts);
 }
 
 /**
@@ -258,4 +271,90 @@ function shtml_select($data, $selected, $opts = array()){
     }
     $content .= shtml_untag('select');
     return $content;
+}
+
+/**
+ * Generate for group input
+ * 
+ * @param string $type text, password, datetime, datetime-local, date, month, time, week, number, email, url, search, tel, and colo
+ * @param simbola\core\application\AppModel $object Model Object
+ * @param string $fieldName Field name
+ * @param string $dataName Data name, default 'data'
+ * @param array $opts Options
+ * @return string HTML Tag
+ */
+function shtmlform_group_input_for($type, $object, $fieldName, $dataName = 'data', $opts = array()){
+    $formGroupOpts = array('class'=>'form-group');    
+    $hasError = isset($object->errors) && !is_null($object->errors->on($fieldName));
+    if($hasError){ 
+        $formGroupOpts['class'] .= ' has-error has-feedback';        
+    }
+    $output = shtml_tag("div", $formGroupOpts);    
+    $output .= shtmlform_label_for($object, $fieldName);
+    $output .= shtmlform_input_for($type, $object, $fieldName, $dataName, $opts);
+    if($hasError){ 
+        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_tag("span", array('class'=>'help-text'));
+        $output .= $object->errors->on($fieldName);
+        $output .= shtml_untag("span");
+    }
+    $output .= shtml_untag("div");    
+    return $output;
+}
+
+/**
+ * Generate for group select
+ * 
+ * @param simbola\core\application\AppModel $object Model Object
+ * @param string $fieldName Field name
+ * @param array $data Select data
+ * @param string $dataName Data name, default 'data'
+ * @param array $opts Options
+ * @return string HTML Tag
+ */
+function shtmlform_group_select_for($object, $fieldName, $data, $dataName = 'data', $opts = array()){
+    $formGroupOpts = array('class'=>'form-group');    
+    $hasError = isset($object->errors) && !is_null($object->errors->on($fieldName));
+    if($hasError){ 
+        $formGroupOpts['class'] .= ' has-error has-feedback';        
+    }
+    $output = shtml_tag("div", $formGroupOpts);    
+    $output .= shtmlform_label_for($object, $fieldName);
+    $output .= shtmlform_select_for($object, $fieldName, $data, $dataName, $opts);
+    if($hasError){ 
+        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_tag("span", array('class'=>'help-text'));
+        $output .= $object->errors->on($fieldName);
+        $output .= shtml_untag("span");
+    }
+    $output .= shtml_untag("div");    
+    return $output;
+}
+
+/**
+ * Generate for group textarea
+ * 
+ * @param simbola\core\application\AppModel $object Model Object
+ * @param string $fieldName Field name 
+ * @param string $dataName Data name, default 'data'
+ * @param array $opts Options
+ * @return string HTML Tag
+ */
+function shtmlform_group_textarea_for($object, $fieldName, $dataName = 'data', $opts = array()){
+    $formGroupOpts = array('class'=>'form-group');    
+    $hasError = isset($object->errors) && !is_null($object->errors->on($fieldName));
+    if($hasError){ 
+        $formGroupOpts['class'] .= ' has-error has-feedback';        
+    }
+    $output = shtml_tag("div", $formGroupOpts);    
+    $output .= shtmlform_label_for($object, $fieldName);
+    $output .= shtmlform_textarea_for($object, $fieldName, $dataName, $opts);
+    if($hasError){ 
+        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_tag("span", array('class'=>'help-text'));
+        $output .= $object->errors->on($fieldName);
+        $output .= shtml_untag("span");
+    }
+    $output .= shtml_untag("div");    
+    return $output;
 }
