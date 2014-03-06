@@ -12,7 +12,7 @@ abstract class View extends DbObject{
     }
     
     public function getViewName() {
-        return $this->db->getViewName($this->module, $this->lu, $this->name);
+        return $this->dbDriver->getViewName($this->module, $this->lu, $this->name);
     }
     
     public function createOrReplace($stmt) {        

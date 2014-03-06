@@ -11,7 +11,7 @@ class LogicalUnit {
 
     private $name;
     private $module;
-    private $db;
+    private $dbDriver;
     private $objs = array(
         'table' => array(),
         'view' => array(),
@@ -21,7 +21,7 @@ class LogicalUnit {
     public function __construct($db, $module, $name) {
         $this->name = $name;
         $this->module = $module;
-        $this->db = $db;
+        $this->dbDriver = $db->getDriver();
         $this->load();
     }
 
@@ -77,7 +77,7 @@ class LogicalUnit {
         foreach (glob($path) as $filePath) {
             $class = \simbola\Simbola::app()->getModuleNamespace($this->module, "database")
                     . "\\" . $this->name . '\\' . $type . '\\' . basename($filePath, ".php");
-            $obj = new $class($this->db);
+            $obj = new $class($this->dbDriver);
             $this->objs[$type][] = $obj;
         }
     }

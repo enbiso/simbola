@@ -321,7 +321,7 @@ class RbamController extends \simbola\core\application\AppController {
         foreach (array_filter(glob($controllerBasePath), 'is_file') as $fileName) {
             $page = new \simbola\core\component\url\lib\Page;
             $page->module = $mconf->name;
-            $page->type = \simbola\core\component\url\lib\Page::$TYPE_CONTROLLER;
+            $page->type = \simbola\core\component\url\lib\Page::TYPE_CONTROLLER;
             $page->logicalUnit = lcfirst(str_replace("Controller.php", "", basename($fileName)));
             $count += $this->registerPage($page);
         }
@@ -331,7 +331,7 @@ class RbamController extends \simbola\core\application\AppController {
         foreach (array_filter(glob($serviceBasePath), 'is_file') as $fileName) {
             $page = new \simbola\core\component\url\lib\Page;
             $page->module = $mconf->name;
-            $page->type = \simbola\core\component\url\lib\Page::$TYPE_SERVICE;
+            $page->type = \simbola\core\component\url\lib\Page::TYPE_SERVICE;
             $page->logicalUnit = lcfirst(str_replace("Service.php", "", basename($fileName)));
             $count += $this->registerPage($page);
         }
