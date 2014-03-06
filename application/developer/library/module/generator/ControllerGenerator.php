@@ -24,9 +24,9 @@ class ControllerGenerator extends CodeGenerator {
         $content = $this->initializeWithBasicInfo($content);
 
         $app = \simbola\Simbola::app();
-        $mconf = $app->getModuleConfig($this->_req_params('module'));
+        $mconf = $app->getModuleConfig($this->module);
         $servicePath = $mconf->getPath('controller')
-                . DIRECTORY_SEPARATOR . ucfirst($this->_req_params('controller')) . "Controller.php";
+                . DIRECTORY_SEPARATOR . ucfirst($this->controller) . "Controller.php";
         file_put_contents($servicePath, $content);
         //views & terms
         $this->loadFieldElements();
@@ -51,14 +51,17 @@ class ControllerGenerator extends CodeGenerator {
     private $viewElements = array();
 
     private function loadFieldElements() {
-        $colsArray = $this->getColsArray($this->_req_params('module'), $this->_req_params('lu'), $this->_req_params('model'));
+        $this->formElements = array();
+        $this->formHiddenElements = array();
+        $this->viewElements = array();
+        $colsArray = $this->getColsArray();
         $elem['textbox'] = file_get_contents($this->getTemplatePath('view' . DIRECTORY_SEPARATOR . "element" . DIRECTORY_SEPARATOR . "textbox.txt"));
         $elem['fieldbox'] = file_get_contents($this->getTemplatePath('view' . DIRECTORY_SEPARATOR . "element" . DIRECTORY_SEPARATOR . "fieldbox.txt"));
         $elem['hiddenbox'] = file_get_contents($this->getTemplatePath('view' . DIRECTORY_SEPARATOR . "element" . DIRECTORY_SEPARATOR . "hiddenbox.txt"));
         foreach ($colsArray as $col) {
             $content = $elem['textbox'];
-            $content = str_replace("#CONTROLLER_NAME#", $this->_req_params('controller'), $content);
-            $content = str_replace("#MODULE_NAME#", $this->_req_params('module'), $content);
+            $content = str_replace("#CONTROLLER_NAME#", $this->controller, $content);
+            $content = str_replace("#MODULE_NAME#", $this->module, $content);
             $content = str_replace("#FIELD_NAME#", $col, $content);
             $content = str_replace("#PLACEHOLDER#", ucfirst($col), $content);
             $this->formElements[] = $content;
@@ -67,7 +70,7 @@ class ControllerGenerator extends CodeGenerator {
             $content = str_replace("#FIELD_NAME#", $col, $content);
             $this->viewElements[] = $content;
         }
-        $keyArray = $this->getKeysArray($this->_req_params('module'), $this->_req_params('lu'), $this->_req_params('model'));
+        $keyArray = $this->getKeysArray();
         foreach ($keyArray as $key) {
             $content = $elem['hiddenbox'];
             $content = str_replace("#FIELD_NAME#", $key, $content);
@@ -88,7 +91,7 @@ class ControllerGenerator extends CodeGenerator {
         
         $termPath = $mconf->getPath('term')
                 . DIRECTORY_SEPARATOR . 'en_US'
-                . DIRECTORY_SEPARATOR . $termType;
+                . DIRECTORY_SEPARATOR . 'controller';
         if (!is_dir($termPath)) {
             mkdir($termPath);
         }        
@@ -108,9 +111,9 @@ class ControllerGenerator extends CodeGenerator {
         $content = str_replace("#FORM_HIDDEN_ELEMENTS#", implode("\n", $this->formHiddenElements), $content);
         $content = str_replace("#VIEW_ELEMENTS#", implode("<hr/>\n", $this->viewElements), $content);
         $app = \simbola\Simbola::app();
-        $mconf = $app->getModuleConfig($this->_req_params('module'));
+        $mconf = $app->getModuleConfig($this->module);
         $viewPath = $mconf->getPath('view')
-                . DIRECTORY_SEPARATOR . $this->_req_params('controller');
+                . DIRECTORY_SEPARATOR . $this->controller;
         if (!is_dir($viewPath)) {
             mkdir($viewPath);
         }

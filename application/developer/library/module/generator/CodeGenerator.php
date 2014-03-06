@@ -99,7 +99,11 @@ abstract class CodeGenerator {
     private $keysArrayForLink = array();
     private $colsArrayForTable = array();
 
-    private function loadKeysAndColsArrays() {
+    protected function loadKeysAndColsArrays() {
+        $this->keysArrayFromObj = array();
+        $this->keysArrayFromGet = array();
+        $this->keysArrayForLink = array();
+        $this->colsArrayForTable = array();
         $keysArray = $this->getKeysArray();
         foreach ($keysArray as $key) {
             $this->keysArrayFromObj[] = '"' . $key . '" => $object->' . $key;
@@ -113,7 +117,7 @@ abstract class CodeGenerator {
     }
     
     public function getTableMeta() {
-        return \simbola\Simbola::app()->db->getMetaInfo(
+        return \simbola\Simbola::app()->db->getDriver()->getMetaInfo(
                 sstring_camelcase_to_underscore($this->module), 
                 sstring_camelcase_to_underscore($this->lu), 
                 sstring_camelcase_to_underscore($this->model));

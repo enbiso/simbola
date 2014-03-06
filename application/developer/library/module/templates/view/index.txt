@@ -1,7 +1,4 @@
 <?php
-$this->page_header = "#CTS_CONTROLLER_NAME#";
-$this->page_subheader = sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.index.title');
-
 $this->page_breadcrumb = array(
     '#UCF_MODULE_NAME#' => array('/#MODULE_NAME#'),    
     '#CTS_CONTROLLER_NAME#');
@@ -19,3 +16,6 @@ $this->page_menu = array(
     ),
 );
 ?>
+<div class="jumbotron">
+    <h1>#CTS_CONTROLLER_NAME# <small><?= sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.index.title') ?></small></h1>
+</div>

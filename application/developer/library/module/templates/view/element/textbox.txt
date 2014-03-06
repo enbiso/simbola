@@ -1,4 +1,1 @@
-    <div class="form-group">
-        <?= shtmlform_label_for($this->object, '#FIELD_NAME#') ?>
-        <?= shtmlform_input_text_for($this->object, '#FIELD_NAME#') ?>        
-    </div>
+    <?= shtmlform_group_input_for('text', $this->object, '#FIELD_NAME#') ?>
