@@ -15,7 +15,7 @@ abstract class Table extends DbObject {
     }
 
     function getTableName() {
-        return $this->db->getTableName($this->module, $this->lu, $this->name);
+        return $this->dbDriver->getTableName($this->module, $this->lu, $this->name);
     }
 
     function addTable() {
@@ -65,7 +65,7 @@ abstract class Table extends DbObject {
     function addForeignKeys($fkeys) {
         foreach ($fkeys as $fkey => $fkeyDesc) {
             if(is_array($fkeyDesc)){
-                $tableName = $this->db->getTableName($fkeyDesc[1],$fkeyDesc[2],$fkeyDesc[3]);
+                $tableName = $this->dbDriver->getTableName($fkeyDesc[1],$fkeyDesc[2],$fkeyDesc[3]);
                 $fkeyDesc = "({$fkeyDesc[0]}) REFERENCES {$tableName}({$fkeyDesc[4]})";
             }
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD CONSTRAINT {$fkey} FOREIGN KEY {$fkeyDesc}");

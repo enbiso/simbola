@@ -1,2 +1,1 @@
-<?php
-shtml_eterm('system.www.noaccess.description');
+<?= sterm_get('system.www.noaccess.description') ?>

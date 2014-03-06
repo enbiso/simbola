@@ -13,7 +13,7 @@ abstract class Procedure extends DbObject{
     }
     
     function dropCreate($content) {
-        $funcName = $this->db->getProcedureName($this->module, $this->lu, $this->name);
+        $funcName = $this->dbDriver->getProcedureName($this->module, $this->lu, $this->name);
         $this->setContent("DROP FUNCTION IF EXIST {$funcName}");
         $this->execute();
         $this->setContent("DROP PROCEDURE IF EXIST {$funcName}");
