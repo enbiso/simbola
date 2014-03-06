@@ -8,7 +8,8 @@ namespace simbola\core\application;
  * @author Faraj Farook
  */
 class AppModel extends \ActiveRecord\Model{    
-    
+    static $delegate = array();
+    static $alias_attribute = array();
     /**
      * Used to fetch the term associated with the model term file for 
      * the specified field 

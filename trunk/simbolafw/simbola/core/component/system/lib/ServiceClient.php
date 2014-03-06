@@ -83,7 +83,7 @@ class ServiceClient {
         $_POST = $currPost;
         if($output['header']['status'] != \simbola\core\application\AppService::STATUS_OK){
             if($output['header']['status'] == \simbola\core\application\AppService::STATUS_USER_ERROR){
-                throw new \Exception($output['body']['message']);
+                throw new exception\ServiceUserException($output);
             }else{
                 slog_syserror(__METHOD__,var_export($output,true));
                 throw new \Exception($output['header']['status']);
