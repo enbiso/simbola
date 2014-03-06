@@ -22,21 +22,21 @@ class #MODEL_CLASS_NAME# extends \simbola\core\application\AppModel{
             $primary_key, 
             $class_name, 
             //relationships
-            $has_many, 
-            $belongs_to, 
+            $has_many = array(), 
+            $belongs_to = array(), 
             //alias
-            $alias_attribute,
+            $alias_attribute = array(),
             //validations system
-            $validates_uneditable,
+            $validates_uneditable = array(),
             //validations php-ar 
-            $validates_presence_of, 
-            $validates_size_of, 
-            $validates_length_of, 
-            $validates_exclusion_of,
-            $validates_inclusion_of,
-            $validates_format_of,
-            $validates_numericality_of,
-            $validates_uniqueness_of;
+            $validates_presence_of = array(),
+            $validates_size_of = array(),
+            $validates_length_of = array(),
+            $validates_exclusion_of = array(),
+            $validates_inclusion_of = array(),
+            $validates_format_of = array(),
+            $validates_numericality_of = array(),
+            $validates_uniqueness_of = array();
 
     public static function initialize() {
         //Model Setup

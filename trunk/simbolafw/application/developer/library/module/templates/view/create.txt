@@ -16,6 +16,6 @@ $this->page_menu = array(
 );
 ?>
 <?php if($this->isDataSet('error')): ?>
-    <div class="alert alert-warning"><?= $this->error ?></div>
+    <div class="alert alert-warning"><?= shtml_ul($this->error) ?></div>
 <?php endif; ?>
 <?php $this->pview('#CONTROLLER_NAME#/_form'); ?>

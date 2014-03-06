@@ -31,6 +31,9 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
                     #KEYS_ARRAY_FROM_OBJ#
                 );
                 $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
+            } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
+                $object = $ex->getResponse('object');
+                $this->setViewData("error", $object->errors->full_messages()); 
             } catch (\Exception $ex) {
                 $this->setViewData("error", $ex->getMessage());
             }
@@ -61,6 +64,10 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
                         #KEYS_ARRAY_FROM_OBJ#
                     );
                     $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
+                } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
+                    $object = $ex->getResponse('object');
+                    $this->setViewData("error", $object->errors->full_messages()); 
+                    $this->setViewData('object', $object);
                 } catch (\Exception $ex) {
                     $this->setViewData("error", $ex->getMessage());
                 }
