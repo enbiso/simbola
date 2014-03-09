@@ -28,28 +28,24 @@ abstract class AppDbTable extends AbstractDbObject {
     }
 
     function addColumns($columns) {
-        $content = array();
         foreach ($columns as $column) {
-            $content[] = "ALTER TABLE {$this->getTableName()} ADD COLUMN {$column}";
-        }
-        $this->setContent($content);
-        $this->execute(true);
+            $this->setContent("ALTER TABLE {$this->getTableName()} ADD COLUMN {$column}");
+            $this->execute(true);
+        }        
     }
 
-    function removeColumns($columns) {
+    function removeColumns($columns) {        
         foreach ($columns as $column) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP COLUMN {$column}");
             $this->execute(true);
-        }
+        }        
     }
 
-    function alterColumns($columns) {
-        $content = array();
+    function alterColumns($columns) {        
         foreach ($columns as $column => $newColumnDesc) {
-            $content[] = "ALTER TABLE {$this->getTableName()} CHANGE COLUMN {$column} {$newColumnDesc}";
-        }
-        $this->setContent($content);
-        $this->execute(true);
+            $this->setContent("ALTER TABLE {$this->getTableName()} CHANGE COLUMN {$column} {$newColumnDesc}");
+            $this->execute(true);
+        }        
     }
 
     function addPrimaryKey($columns) {
@@ -65,7 +61,7 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->execute(true);
     }
 
-    function addForeignKeys($fkeys) {
+    function addForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey => $fkeyDesc) {
             if(is_array($fkeyDesc)){
                 $tableName = $this->dbDriver->getTableName($fkeyDesc[1],$fkeyDesc[2],$fkeyDesc[3]);
@@ -73,14 +69,14 @@ abstract class AppDbTable extends AbstractDbObject {
             }
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD CONSTRAINT {$fkey} FOREIGN KEY {$fkeyDesc}");
             $this->execute(true);
-        }
+        }        
     }
 
-    function removeForeignKeys($fkeys) {
+    function removeForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP FOREIGN KEY {$fkey}");
             $this->execute(true);
-        }
+        }        
     }
 
 }
