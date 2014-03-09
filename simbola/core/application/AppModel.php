@@ -125,6 +125,15 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeSave($value) {
         static::$before_save[] = $value;
     }
+    
+    /**
+     * Set after save excution functions
+     * 
+     * @param array $value
+     */
+    public static function afterSave($value) {
+        static::$after_save[] = $value;
+    }
 
     /**
      * Set alias name for the field
