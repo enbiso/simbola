@@ -13,7 +13,7 @@ namespace application\#MODULE_NAME#\database\#LU_NAME#\table;
  *  
  * @author #AUTHER#
  */
-class #MODEL_CLASS_NAME# extends \application\system\library\dbsetup\Table{
+class #MODEL_CLASS_NAME# extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('#MODULE_NAME#');

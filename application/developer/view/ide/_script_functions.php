@@ -21,7 +21,7 @@
     }
     //execute All LUs
     function executeAllLUs(node, moduleName) {
-        simbola.call.service('system', 'dbsetup', 'setupModule', {module: moduleName}, function(data) {
+        simbola.call.service('developer', 'dbsetup', 'setupModule', {module: moduleName}, function(data) {
             $.pnotify({
                 title: 'Executed',
                 text: 'Executed with success'
@@ -29,7 +29,7 @@
         });
     }
     function executeLU(node, moduleName, luName) {
-        simbola.call.service('system', 'dbsetup', 'setupLu', {module: moduleName, lu: luName}, function(data) {
+        simbola.call.service('developer', 'dbsetup', 'setupLu', {module: moduleName, lu: luName}, function(data) {
             $.pnotify({
                 title: 'Executed',
                 text: 'Executed with success'
@@ -37,7 +37,7 @@
         });
     }
     function executeObj(node, moduleName, luName, objType, objName) {
-        simbola.call.service('system', 'dbsetup', 'setupObj', {module: moduleName, lu: luName, type: objType, name: objName}, function(data) {
+        simbola.call.service('developer', 'dbsetup', 'setupObj', {module: moduleName, lu: luName, type: objType, name: objName}, function(data) {
             $.pnotify({
                 title: 'Executed',
                 text: 'Executed with success'
@@ -47,7 +47,7 @@
     //create LU
     function createLU(node, module, lu) {
         set_cursor_busy();
-        simbola.call.service('system', 'dbsetup', 'createLu', {module: module, name: lu}, function(data) {
+        simbola.call.service('developer', 'dbsetup', 'createLu', {module: module, name: lu}, function(data) {
             node.reloadChildren(function(node, isOk) {
                 node.expand();
                 set_cursor_auto();

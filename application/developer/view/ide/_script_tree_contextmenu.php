@@ -130,7 +130,7 @@
                     //open DB SETUP...
                     if (key.match('application/[^/]*/database$')) {
                         arr = key.split("/");
-                        openForm(simbola.url.action('/system/dbsetup/install',{module:arr[1]}));
+                        openForm(simbola.url.action('/developer/ide/dbSetup',{module:arr[1]}));
                     }
                     break;
                 case "new_logical_unit":
