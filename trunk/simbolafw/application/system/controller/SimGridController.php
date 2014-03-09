@@ -51,6 +51,9 @@ class SimGridController extends \simbola\core\application\AppController {
                          foreach (explode(".", $column) as $property) {
                              $value = $value->$property;
                          }
+                         if($value instanceof \ActiveRecord\DateTime){
+                             $value = $value->format('Y-m-d H:i:s P');
+                         }
                          $row[$column] = $value;                    
                      }
                 }                

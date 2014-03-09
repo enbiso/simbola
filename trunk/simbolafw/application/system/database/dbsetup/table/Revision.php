@@ -6,7 +6,7 @@ namespace application\system\database\dbsetup\table;
  *
  * @author FARFLK
  */
-class Revision extends \application\system\library\dbsetup\Table{
+class Revision extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');

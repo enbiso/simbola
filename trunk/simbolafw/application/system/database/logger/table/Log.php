@@ -5,7 +5,7 @@ namespace \application\system\database\logger\table;
  *
  * @author FARFLK
  */
-class Log extends \application\system\library\dbsetup\Table{
+class Log extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');

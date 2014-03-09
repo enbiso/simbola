@@ -5,7 +5,7 @@ namespace \application\system\database\auth\table;
  *
  * @author FARFLK
  */
-class Assign extends \application\system\library\dbsetup\Table{
+class Assign extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');
