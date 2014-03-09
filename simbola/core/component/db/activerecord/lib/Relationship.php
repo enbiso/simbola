@@ -126,7 +126,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
 	 * @param $model_values_keys -> key(s)/value(s) to be used in query from model which is including
 	 * @return void
 	 */
-	protected function query_and_attach_related_models_eagerly(Table $table, $models, $attributes, $includes=array(), $query_keys=array(), $model_values_keys=array())
+	protected function query_and_attach_related_models_eagerly(AppDbTable $table, $models, $attributes, $includes=array(), $query_keys=array(), $model_values_keys=array())
 	{
 		$values = array();
 		$options = array();
@@ -292,7 +292,7 @@ abstract class AbstractRelationship implements InterfaceRelationship
 	 * @param string $alias a table alias for when a table is being joined twice
 	 * @return string SQL INNER JOIN fragment
 	 */
-	public function construct_inner_join_sql(Table $from_table, $using_through=false, $alias=null)
+	public function construct_inner_join_sql(AppDbTable $from_table, $using_through=false, $alias=null)
 	{
 		if ($using_through)
 		{
@@ -514,7 +514,7 @@ class HasMany extends AbstractRelationship
 		return parent::create_association($model, $attributes);
 	}
 
-	public function load_eagerly($models=array(), $attributes=array(), $includes, Table $table)
+	public function load_eagerly($models=array(), $attributes=array(), $includes, AppDbTable $table)
 	{
 		$this->set_keys($table->class->name);
 		$this->query_and_attach_related_models_eagerly($table,$models,$attributes,$includes,$this->foreign_key, $table->pk);
@@ -629,7 +629,7 @@ class BelongsTo extends AbstractRelationship
 		return $class::first($options);
 	}
 
-	public function load_eagerly($models=array(), $attributes, $includes, Table $table)
+	public function load_eagerly($models=array(), $attributes, $includes, AppDbTable $table)
 	{
 		$this->query_and_attach_related_models_eagerly($table,$models,$attributes,$includes, $this->primary_key,$this->foreign_key);
 	}

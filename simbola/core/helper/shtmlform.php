@@ -140,7 +140,7 @@ function shtmlform_input_for($type, $object, $fieldName, $dataName = 'data', $op
     if(!$object->isEditable($fieldName) && !$object->is_new_record()){
         $input_opts['readonly'] = 'true';
     }
-    $opts = array_merge($input_opts, $opts);
+    $opts = array_merge($opts, $input_opts);
     return shtmlform_input($type, $opts);
 }
 
