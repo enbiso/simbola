@@ -114,13 +114,13 @@ abstract class AbstractDbDriver {
     /**
      * Execute multiple SQL queries
      * 
-     * @param string $sql SQL Query to execute
+     * @param array $sql Array of SQL Query to execute
      * @param array $params query parameter
      * @param boolean $log TRUE(default) - DB logs, FALSE - no DB logs
      * @return result Database quesry results
      */
     public function executeMulti($sql, $params = array(), $log = true) {        
-        $result = $this->_execute_multi($sql, $params, $log);
+        $result = $this->_execute_multi($sql, $params, $log);        
         return $this->errorHandle($result,$sql);
     }
    
@@ -145,10 +145,13 @@ abstract class AbstractDbDriver {
      * @return result
      * @throws \Exception DB error
      */
-    protected function errorHandle($result,$sql) {
+    protected function errorHandle($result, $sql) {
         if(Simbola::app()->isDev()){
-            if(!$result){            
-                throw new \Exception($this->_error());    
+            if($result === FALSE){            
+                $error = $this->_error();
+                if(!empty($error)){
+                    throw new \Exception($error);    
+                }
             }
         }
         return $result;   

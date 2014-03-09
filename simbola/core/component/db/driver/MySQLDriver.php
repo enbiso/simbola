@@ -12,6 +12,12 @@ use simbola\core\component\db\Database;
 class MySQLDriver extends AbstractDbDriver {
 
     /**
+     * Contains the current result object
+     * @var \mysqli_result 
+     */
+    private $currentResult = null;
+    
+    /**
      * Connect to MySQL database
      * This is a framework function. Do not use this function on implementations.
      */
@@ -24,7 +30,8 @@ class MySQLDriver extends AbstractDbDriver {
      * Implementation execute multiple query strings
      * This is a framework function. Do not use this function on implementations.
      * 
-     * @param string $sql Query string
+     * @todo Implement it
+     * @param array $sql Array of Query string
      * @param array $params Parameters
      * @param boolean $log Used to setup the logging on database query execution
      *          TRUE  - enable DB logs on execution (default)
@@ -32,7 +39,7 @@ class MySQLDriver extends AbstractDbDriver {
      * @return \mysqli_result MySQLi result
      */
     protected function _execute_multi($sql, $params = array(), $log = true) {
-        return $this->_execute($sql, $params, $log);
+        throw new \Exception(__METHOD__." Not Implemented.");
     }
 
     /**
@@ -50,7 +57,11 @@ class MySQLDriver extends AbstractDbDriver {
         if ($log) {
             slog_db($sql . " - " . var_export($params, true));
         }
-        return mysqli_query($this->connection, $sql);
+        if($this->currentResult instanceof \mysqli_result){
+            mysqli_free_result($this->currentResult);
+        }
+        $this->currentResult = mysqli_query($this->connection, $sql);
+        return $this->currentResult;
     }
 
     /**
