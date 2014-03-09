@@ -4,11 +4,11 @@
         var table = this;
         //init post data
         var data = {
-            "module": module,
-            "lu": lu,
-            "name": name,
-            "columns": columns,
-            "conditions": conditions
+            module: module,
+            lu: lu,
+            name: name,
+            columns: columns,
+            conditions: conditions
         };
         //init actions
         if (actions === undefined) {

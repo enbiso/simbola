@@ -5,7 +5,7 @@ namespace \application\system\database\auth\table;
  *
  * @author FARFLK
  */
-class Session extends \application\system\library\dbsetup\Table{
+class Session extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');
