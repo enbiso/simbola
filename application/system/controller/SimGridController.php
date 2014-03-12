@@ -10,19 +10,20 @@ namespace application\system\controller;
 class SimGridController extends \simbola\core\application\AppController {
 
     public function checkSecurity($page) {
+        $source = (object)$this->post("source");
         $permObj = new \simbola\core\component\auth\lib\PermObject(
-                $this->post('module'),
-                $this->post('lu'),
-                $this->post('name'), 'table');        
+                $source->module,
+                $source->lu,
+                $source->name, 'table');        
         return parent::checkSecurity($page) 
                 && \simbola\Simbola::app()->auth->checkPermission($permObj);;
     }
     
     function actionData() {
-        if ($this->issetPost(array('module', 'lu', 'name', 'columns'))) {
-
-            $modelns = \simbola\Simbola::app()->getModuleNameSpace($this->post("module"), "model");
-            $class = $modelns . "\\" . $this->post("lu") . "\\" . ucfirst($this->post("name"));
+        if ($this->issetPost(array('source', 'columns'))) {
+            $source = $this->post("source");            
+            $modelns = \simbola\Simbola::app()->getModuleNameSpace($source['module'], "model");
+            $class = $modelns . "\\" . $source["lu"] . "\\" . ucfirst($source["name"]);
 
             $queryOptions['limit'] = $this->issetPost("limit") ? $this->post("limit") : 100;
             $queryOptions['offset'] = $this->issetPost("offset") ? $this->post("offset") : 0;
@@ -61,8 +62,9 @@ class SimGridController extends \simbola\core\application\AppController {
                 $columns = array_keys($row);
             }
             $this->setViewData('query', $queryOptions);
-            $this->setViewData('rows', $rows);
+            $this->setViewData('count', $class::count());
             $this->setViewData('columns', $columns);
+            $this->setViewData('rows', $rows);
             $this->json();
         }
     }
