@@ -1,37 +1,105 @@
 (function($) {
-    $.fn.simGrid = function(module, lu, name, columns, hiddenColumns, actions, conditions) {
+    $.fn.simGrid = function(opts) {
         //init table obj
-        var table = this;
+        var grid = this;
+        var table = this.find('table.simGrid-Table');
+        //pagination
+        if (opts.pageLength === undefined) {
+            opts.pageLength = 20;
+        }
+        if (opts.page === undefined) {
+            opts.page = 1;
+        }
+        //edit
+        if (opts.editableColumns === undefined) {
+            opts.editableColumns = {};
+        }
+        //init actions
+        if (opts.actions === undefined) {
+            opts.actions = [];
+        }        
+        //save data
+        this.data('opts', opts);
+        //post to get info
+        this.simGrid_Reload();
+
+        //event bindings
+        this.find('.simGrid-Reload').bind('click', function(e) {
+            grid.simGrid_Reload();
+        });
+        this.find('.simGrid-Pager-Prev').bind('click', function(e) {
+            var page = parseInt(grid.find('.simGrid-Pager-Counter').val());
+            if (page > 1) {
+                var opts = grid.data('opts');
+                opts.page = page - 1;
+                grid.data('opts', opts);
+                grid.simGrid_Reload();
+            }
+        });
+        this.find('.simGrid-Pager-Next').bind('click', function(e) {
+            var page = parseInt(grid.find('.simGrid-Pager-Counter').val());
+            if (page < grid.data('pageCount')) {
+                var opts = grid.data('opts');
+                opts.page = page + 1;
+                grid.data('opts', opts);
+                grid.simGrid_Reload();
+            }
+        });
+        this.find('.simGrid-Pager-Counter').bind('change', function(e) {
+            var opts = grid.data('opts');
+            opts.page = grid.find('.simGrid-Pager-Counter').val();
+            grid.data('opts', opts);
+            grid.simGrid_Reload();
+        });
+    };
+    $.fn.simGrid_Edit = function(rowNumber, callback) {
+        var grid = this;
+        var row = this.find('table.simGrid-Table tr[data-row="' + rowNumber + '"]')[0];
+        opts = this.data('opts');
+        $.each(opts.columns, function(colIndex, column) {
+            if (opts.editableColumns.indexOf(column) > 0) {
+                colElem = row.find('td[data-col="' + column + '"]');                
+                jQuery('<input>',{
+                    type: 'text',
+                    class: 'form-control',
+                    value: colElem.html()
+                }).appendTo(colElem);
+            }
+        });
+
+    };
+    $.fn.simGrid_Reload = function() {
+        var grid = this;
+        var table = this.find('table.simGrid-Table')[0];
+        opts = this.data('opts');
         //init post data
         var data = {
-            module: module,
-            lu: lu,
-            name: name,
-            columns: columns,
-            conditions: conditions
+            source: opts.source,
+            columns: opts.columns,
+            conditions: opts.conditions,
+            limit: opts.pageLength,
+            offset: (opts.page - 1) * opts.pageLength
         };
-        //init actions
-        if (actions === undefined) {
-            actions = {};
-        }
-        //post to get info
-        $.post("/system/simGrid/data", data, function(data) {
+        $(table).find('tbody').html("loading...");
+        $.post(simbola.url.action("system/simGrid/data"), data, function(data) {
             var content = "";
             $.each(data.rows, function(rowIndex, row) {
-                content += '<tr>';
-                $.each(columns, function(colIndex, column) {
-                    if (hiddenColumns.indexOf(column)<0) {
-                        content += '<td>';
+                content += '<tr class=simGrid-Row" data-row="' + (rowIndex + 1) + '">';
+                $.each(opts.columns, function(colIndex, column) {
+                    if (opts.hiddenColumns.indexOf(column) < 0) {
+                        content += '<td class="simGrid-Column" data-col="' + column + '">';
                         if (row[column] === undefined) {
                             //actions
-                            if (actions[column] === undefined) {
+                            if (opts.actions[column] === undefined) {
                                 content += '';
                             } else {
-                                var action = actions[column];
+                                var action = opts.actions[column];
                                 $.each(data.columns, function(actCIndex, actColumn) {
                                     var find = "%" + actColumn + "%";
                                     action = action.replace(new RegExp(find, 'g'), row[actColumn]);
                                 });
+                                action = action.replace(new RegExp("%__row__%", 'g'), (rowIndex + 1));
+                                action = action.replace(new RegExp("%__col__%", 'g'), column);
                                 content += action;
                             }
                         } else {
@@ -43,6 +111,20 @@
                 content += '</tr>';
             });
             $(table).find('tbody').html(content);
+            //pages
+            var pageCount = Math.ceil(data.count / data.query.limit);
+            grid.data('pageCount', pageCount);
+            var selectedPage = (data.query.offset / data.query.limit) + 1;
+            grid.find('.simGrid-Pager-Counter').html("");
+            for (var page = 1; page <= pageCount; page++) {
+                var optElem = jQuery('<option>', {
+                    value: page
+                }).html(page);
+                if (page === selectedPage) {
+                    optElem.prop('selected', true);
+                }
+                optElem.appendTo(grid.find('.simGrid-Pager-Counter'));
+            }
         }, 'json');
-    };
+    }
 })(jQuery);
