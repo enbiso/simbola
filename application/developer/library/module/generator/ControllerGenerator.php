@@ -44,6 +44,8 @@ class ControllerGenerator extends CodeGenerator {
         $this->createTerms('view');
         $this->createView('_form');
         $this->createTerms('_form');
+        $this->createView('_display');
+        $this->createTerms('_display');
     }
 
     private $formElements = array();

@@ -29,6 +29,6 @@ $this->page_menu = array(
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.view.panel.heading') ?></div>
     <div class="panel-body">
-        #VIEW_ELEMENTS#
+        <?php $this->pview('#CONTROLLER_NAME#/_display'); ?>
     </div>
 </div>
