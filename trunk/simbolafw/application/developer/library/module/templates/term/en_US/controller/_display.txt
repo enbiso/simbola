@@ -1,0 +1,15 @@
+<?php
+/**
+ * Description of Controller Term
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * View 	: _display
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller Term #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */

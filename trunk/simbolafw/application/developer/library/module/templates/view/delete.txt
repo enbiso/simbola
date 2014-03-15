@@ -26,10 +26,13 @@ $this->page_menu = array(
     ),
 );
 ?>
+<?php if($this->isDataSet('error')): ?>
+    <div class="alert alert-warning"><?= shtml_ul($this->error) ?></div>
+<?php endif; ?>
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.delete.panel.heading') ?></div>
     <div class="panel-body">
-        #VIEW_ELEMENTS#
+        <?php $this->pview('#CONTROLLER_NAME#/_display'); ?>
     </div>
     <div class="panel-footer">
         <form method="POST">#FORM_HIDDEN_ELEMENTS#<input type="submit" class="btn-warning btn" value="<?= sterm_get('#MODULE_NAME#.#CONTROLLER_NAME#.delete.panel.btn_ok')?>"/></form>

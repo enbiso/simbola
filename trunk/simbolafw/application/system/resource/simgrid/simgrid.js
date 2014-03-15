@@ -52,22 +52,6 @@
             grid.simGrid_Reload();
         });
     };
-    $.fn.simGrid_Edit = function(rowNumber, callback) {
-        var grid = this;
-        var row = this.find('table.simGrid-Table tr[data-row="' + rowNumber + '"]')[0];
-        opts = this.data('opts');
-        $.each(opts.columns, function(colIndex, column) {
-            if (opts.editableColumns.indexOf(column) > 0) {
-                colElem = row.find('td[data-col="' + column + '"]');                
-                jQuery('<input>',{
-                    type: 'text',
-                    class: 'form-control',
-                    value: colElem.html()
-                }).appendTo(colElem);
-            }
-        });
-
-    };
     $.fn.simGrid_Reload = function() {
         var grid = this;
         var table = this.find('table.simGrid-Table')[0];

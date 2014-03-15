@@ -47,10 +47,7 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
             $keysFromGet = array(
                 #KEYS_ARRAY_FROM_GET#
             );
-            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
-                'keys' => $keysFromGet,
-            ));
-            $object = $response["body"]['response']['object'];
+            $object = $this->getObject($keysFromGet);
             $this->setViewData('object',$object);
             if ($this->issetPost('data')) {
                 try {
@@ -81,24 +78,22 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
     function actionDelete(){
         if ($this->issetGet('#KEYS_COMMA_STR#')) {
             if ($this->issetPost('keys')) {
+                $keys = $this->post('keys');
                 try {
                     $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'delete', array(
-                        'keys' => $this->post('keys'),                    
+                        'keys' => $keys,                    
                     ));                                
                     $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
                 } catch (\Exception $ex) {
                     $this->setViewData("error", $ex->getMessage());
+                    $this->setViewData('object', $this->getObject($keys));
+                    $this->view('#CONTROLLER_NAME#/delete');
                 }
-                $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
             } else {
                 $keys = array(
                     #KEYS_ARRAY_FROM_GET#
                 );
-                $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
-                    'keys' => $keys,
-                ));
-                $object = $response["body"]['response']['object'];
-                $this->setViewData('object', $object);
+                $this->setViewData('object', $this->getObject($keys));
                 $this->view('#CONTROLLER_NAME#/delete');
             }   
         } else {
@@ -111,11 +106,7 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
             $keys = array(
                 #KEYS_ARRAY_FROM_GET#
             );
-            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
-                'keys' => $keys,
-            ));
-            $object = $response["body"]['response']['object'];
-            $this->setViewData('object', $object);
+            $this->setViewData('object', $this->getObject($keys));
             $this->view('#CONTROLLER_NAME#/view');
         } else {
             $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/index');
@@ -133,6 +124,14 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
             $this->setViewData("error", $ex->getMessage());
         }        
         $this->view('#CONTROLLER_NAME#/list');
+    }
+
+    //private functions
+    private function getObject($keys){        
+        $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
+             'keys' => $keys,
+        ));
+        return $response["body"]['response']['object'];
     }
 }
 

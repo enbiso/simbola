@@ -21,6 +21,8 @@ class #MODEL_CLASS_NAME# extends \simbola\core\application\AppModel{
             $table_name, 
             $primary_key, 
             $class_name, 
+            //state machine
+            $state_config,
             //relationships
             $has_many = array(), 
             $belongs_to = array(), 
