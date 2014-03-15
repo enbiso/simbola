@@ -134,7 +134,7 @@ function shtmlform_input_for($type, $object, $fieldName, $dataName = 'data', $op
     $input_opts = array(
         'name' => "{$dataName}[{$fieldName}]",
         'value' => (is_null($object))?'':$object->$fieldName,
-        'class' => 'form-control',
+        'class' => 'form-control field-'.$fieldName,
         'placeholder' => $object->term($fieldName)
     );
     if(!$object->isEditable($fieldName) && !$object->is_new_record()){
@@ -184,10 +184,13 @@ function shtmlform_label_for($object, $fieldName, $opts = array()) {
 function shtmlform_select_for($object, $fieldName, $data, $dataName = 'data', $opts = array()) {
     $select_opts = array(
         'name' => "{$dataName}[{$fieldName}]",        
-        'class' => 'form-control',        
+        'class' => 'form-control field-'.$fieldName,        
     );
+    if(!$object->isEditable($fieldName) && !$object->is_new_record()){
+        $select_opts['readonly'] = 'true';
+    }
     $opts = array_merge($select_opts, $opts);
-    return shtml_select($data, $object->$fieldName, $opts);
+    return shtmlform_select($data, $object->$fieldName, $opts);
 }
 
 /**
@@ -204,6 +207,9 @@ function shtmlform_textarea_for($object, $fieldName, $dataName = 'data', $opts =
         'class' => 'form-control',
         'placeholder' => $object->term($fieldName)
     );
+    if(!$object->isEditable($fieldName) && !$object->is_new_record()){
+        $textarea_opts['readonly'] = 'true';
+    }
     $opts = array_merge($textarea_opts, $opts);
     return shtmlform_textarea($opts, $object->$fieldName);
 }
@@ -258,7 +264,7 @@ function shtmlform_textarea($opts = array(), $value = '') {
  * @param array $data Display data options
  * @return string HTML tag
  */
-function shtml_select($data, $selected, $opts = array()){
+function shtmlform_select($data, $selected, $opts = array()){
     $content = shtml_tag('select', $opts);
     foreach ($data as $value => $label) {
         $opt_opts = array('value' => $value);

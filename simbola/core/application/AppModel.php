@@ -10,6 +10,23 @@ namespace simbola\core\application;
 class AppModel extends \ActiveRecord\Model{    
     static $delegate = array();
     static $alias_attribute = array();
+    static $state_config = array(
+        'states' => array('idle'),
+        'rules'  => array(
+            array('start' => 'idle'),
+            array('end' => 'idle')
+        ),
+    );
+    
+    /**
+     * State machine configuration
+     * 
+     * @param array $stateConfig State machine config
+     */
+    public static function stateMachine($stateConfig) {
+        self::$state_config = $stateConfig;
+    }
+    
     /**
      * Used to fetch the term associated with the model term file for 
      * the specified field 
@@ -314,17 +331,27 @@ class AppModel extends \ActiveRecord\Model{
     /**
      * Overrides phpactive record default function set_timestamp
      */
-    public function set_timestamp() {
+    public function set_timestamps() {
+        parent::set_timestamps();
         $now = date('Y-m-d H:i:s');
+        $colNameArr = array_keys($this->Columns());
         if ($this->is_new_record()) {
-            if (property_exists(static::$class_name, '_id')) {
+            if (in_array('_id', $colNameArr)) {
                 $this->_id = uniqid('', true);
             }
-            if (property_exists(static::$class_name, '_created')) {
+            if (in_array('_created', $colNameArr)) {
                 $this->_created = $now;
             }
+            if (in_array('_state', $colNameArr)) {
+                $rules = self::$state_config['rules'];                
+                foreach ($rules as $rule) {
+                    if(isset($rule['start'])){
+                        $this->_state = $rule['start'];
+                    }
+                }
+            }
         }
-        if (property_exists(static::$class_name, '_version')) {
+        if (in_array('_version', $colNameArr)) {
             $this->_version = $now;
         }
     }
@@ -339,6 +366,50 @@ class AppModel extends \ActiveRecord\Model{
             }
         }
         parent::set_attributes($attributes);
+    }
+    
+    /**
+     * Set/Get state from state_machine
+     * 
+     * @param string $state State
+     */
+    public function state($state = false) {
+        if($state){
+            if($this->runStateLogic($this->_state, $state)){
+                $this->_state = $state;
+            }
+        }else{
+            return $this->_state;
+        }
+    }
+    
+    /**
+     * Check state logic
+     * 
+     * @param string $oldState Old State
+     * @param string $newState New State
+     * @return boolean
+     */
+    private function runStateLogic($oldState, $newState) {
+        if(in_array($oldState, self::$state_config['states'])&&
+           in_array($newState, self::$state_config['states'])){
+            $rules = self::$state_config['rules'];
+            foreach ($rules as $rule) {
+                if(isset($rule['start'])){
+                    $rule['from'] = null;
+                    $rule['to'] = $rule['start'];        
+                }
+                if($rule['from'] == $oldState && $rule['to'] == $newState){
+                    if(isset($rule['action'])){
+                        $action = $rule['action'];
+                        return $this->$action();
+                    }else{
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 
