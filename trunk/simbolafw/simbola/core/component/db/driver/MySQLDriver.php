@@ -57,9 +57,6 @@ class MySQLDriver extends AbstractDbDriver {
         if ($log) {
             slog_db($sql . " - " . var_export($params, true));
         }
-        if($this->currentResult instanceof \mysqli_result){
-            mysqli_free_result($this->currentResult);
-        }
         $this->currentResult = mysqli_query($this->connection, $sql);
         return $this->currentResult;
     }

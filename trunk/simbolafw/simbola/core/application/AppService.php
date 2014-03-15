@@ -2,7 +2,7 @@
 
 namespace simbola\core\application;
 
-/** 
+/**
  * The abstract base class that should be used to define the Application Service
  *
  * @author Faraj Farook
@@ -27,21 +27,20 @@ class AppService extends AppController {
         self::STATUS_BAD_REQUEST => 'BAD_REQUEST',
         self::STATUS_FORBIDDEN => 'FORBIDDEN',
     );
-    
+
     /**
      * Used to store the service output data
      * 
      * @var array
      */
     protected $output;
-    
+
     /**
      * Set to output mode or not
      *      
      * @var boolean
      */
     private $return = false;
-
 
     /**
      * Method used to set the response data in the service output
@@ -102,7 +101,7 @@ class AppService extends AppController {
     public function _req_module_isset() {
         return $this->issetPost('module');
     }
-    
+
     /**
      * Returns the service name from the service request
      * 
@@ -111,7 +110,7 @@ class AppService extends AppController {
     public function _req_service() {
         return $this->post('service');
     }
-    
+
     /**
      * Returns if the module name from the service request isset
      * 
@@ -138,7 +137,7 @@ class AppService extends AppController {
     public function _req_action_isset() {
         return $this->issetPost('action');
     }
-        
+
     /**
      * Used to fetch the service request Parameter by given name or if not
      * provided then as a whole
@@ -146,14 +145,14 @@ class AppService extends AppController {
      * @param string $name Name of the serice request parameter
      * @return mixed 
      */
-    public function _req_params($name = null) {        
+    public function _req_params($name = null) {
         $params = $this->currentPage->params;
         if (isset($name)) {
             $params = isset($params[$name]) ? $params[$name] : null;
         }
         return $params;
     }
-    
+
     /**
      * Used to set the response user specific error message
      * 
@@ -191,9 +190,9 @@ class AppService extends AppController {
             'timestamp' => time(),
             'status' => self::STATUS_OK,
             'status_text' => self::$STATUS_TEXT[self::STATUS_OK],
-            'service' => $this->_req_module() . "." 
-                            . $this->_req_service() . "." 
-                            . $this->_req_action());
+            'service' => $this->_req_module() . "."
+            . $this->_req_service() . "."
+            . $this->_req_action());
     }
 
     /**
@@ -212,18 +211,18 @@ class AppService extends AppController {
      * @param \simbola\core\component\url\lib\Page $page
      * @return mixed
      */
-    public function run($page) {        
+    public function run($page) {
         $this->currentPage = $page;
         $funcName = 'action' . ucfirst($page->action);
         $this->preAction($page);
-        if (!method_exists($this, $funcName)) {            
+        if (!method_exists($this, $funcName)) {
             $this->_status(self::STATUS_INVALID_SERVICE);
         } else if ($this->checkSecurityBypass($page->action) || $this->checkSecurity($page)) {
             //check parameters exists
             $schemaProp = "schema_{$page->action}";
             $schema = $this->$schemaProp;
             $paramsFound = TRUE;
-            foreach ($schema['req']['params'] as $paramName) {                
+            foreach ($schema['req']['params'] as $paramName) {
                 $paramsFound = $paramsFound && $page->issetParam($paramName);
             }
             if (!$paramsFound) {
@@ -241,7 +240,7 @@ class AppService extends AppController {
         }
         return $this->postAction($page);
     }
-    
+
     /**
      * The post function in the service call. This fucntion defines the methods of
      * return. Echo or Return as array using the setReturn method
@@ -250,15 +249,35 @@ class AppService extends AppController {
      * @param \simbola\core\component\url\lib\Page $page
      * @return mixed
      */
-    public function postAction($page) {        
+    public function postAction($page) {
         if (!$this->return) {
             header('Cache-Control: no-cache, must-revalidate');
             header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-            header('Content-type: application/json');
-            $this->json($this->output);
+            header('Content-type: application/json');            
+            $output = $this->parseOutput($this->output);
+            $this->json($output);
         } else {
             return $this->output;
         }
+    }
+
+    /**
+     * Parse output for json
+     * 
+     * @param \simbola\core\application\AppModel $obj
+     * @return array
+     */
+    private function parseOutput($obj) {
+        if($obj instanceof AppModel){
+            return json_decode($obj->to_json());
+        }
+        $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;
+        $arr = array();
+        foreach ($arrObj as $key => $val) {
+            $val = (is_array($val) || is_object($val)) ? $this->parseOutput($val) : $val;
+            $arr[$key] = $val;
+        }
+        return $arr;
     }
 
     /**
