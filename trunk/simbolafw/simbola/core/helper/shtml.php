@@ -106,9 +106,11 @@ function shtml_ejs($module, $name) {
  * @param string $tooltip Tool tip
  * @return string HTML Tag for the link
  */
-function shtml_link($value, $link, $opts = array(), $icon = null, $tooltip = null) {
+function shtml_link($value, $link = false, $opts = array(), $icon = null, $tooltip = null) {
     $value = shtml_translate($value);
-    $opts['href'] = $link;
+    if($link){
+        $opts['href'] = $link;
+    }
     if(isset($tooltip)){
         $opts['data-toggle'] = "tooltip";
         $opts['data-placement'] = "top";

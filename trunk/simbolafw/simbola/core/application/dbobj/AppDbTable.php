@@ -55,6 +55,16 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->setContent("ALTER TABLE {$this->getTableName()} ADD PRIMARY KEY({$columns})");
         $this->execute(true);
     }
+    
+    function changePrimaryKey($columns) {
+        if (is_array($columns)) {
+            $columns = implode(",", $columns);
+        }
+        $content[] = "ALTER TABLE {$this->getTableName()} DROP PRIMARY KEY";
+        $content[] = "ALTER TABLE {$this->getTableName()} ADD PRIMARY KEY({$columns})";
+        $this->setContent($content);
+        $this->execute(true);
+    }
 
     function removePrimaryKey() {
         $this->setContent("ALTER TABLE {$this->getTableName()} DROP PRIMARY KEY");
