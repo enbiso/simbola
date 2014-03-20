@@ -14,9 +14,13 @@ class AuthService extends \simbola\core\application\AppService{
     );
 
     function actionLogin() {        
-        if(!\simbola\Simbola::app()->auth->login(
+        $skey = \simbola\Simbola::app()->auth->login(
                 $this->_req_params("username"),
-                $this->_req_params("password"))){            
+                $this->_req_params("password"));
+        if($skey){            
+            $this->_res('username', $this->_req_params("username"));
+            $this->_res('skey', $skey);
+        }else{
             $this->_err("LOGIN_FAILED");
         }
     }
