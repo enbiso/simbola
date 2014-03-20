@@ -221,7 +221,10 @@ function shtmlform_textarea_for($object, $fieldName, $dataName = 'data', $opts =
  * @param array $opts Options
  * @return string HTML tag
  */
-function shtmlform_button($value, $opts = array()) {
+function shtmlform_button($value, $opts = array(), $icon = false) {
+    if($icon){
+        $opts['class'] .= " glyphicon glyphicon-".$icon;
+    }
     $content = shtml_tag('button', $opts);
     $content .= shtml_translate($value);
     $content .= shtml_untag('button');
@@ -270,7 +273,7 @@ function shtmlform_select($data, $selected, $opts = array()){
         $opt_opts = array('value' => $value);
         if($value == $selected){
             $opt_opts['selected'] = 'true';
-        }
+        }        
         $content .= shtml_tag("option", $opt_opts);
         $content .= $label;
         $content .= shtml_untag('option');
