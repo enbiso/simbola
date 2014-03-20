@@ -141,9 +141,9 @@ class Page {
         if ($urlString == \simbola\Simbola::app()->getParam('SERVICE_API')) {
             //service            
             $this->type = Page::TYPE_SERVICE;
-            $this->module = $_POST['module'];
-            $this->logicalUnit = $_POST['service'];
-            $this->action = $_POST['action'];
+            $this->module = isset($_POST['module'])?$_POST['module']:'';
+            $this->logicalUnit = isset($_POST['service'])?$_POST['service']:'';
+            $this->action = isset($_POST['action'])?$_POST['action']:'';
             $this->params = isset($_POST['params'])?$_POST['params']:array();            
         } else {
             //controller
