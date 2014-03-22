@@ -24,7 +24,7 @@ class RbamController extends \simbola\core\application\AppController {
     function actionTabUsers() {
         $this->pview('rbam/users');
     }
-    
+
     function actionTabImportExport() {
         $this->pview('rbam/import_export');
     }
@@ -162,7 +162,7 @@ class RbamController extends \simbola\core\application\AppController {
                 throw new \Exception('Username not defined');
             }
             $this->invoke('system', 'user', 'register', array(
-                'username' => $this->post('username'),                
+                'username' => $this->post('username'),
             ));
             $this->json(array(
                 'title' => 'Success',
@@ -175,17 +175,17 @@ class RbamController extends \simbola\core\application\AppController {
                 'type' => 'warning',
                 'text' => $exc->getTraceAsString(),
             ));
-        }        
+        }
     }
 
     function actionUserChangePassword() {
         try {
-            if (!$this->issetPost('username','password','password_repeat')) {
+            if (!$this->issetPost('username', 'password', 'password_repeat')) {
                 throw new \Exception('Params not defined');
             }
             $this->invoke('system', 'user', 'changePassword', array(
-                'username' => $this->post('username'),     
-                'password' => $this->post('password'),     
+                'username' => $this->post('username'),
+                'password' => $this->post('password'),
                 'password_repeat' => $this->post('password_repeat'),
             ));
             $this->json(array(
@@ -199,7 +199,7 @@ class RbamController extends \simbola\core\application\AppController {
                 'type' => 'warning',
                 'text' => $exc->getTraceAsString(),
             ));
-        }        
+        }
     }
 
     function actionUserDeactivate() {
@@ -208,7 +208,7 @@ class RbamController extends \simbola\core\application\AppController {
                 throw new \Exception('Username not defined');
             }
             $this->invoke('system', 'user', 'deactivate', array(
-                'username' => $this->post('username'),                     
+                'username' => $this->post('username'),
             ));
             $this->json(array(
                 'title' => 'Success',
@@ -221,7 +221,7 @@ class RbamController extends \simbola\core\application\AppController {
                 'type' => 'warning',
                 'text' => $exc->getTraceAsString(),
             ));
-        }   
+        }
     }
 
     function actionUserActivate() {
@@ -230,7 +230,7 @@ class RbamController extends \simbola\core\application\AppController {
                 throw new \Exception('Username not defined');
             }
             $this->invoke('system', 'user', 'activate', array(
-                'username' => $this->post('username'),                     
+                'username' => $this->post('username'),
             ));
             $this->json(array(
                 'title' => 'Success',
@@ -243,7 +243,7 @@ class RbamController extends \simbola\core\application\AppController {
                 'type' => 'warning',
                 'text' => $exc->getTraceAsString(),
             ));
-        }   
+        }
     }
 
     function actionUserUnregister() {
@@ -252,7 +252,7 @@ class RbamController extends \simbola\core\application\AppController {
                 throw new \Exception('Username not defined');
             }
             $this->invoke('system', 'user', 'unregister', array(
-                'username' => $this->post('username'),                     
+                'username' => $this->post('username'),
             ));
             $this->json(array(
                 'title' => 'Success',
@@ -265,26 +265,26 @@ class RbamController extends \simbola\core\application\AppController {
                 'type' => 'warning',
                 'text' => $exc->getTraceAsString(),
             ));
-        }   
+        }
     }
-    
+
     //import export
-    function actionExport(){       
+    function actionExport() {
         $types = array();
-        if($this->issetPost("type")){
-            $types = array_keys($this->post("type"));                   
+        if ($this->issetPost("type")) {
+            $types = array_keys($this->post("type"));
         }
         $data = \simbola\Simbola::app()->auth->getRBAP()->export($types);
         $header = "Content-disposition: attachment; filename=simbola_security.json";
         $this->json($data, $header);
     }
-    
-    function actionImport(){
-        if($this->issetFile("secFile")){
+
+    function actionImport() {
+        if ($this->issetFile("secFile")) {
             $file = $this->file('secFile');
-            if(\simbola\Simbola::app()->auth->getRBAP()->import(json_decode(base64_decode($file['data64']), true))){
+            if (\simbola\Simbola::app()->auth->getRBAP()->import(json_decode(base64_decode($file['data64']), true))) {
                 $this->setViewData("message", "Successfully imported.");
-            }else{
+            } else {
                 $this->setViewData("error", "Import failed.");
             }
         }
@@ -354,9 +354,28 @@ class RbamController extends \simbola\core\application\AppController {
                 . $luName . DIRECTORY_SEPARATOR . $dbObjType . DIRECTORY_SEPARATOR . "*";
         foreach (array_filter(glob($dbLuBasePath), 'is_file') as $fileName) {
             $dbObjName = basename($fileName, ".php");
-            $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, $dbObjType);
-            if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
-                $count++;
+            if ($dbObjType == 'table') { //consider as entity
+                //query
+                $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, "entity.query");
+                if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
+                    $count++;
+                }
+                //state machine actions
+                $modelClass = \simbola\core\application\AppModel::getClass($module, $luName, $dbObjName);
+                if (class_exists($modelClass)) {
+                    foreach ($modelClass::getStates() as $stateName) {
+                        $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, "entity.state." . $stateName);
+                        if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
+                            $count++;
+                        }
+                    }
+                }
+            } else {
+                //views/procedures
+                $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, $dbObjType);
+                if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
+                    $count++;
+                }
             }
         }
         return $count;
@@ -543,8 +562,8 @@ class RbamController extends \simbola\core\application\AppController {
                                 $currLuIndex = count($lus) - 1;
                             }
                             $modules[$currModuleIndex]['children'][$currTypeIndex]['children'] = $lus;
-                            //action
-                            if (count($itemNameArr) > 3) {
+                            //action - system.service.user.deactivate
+                            if (count($itemNameArr) == 4) {
                                 $actions = $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'];
                                 $actionName = $itemNameArr[3];
                                 $currActionIndex = -1;
@@ -564,6 +583,94 @@ class RbamController extends \simbola\core\application\AppController {
                                     $currActionIndex = count($actions) - 1;
                                 }
                                 $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'] = $actions;
+                                //system.entity.auth.Assign.*
+                            } elseif (count($itemNameArr) > 4) {
+                                $entities = $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'];
+                                $entityName = $itemNameArr[3];
+                                $currEntityIndex = -1;
+                                for ($entityIndex = 0; $entityIndex < count($entities); $entityIndex++) {
+                                    if ($entities[$entityIndex]['title'] == $entityName) {
+                                        $currEntityIndex = $entityIndex;
+                                        break;
+                                    }
+                                }
+                                if ($currEntityIndex < 0) {
+                                    $entities[] = array(
+                                        'title' => $entityName,
+                                        'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName,
+                                        'isFolder' => true,
+                                        'children' => array(),
+                                        'select' => $selected,
+                                    );
+                                    $currEntityIndex = count($entities) - 1;
+                                }
+                                $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'] = $entities;
+                                //system.entity.auth.Assign.query
+                                if (count($itemNameArr) == 5) {
+                                    $entityData = $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'];
+                                    $entityDataName = $itemNameArr[4];
+                                    $currEntityDataIndex = -1;
+                                    for ($entityDataIndex = 0; $entityDataIndex < count($entityData); $entityDataIndex++) {
+                                        if ($entityData[$entityDataIndex]['title'] == $entityDataName) {
+                                            $currEntityDataIndex = $entityDataIndex;
+                                            break;
+                                        }
+                                    }
+                                    if ($currEntityDataIndex < 0) {
+                                        $entityData[] = array(
+                                            'title' => $entityDataName,
+                                            'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName . "." . $entityDataName,
+                                            'isFolder' => false,                                                                                        
+                                            'select' => $selected,
+                                        );
+                                        $currEntityDataIndex = count($entityData) - 1;
+                                    }
+                                    $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'] = $entityData;
+                                //system.entity.auth.Assign.state.*
+                                }elseif (count($itemNameArr) > 5) {
+                                    $entityStateData = $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'];
+                                    $entityStateDataName = $itemNameArr[4];
+                                    $currEntityStateDataIndex = -1;
+                                    for ($entityStateDataIndex = 0; $entityStateDataIndex < count($entityStateData); $entityStateDataIndex++) {
+                                        if ($entityStateData[$entityStateDataIndex]['title'] == $entityStateDataName) {
+                                            $currEntityStateDataIndex = $entityStateDataIndex;
+                                            break;
+                                        }
+                                    }
+                                    if ($currEntityStateDataIndex < 0) {
+                                        $entityStateData[] = array(
+                                            'title' => $entityStateDataName,
+                                            'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName . "." . $entityStateDataName,
+                                            'isFolder' => true,
+                                            'children' => array(),
+                                            'select' => $selected,
+                                        );
+                                        $currEntityStateDataIndex = count($entityStateData) - 1;
+                                    }
+                                    $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'] = $entityStateData;
+                                    //system.entity.auth.Assign.state.idle
+                                    if (count($itemNameArr) == 6) {
+                                        $states = $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'][$currEntityStateDataIndex]['children'];
+                                        $stateName = $itemNameArr[5];
+                                        $currStateIndex = -1;
+                                        for($stateIndex = 0; $stateIndex < count($states); $stateIndex++){
+                                            if($states[$stateIndex]['title'] == $stateName){
+                                                $currStateIndex = $stateIndex;
+                                                break;
+                                            }
+                                        }
+                                        if($currStateIndex < 0){
+                                            $states[] = array(
+                                                'title' => $stateName,
+                                                'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName . "." . $entityDataName . "." . $stateName,
+                                                'isFolder' => false,
+                                                'select' => $selected,
+                                            );
+                                            $currStateIndex = count($states) - 1;
+                                        }
+                                        $modules[$currModuleIndex]['children'][$currTypeIndex]['children'][$currLuIndex]['children'][$currEntityIndex]['children'][$currEntityStateDataIndex]['children'] = $states;
+                                    }
+                                }
                             }
                         }
                     }

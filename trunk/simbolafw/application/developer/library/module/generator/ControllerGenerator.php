@@ -42,6 +42,8 @@ class ControllerGenerator extends CodeGenerator {
         $this->createTerms('delete');
         $this->createView('view');
         $this->createTerms('view');
+        $this->createView('notFound');
+        $this->createTerms('notFound');
         $this->createView('_form');
         $this->createTerms('_form');
         $this->createView('_display');

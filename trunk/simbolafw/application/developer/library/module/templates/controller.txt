@@ -47,29 +47,33 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
             $keysFromGet = array(
                 #KEYS_ARRAY_FROM_GET#
             );
-            $object = $this->getObject($keysFromGet);
-            $this->setViewData('object',$object);
-            if ($this->issetPost('data')) {
-                try {
-                    $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'update', array(
-                        'keys' => $keysFromGet,
-                        'data' => $this->post('data'),
-                    ));
-                    $object = $response["body"]['response']['object'];
-                    $this->setViewData('object',$object);
-                    $keys = array(
-                        #KEYS_ARRAY_FROM_OBJ#
-                    );
-                    $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
-                } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
-                    $object = $ex->getResponse('object');
-                    $this->setViewData("error", $object->errors->full_messages()); 
-                    $this->setViewData('object', $object);
-                } catch (\Exception $ex) {
-                    $this->setViewData("error", $ex->getMessage());
+            $object = $this->getObject($keysFromGet);            
+            if(is_null($object)){
+                $this->view('#CONTROLLER_NAME#/notFound');
+            }else{
+                $this->setViewData('object',$object);
+                if ($this->issetPost('data')) {
+                    try {
+                        $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'update', array(
+                            'keys' => $keysFromGet,
+                            'data' => $this->post('data'),
+                        ));
+                        $object = $response["body"]['response']['object'];
+                        $this->setViewData('object',$object);
+                        $keys = array(
+                            #KEYS_ARRAY_FROM_OBJ#
+                        );
+                        $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/view',$keys);
+                    } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
+                        $object = $ex->getResponse('object');
+                        $this->setViewData("error", $object->errors->full_messages()); 
+                        $this->setViewData('object', $object);
+                    } catch (\Exception $ex) {
+                        $this->setViewData("error", $ex->getMessage());
+                    }
                 }
+                $this->view('#CONTROLLER_NAME#/update');
             }
-            $this->view('#CONTROLLER_NAME#/update');
         }else{
             $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/index');
         }
@@ -93,8 +97,13 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
                 $keys = array(
                     #KEYS_ARRAY_FROM_GET#
                 );
-                $this->setViewData('object', $this->getObject($keys));
-                $this->view('#CONTROLLER_NAME#/delete');
+                $object = $this->getObject($keys);
+                if(is_null($object)){
+                    $this->view('#CONTROLLER_NAME#/notFound');
+                }else{
+                    $this->setViewData('object', $object);
+                    $this->view('#CONTROLLER_NAME#/delete');
+                }
             }   
         } else {
             $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/list');
@@ -106,8 +115,13 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
             $keys = array(
                 #KEYS_ARRAY_FROM_GET#
             );
-            $this->setViewData('object', $this->getObject($keys));
-            $this->view('#CONTROLLER_NAME#/view');
+            $object = $this->getObject($keys);
+            if(is_null($object)){
+                $this->view('#CONTROLLER_NAME#/notFound');
+            }else{
+                $this->setViewData('object', $object);
+                $this->view('#CONTROLLER_NAME#/view');
+            }
         } else {
             $this->redirect('/#MODULE_NAME#/#CONTROLLER_NAME#/index');
         }
@@ -128,10 +142,14 @@ class #CONTROLLER_CLASS_NAME#Controller extends \simbola\core\application\AppCon
 
     //private functions
     private function getObject($keys){        
-        $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
-             'keys' => $keys,
-        ));
-        return $response["body"]['response']['object'];
+        try{
+            $response = $this->invoke('#MODULE_NAME#', '#SERVICE_NAME#', 'view', array(
+                 'keys' => $keys,
+            ));
+            return $response["body"]['response']['object'];
+        }catch(\Exception $ex){
+            return null;
+        }
     }
 }
 
