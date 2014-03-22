@@ -238,6 +238,7 @@ class AppService extends AppController {
                 try {
                     $this->$funcName();
                 } catch (\Exception $ex){
+                    slog_syserror(__METHOD__, $ex->getTraceAsString());
                     $this->_err($ex->getMessage());
                     $this->_status(self::STATUS_ERROR);
                 }
