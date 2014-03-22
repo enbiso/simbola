@@ -1,0 +1,19 @@
+<?php
+/**
+ * Description of Controller Term
+ *
+ * Controller 	: #CONTROLLER_NAME#
+ * View 	: view
+ * Created	: #TODAY_DATE#
+ * Purpose 	: #PURPOSE#
+ *
+ * Change Logs
+ * -----------------------------------------------------------
+ * #TODAY_DATE# #AUTHER#: Created the Controller Term #CONTROLLER_NAME#
+ *  
+ * @author #AUTHER#
+ */
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.notFound.title'] = 'Not Found';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.notFound.menu.list'] = 'List';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.notFound.menu.create'] = 'Create';
+$__term['#MODULE_NAME#.#CONTROLLER_NAME#.notFound.description'] = '#CTS_CONTROLLER_NAME# not found. Provided ID is not valid.';

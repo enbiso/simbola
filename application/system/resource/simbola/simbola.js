@@ -126,10 +126,21 @@ var simbola = {
                                 callback(data.body.response);
                                 break;
                             case simbola.STATUS.USER_ERROR:
-                                $.pnotify(data.body.message);
+                                $.pnotify({
+                                    title: 'Application error',
+                                    text: data.body.message,
+                                    type: 'error'
+                                });
+                                break;
+                            case simbola.STATUS.ERROR:
+                                $.pnotify({
+                                    title: 'System error',
+                                    text: data.body.message,
+                                    type: 'error'
+                                });
                                 break;
                             default:
-                                alert(data.header.status);
+                                alert(data.header.status_text);
                                 break;
                         }
                     } else {
@@ -141,6 +152,7 @@ var simbola = {
     },
     STATUS: {
         OK: '200',
+        ERROR: '500',
         USER_ERROR: '201',
         INVALID_SERVICE: '404',
         BAD_REQUEST: '400',

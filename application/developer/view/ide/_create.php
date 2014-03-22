@@ -70,11 +70,27 @@
     $(function(){
        $('#create_modal_name_value').keyup(function(){
            var value = $('#create_modal_name_value').val();
-           $('#create_modal_model_value').val(value);
+           var lu = $('#create_modal_lu_value').val();
+           var modelVal = getModelValue(value, lu);
+           $('#create_modal_model_value').val(modelVal); 
            $('#create_modal_service_value').val(value);
            var purpose = value.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }).trim() + ' ' 
                    + modal_type_gbl.charAt(0).toUpperCase() + modal_type_gbl.slice(1);
            $('#create_modal_purpose_value').val(purpose);
        }); 
+       $('#create_modal_lu_value').keyup(function(){
+           var lu = $('#create_modal_lu_value').val();
+           var value = $('#create_modal_name_value').val();
+           var modelVal = getModelValue(value, lu);
+           $('#create_modal_model_value').val(modelVal); 
+       });
     });
+    
+    function getModelValue(name, lu){
+        if(name.lastIndexOf(lu)===0){ 
+            name = name.replace(lu ,"");
+            name = name.charAt(0).toLowerCase() + name.slice(1);
+        }
+        return name;
+    }
 </script>

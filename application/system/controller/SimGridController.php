@@ -14,7 +14,7 @@ class SimGridController extends \simbola\core\application\AppController {
         $permObj = new \simbola\core\component\auth\lib\PermObject(
                 $source->module,
                 $source->lu,
-                $source->name, 'table');        
+                $source->name, 'entity.query');        
         return parent::checkSecurity($page) 
                 && \simbola\Simbola::app()->auth->checkPermission($permObj);;
     }
