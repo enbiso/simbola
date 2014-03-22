@@ -204,7 +204,7 @@ class Table
 		$this->last_sql = $sql;
 
 		$collect_attrs_for_includes = is_null($includes) ? false : true;
-		$list = $attrs = array();
+		$list = $attrs = array();                
 		$sth = $this->conn->query($sql,$this->process_data($values));
 
 		while (($row = $sth->fetch()))

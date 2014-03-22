@@ -39,10 +39,19 @@ class PermObject {
      * @return string
      */
     public function getAccessItem() {                
-        $accessItem = "{$this->module}.{$this->type}.{$this->logicalUnit}";
+        $prepender = false;
+        if(sstring_contains($this->type,".")){
+            $types = explode(".", $this->type);
+            $this->type = $types[0];
+            $prepender = implode(".", array_slice($types, 1));
+        }
+        $accessItem = "{$this->module}.{$this->type}.{$this->logicalUnit}";        
         if (!is_null($this->object)) {
             $accessItem = "{$accessItem}.{$this->object}";
         }        
+        if($prepender){
+            $accessItem = "{$accessItem}.{$prepender}";
+        }
         return $accessItem;
     }
 

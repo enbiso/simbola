@@ -262,11 +262,11 @@ function shtml_eencode($value) {
  * @param array $values Breadcrumb data
  * @return string HTML tag
  */
-function shtml_breadcrumb($values) {
+function shtml_breadcrumb($values) {    
     $val = "";
     $val .= shtml_tag("ol", array('class' => 'breadcrumb'));
     foreach ($values as $key => $value) {
-        if (is_string($key)) {
+        if (is_array($value)) {
             $val .= shtml_tag("li");
             $val .= shtml_action_link($key, $value);
         } else {

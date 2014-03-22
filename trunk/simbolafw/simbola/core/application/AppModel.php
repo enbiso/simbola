@@ -28,6 +28,15 @@ class AppModel extends \ActiveRecord\Model{
     }
     
     /**
+     * Return array of available states
+     * 
+     * @return array of states
+     */
+    public static function getStates() {
+        return self::$state_config['states'];
+    }
+    
+    /**
      * Used to fetch the term associated with the model term file for 
      * the specified field 
      * 
@@ -380,6 +389,32 @@ class AppModel extends \ActiveRecord\Model{
             }
         }else{
             return $this->_state;
+        }
+    }
+    
+    /**
+     * Returns created date
+     * 
+     * @return \ActiveRecord\DateTime
+     */
+    public function created($format = false) {
+        if($format){
+            return $this->_created->format($format);        
+        }else{
+            return $this->_created;
+        }
+    }
+    
+    /**
+     * Returns modified date
+     * 
+     * @return \ActiveRecord\DateTime
+     */
+    public function modified($format = false) {
+        if($format){
+            return $this->_version->format($format);        
+        }else{
+            return $this->_version;  
         }
     }
     
