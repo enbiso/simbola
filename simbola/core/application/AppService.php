@@ -10,6 +10,7 @@ namespace simbola\core\application;
 class AppService extends AppController {
 
     const STATUS_OK = '200';
+    const STATUS_ERROR = '500';
     const STATUS_USER_ERROR = '201';
     const STATUS_INVALID_SERVICE = '404';
     const STATUS_BAD_REQUEST = '400';
@@ -22,6 +23,7 @@ class AppService extends AppController {
      */
     private static $STATUS_TEXT = array(
         self::STATUS_OK => 'OK',
+        self::STATUS_ERROR => 'ERROR',
         self::STATUS_USER_ERROR => 'USER_ERROR',
         self::STATUS_INVALID_SERVICE => 'INVALID_SERVICE',
         self::STATUS_BAD_REQUEST => 'BAD_REQUEST',
@@ -233,7 +235,12 @@ class AppService extends AppController {
                 foreach ($schema['res'] as $resKey) {
                     $this->output['body']['response'][$resKey] = null;
                 }
-                $this->$funcName();
+                try {
+                    $this->$funcName();
+                } catch (\Exception $ex){
+                    $this->_err($ex->getMessage());
+                    $this->_status(self::STATUS_ERROR);
+                }
             }
         } else {
             $this->_status(self::STATUS_FORBIDDEN);
