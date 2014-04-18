@@ -240,9 +240,11 @@ function shtml_tab($id, $params) {
  * @param string $value String value to encode for html
  * @return string encoded string
  */
-function shtml_encode($value) {
+function shtml_encode($value, $format) {
     if (!isset($value)) {
-        $value = "--";
+        $value = "";
+    }elseif($value instanceof DateTime){
+        $value = $value->format($format);
     }
     return htmlspecialchars($value);
 }

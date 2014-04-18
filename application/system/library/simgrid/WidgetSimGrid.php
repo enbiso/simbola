@@ -106,7 +106,7 @@ class WidgetSimGrid {
      * @param array $actions Action array
      */
     public function setTableActions($actions) {
-        $this->tableActions = array_merge($actions, $this->tableActions);
+        $this->tableActions = array_merge($this->tableActions, $actions);
     }
 
     /**
@@ -204,7 +204,7 @@ class WidgetSimGrid {
     private function generateTableActions() {
         $content = '';
         if (count($this->tableActions) > 0) {
-            $content .= shtml_tag('div', array('btn-group'));
+            $content .= shtml_tag('div', array('class'=>'btn-group'));
             foreach ($this->tableActions as $tAction) {
                 $content .= $tAction;
             }
