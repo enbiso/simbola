@@ -131,9 +131,13 @@ function shtmlform_input_text_for($object, $fieldName, $dataName = 'data', $opts
  * @return string HTML Tag
  */
 function shtmlform_input_for($type, $object, $fieldName, $dataName = 'data', $opts = array()) {
+    $value = (is_null($object))?'':$object->$fieldName;
+    if($value instanceof ActiveRecord\DateTime){
+        $value = $value->format("Y-m-d");
+    }
     $input_opts = array(
         'name' => "{$dataName}[{$fieldName}]",
-        'value' => (is_null($object))?'':$object->$fieldName,
+        'value' => $value,
         'class' => 'form-control field-'.$fieldName,
         'placeholder' => $object->term($fieldName)
     );
@@ -321,13 +325,13 @@ function shtmlform_group_input_for($type, $object, $fieldName, $dataName = 'data
  * @param array $opts Options
  * @return string HTML Tag
  */
-function shtmlform_group_select_for($object, $fieldName, $data, $dataName = 'data', $opts = array()){
+function shtmlform_group_select_for($object, $fieldName, $data, $dataName = 'data', $opts = array()){        
     $formGroupOpts = array('class'=>'form-group');    
     $hasError = isset($object->errors) && !is_null($object->errors->on($fieldName));
     if($hasError){ 
         $formGroupOpts['class'] .= ' has-error has-feedback';        
     }
-    $output = shtml_tag("div", $formGroupOpts);    
+    $output = shtml_tag("div", $formGroupOpts);              
     $output .= shtmlform_label_for($object, $fieldName);
     $output .= shtmlform_select_for($object, $fieldName, $data, $dataName, $opts);
     if($hasError){ 
