@@ -237,7 +237,7 @@ class AppService extends AppController {
                 }
                 try {
                     $this->$funcName();
-                } catch (\Exception $ex){
+                } catch (\Exception $ex) {
                     slog_syserror(__METHOD__, $ex->getTraceAsString());
                     $this->_err($ex->getMessage());
                     $this->_status(self::STATUS_ERROR);
@@ -261,7 +261,7 @@ class AppService extends AppController {
         if (!$this->return) {
             header('Cache-Control: no-cache, must-revalidate');
             header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-            header('Content-type: application/json');            
+            header('Content-type: application/json');
             $output = $this->parseOutput($this->output);
             $this->json($output);
         } else {
@@ -276,7 +276,7 @@ class AppService extends AppController {
      * @return array
      */
     private function parseOutput($obj) {
-        if($obj instanceof AppModel){
+        if ($obj instanceof AppModel) {
             return json_decode($obj->to_json());
         }
         $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;
