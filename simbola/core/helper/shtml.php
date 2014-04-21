@@ -41,6 +41,34 @@ function shtml_untag($tag) {
 }
 
 /**
+ * Set meta data for the HTML
+ * 
+ * @param type $charset utf-8
+ * @param type $contents meta contents array
+ * @return type
+ */
+function shtml_meta($charset = "utf-8", $contents = array()){            
+    $meta = shtml_taged('meta', array('charset' => $charset));
+    $meta .= shtml_taged('meta', array('http-equiv' => "X-UA-Compatible", 'content' => "IE=edge"));    
+    $meta .= shtml_meta_content('viewport', "width=device-width, initial-scale=1.0");
+    foreach ($contents as $name => $content) {
+        $meta .= shtml_meta_content($name, $content);
+    }
+    return $meta;
+}
+
+/**
+ * Set  meta content for the HTML page
+ * 
+ * @param type $name Name
+ * @param type $content Content
+ * @return type
+ */
+function shtml_meta_content($name, $content){
+    return shtml_taged('meta', array('name' => $name, 'content' => $content));
+}
+
+/**
  * Create HTML CSS tag
  * 
  * @param string $module Module name
@@ -60,6 +88,80 @@ function shtml_css($module, $name) {
  */
 function shtml_ecss($module, $name) {
     echo shtml_css($module, $name);
+}
+
+/**
+ * Gets the system resource include HTMLS
+ * 
+ * @param type $include array of system resources
+ * @return type include HTML
+ */
+function shtml_resource_include($include = array()){    
+    $incl = "";
+    if(in_array('jquery-pnotify', $include)){
+        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
+        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
+    }
+    if(in_array('flexigrid', $include)){
+        $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
+        $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
+    }
+    if(in_array('bootstrap', $include)){
+        $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
+        $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
+        $incl .= '<!--[if lt IE 9]>';
+        $incl .= '<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>';
+        $incl .= '<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>';
+        $incl .= '<![endif]-->';
+        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');        
+    }
+    if(in_array('bootstrap-notify', $include)){
+        $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
+        $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
+    }
+    if(in_array('jquery', $include)){
+        $incl .= shtml_js('system', 'jquery/jquery.min.js');
+        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');    
+    }
+    if(in_array('jquery-cookie', $include)){
+        $incl .= shtml_js('system', 'jquery-cookie/jquery.cookie.js');
+    }
+    if(in_array('jquery-ui', $include)){
+        $incl .= shtml_css('system', 'jquery-ui/smoothness/jquery.ui.css');
+        $incl .= shtml_js('system', 'jquery-ui/jquery.ui.js');    
+    }
+    if(in_array('jquery-contextmenu', $include)){
+        $incl .= shtml_css('system', 'jquery-contextmenu/jquery.contextMenu.css');
+        $incl .= shtml_js('system', 'jquery-contextmenu/jquery.contextMenu.js');   
+    }
+    if(in_array('jquery-dynatree', $include)){
+        $incl .= shtml_css('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
+        $incl .= shtml_js('system', 'jquery-dynatree/jquery.dynatree.js');            
+    }
+    if(in_array('rbam', $include)){
+        $incl .= shtml_css('system', 'rbam/main.css');
+        $incl .= shtml_js('system', 'rbam/main.js');
+    }
+    if(in_array('simbola', $include)){
+        $incl .= shtml_js('system', 'simbola/simbola.js');
+        $incl .= shtml_js('system', 'simbola/simbola.jquery.js');
+        $incl .= shtml_js('system', 'simbola/simbola.bootstrap.js');
+    }
+    if(in_array('simgrid', $include)){
+        $incl .= shtml_js('system', 'simgrid/simgrid.js');
+    }
+    if(in_array('less', $include)){
+        $incl .= shtml_js('system', 'less/less.min.js');
+    }
+    if(in_array('json', $include)){
+        $incl .= shtml_js('system', 'json/json2.js');
+    }
+    if(in_array('codemirror', $include)){
+        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css'); 
+        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');   
+        $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
+    }
+    return $incl;
 }
 
 /**
