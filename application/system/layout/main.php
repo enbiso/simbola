@@ -5,52 +5,16 @@
     <head>
         <meta charset="utf-8">
         <title>Simbola Framework</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Simbola Framwork">
-        <meta name="author" content="Faraj">        
-        <!-- Le styles -->
-        <?php
-        shtml_ecss('system', 'jquery-pnotify/jquery.pnotify.default.css');
-        shtml_ecss('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
-        shtml_ecss('system', 'flexigrid/flexigrid.css');
-        shtml_ecss('system', 'bootstrap/css/bootstrap.min.css');
-        shtml_ecss('system', 'bootstrap/css/bootstrap-theme.min.css');
-        shtml_ecss('system', 'bootstrap-notify/css/bootstrap-notify.css');
+        <?= shtml_meta('utf-8', array(
+            'description' => "Simbola Framework",
+            'author' => 'Faraj Farook')) ?>        
         
-        shtml_ecss('system', 'jquery-ui/smoothness/jquery.ui.css');
-        shtml_ecss('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
-        shtml_ecss('system', 'jquery-contextmenu/jquery.contextMenu.css');
-        shtml_ecss('system', 'rbam/main.css');                
-        ?>        
-        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-        <!--[if lt IE 9]>
-          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <?php
-        shtml_ejs('system', 'jquery/jquery.min.js');
-        shtml_ejs('system', 'jquery/jquery.migrate.js');
-        shtml_ejs('system', 'jquery-cookie/jquery.cookie.js');
-
-        shtml_ejs('system', 'simbola/simbola.js');
-        shtml_ejs('system', 'simbola/simbola.jquery.js');
-        shtml_ejs('system', 'simbola/simbola.bootstrap.js');
-        shtml_ejs('system', 'simgrid/simgrid.js');
-
-        shtml_ejs('system', 'bootstrap/js/bootstrap.min.js');
-        shtml_ejs('system', 'bootstrap-notify/js/bootstrap-notify.js');
-
-        shtml_ejs('system', 'less/less.min.js');
-        shtml_ejs('system', 'json/json2.js');
-
-        shtml_ejs('system', 'flexigrid/flexigrid.js');
+        <?= shtml_resource_include(array(
+            'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json',
+            'flexigrid', 'jquery-ui', 'jquery-dynatree', 'jquery-contextmenu', 
+            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>
         
-        shtml_ejs('system', 'jquery-pnotify/jquery.pnotify.min.js');    
-        shtml_ejs('system', 'flexigrid/flexigrid.js');    
-        shtml_ejs('system', 'jquery-ui/jquery.ui.js');    
-        shtml_ejs('system', 'jquery-dynatree/jquery.dynatree.js');            
-        shtml_ejs('system', 'jquery-contextmenu/jquery.contextMenu.js');   
-        shtml_ejs('system', 'rbam/main.js');
-
+        <?php
         //setup pagemenu
         if ($this->isDataSet('page_menu')) {
             $this->page_menu = sauth_filter_menu_array($this->page_menu);
