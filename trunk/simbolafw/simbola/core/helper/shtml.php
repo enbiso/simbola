@@ -98,33 +98,38 @@ function shtml_ecss($module, $name) {
  */
 function shtml_resource_include($include = array()){    
     $incl = "";
-    if(in_array('jquery-pnotify', $include)){
-        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
-        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
+    
+    //Generic
+    if(in_array('less', $include)){
+        $incl .= shtml_js('system', 'less/less.min.js');
     }
-    if(in_array('flexigrid', $include)){
-        $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
-        $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
+    if(in_array('json', $include)){
+        $incl .= shtml_js('system', 'json/json2.js');
     }
-    if(in_array('bootstrap', $include)){
-        $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
-        $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
-        $incl .= '<!--[if lt IE 9]>';
-        $incl .= '<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>';
-        $incl .= '<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>';
-        $incl .= '<![endif]-->';
-        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');        
+    if(in_array('codemirror', $include)){
+        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css'); 
+        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');   
+        $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
     }
-    if(in_array('bootstrap-notify', $include)){
-        $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
-        $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
-    }
+    
+    //Jquery related
     if(in_array('jquery', $include)){
-        $incl .= shtml_js('system', 'jquery/jquery.min.js');
+        $incl .= '<!--[if lt IE 9]>';
+        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');
         $incl .= shtml_js('system', 'jquery/jquery.migrate.js');    
+        $incl .= '<![endif]-->';
+        $incl .= '<!--[if (gt IE 8)|(!IE)]><!-->';
+        $incl .= shtml_js('system', 'jquery/jquery-2.x.min.js');
+        $incl .= '<!--<![endif]-->';
     }
     if(in_array('jquery-cookie', $include)){
         $incl .= shtml_js('system', 'jquery-cookie/jquery.cookie.js');
+    }
+    if(in_array('jquery-pnotify', $include)){
+        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
+        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
+        $incl .= shtml_css('system', 'jquery-pnotify/_notify.css');
+        $incl .= shtml_js('system', 'jquery-pnotify/jquery.pnotify.min.js');
     }
     if(in_array('jquery-ui', $include)){
         $incl .= shtml_css('system', 'jquery-ui/smoothness/jquery.ui.css');
@@ -138,6 +143,23 @@ function shtml_resource_include($include = array()){
         $incl .= shtml_css('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
         $incl .= shtml_js('system', 'jquery-dynatree/jquery.dynatree.js');            
     }
+    
+    //Bootstrap
+    if(in_array('bootstrap', $include)){
+        $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
+        $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
+        $incl .= '<!--[if lt IE 9]>';
+        $incl .= shtml_js('system', 'bootstrap/js/html5shiv.min.js');     
+        $incl .= shtml_js('system', 'bootstrap/js/respond.min.js');
+        $incl .= '<![endif]-->';
+        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');        
+    }
+    if(in_array('bootstrap-notify', $include)){
+        $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
+        $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
+    }
+    
+    //Simbola
     if(in_array('rbam', $include)){
         $incl .= shtml_css('system', 'rbam/main.css');
         $incl .= shtml_js('system', 'rbam/main.js');
@@ -150,16 +172,9 @@ function shtml_resource_include($include = array()){
     if(in_array('simgrid', $include)){
         $incl .= shtml_js('system', 'simgrid/simgrid.js');
     }
-    if(in_array('less', $include)){
-        $incl .= shtml_js('system', 'less/less.min.js');
-    }
-    if(in_array('json', $include)){
-        $incl .= shtml_js('system', 'json/json2.js');
-    }
-    if(in_array('codemirror', $include)){
-        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css'); 
-        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');   
-        $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
+    if(in_array('flexigrid', $include)){
+        $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
+        $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
     }
     return $incl;
 }
