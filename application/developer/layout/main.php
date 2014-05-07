@@ -8,7 +8,7 @@
         
         <?= shtml_resource_include(array(
             'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json', 'codemirror',
-            'flexigrid', 'jquery-ui', 'jquery-dynatree', 'jquery-contextmenu', 
+            'flexigrid', 'jquery-ui', 'jquery-pnotify', 'jquery-dynatree', 'jquery-contextmenu', 
             'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>     
         
         <?= shtml_js('system', 'codemirror/lib/util/matchbrackets.js') ?>    
@@ -29,6 +29,7 @@
                 padding-top: 80px;
             }
         </style>
+        <?php simbola_js_init() ?>
     </head>
     <body>
         <?php $this->includeFile('_header'); ?>
@@ -39,6 +40,5 @@
                 <?php $this->includeFile('_footer'); ?>
             </footer>
         </div> 
-        <?php simbola_js_init() ?>
     </body>
 </html>
