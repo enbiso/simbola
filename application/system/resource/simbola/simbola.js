@@ -6,6 +6,12 @@ var simbola = {
     },
     isInit: false,
     log: function(type, message) {
+        //code for IE and other browsers which doesnt have consoles
+        window.console = window.console || (function(){
+            var c = {}; c.log = c.warn = c.debug = c.info = c.error = c.time = c.dir = c.profile = c.clear = c.exception = c.trace = c.assert = function(s){};
+            return c;
+        })();
+        
         var now = new Date(),
                 now = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds() + "." + now.getMilliseconds();
         message = "Simbola " + now + " - " + message;

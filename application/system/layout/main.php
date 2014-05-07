@@ -68,6 +68,7 @@
                 text-align: center;
             }
         </style>
+        <?php simbola_js_init(); ?>
     </head>
     <body>
         <div id="wrap">
@@ -94,6 +95,5 @@
             </div>        
             <?php $this->includeFile('_footer'); ?>        
         </div>
-        <?php simbola_js_init(); ?>
     </body>
 </html>
