@@ -115,12 +115,12 @@ function shtml_resource_include($include = array()){
     //Jquery related
     if(in_array('jquery', $include)){
         $incl .= '<!--[if lt IE 9]>';
-        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');
-        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');    
+        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');  
         $incl .= '<![endif]-->';
         $incl .= '<!--[if (gt IE 8)|(!IE)]><!-->';
         $incl .= shtml_js('system', 'jquery/jquery-2.x.min.js');
         $incl .= '<!--<![endif]-->';
+        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');  
     }
     if(in_array('jquery-cookie', $include)){
         $incl .= shtml_js('system', 'jquery-cookie/jquery.cookie.js');
