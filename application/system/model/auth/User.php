@@ -33,7 +33,10 @@ class User extends \simbola\core\application\AppModel {
         self::setClass(__CLASS__);
         self::setSource("system", "auth", "user");
         self::primaryKey('user_id');
-        self::hasMany(array('sessions', 'class_name' => 'application\system\model\auth\Session', 'foreign_key' => 'user_id', 'primary_key' => 'user_id'));        
+        self::hasMany(array('sessions', 
+            'class_name' => '\application\system\model\auth\Session', 
+            'foreign_key' => 'user_id', 
+            'primary_key' => 'user_id'));        
         self::aliasAttribute('user_name', 'username');
     }
     
