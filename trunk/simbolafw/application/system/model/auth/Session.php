@@ -10,7 +10,9 @@ class Session extends \simbola\core\application\AppModel {
     public static function initialize() {
         self::setClass(__CLASS__);
         self::setSource("system", "auth", "session");
-        self::belongsTo(array('user', 'class_name' => 'application\system\model\auth\User', 'foreign_key' => 'user_id', 'primary_key' => 'user_id'));
+        self::belongsTo(array('user', 
+            'class_name' => '\application\system\model\auth\User', 
+            'foreign_key' => 'user_id', 'primary_key' => 'user_id'));
     }
 }
 
