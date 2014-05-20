@@ -144,26 +144,119 @@ class AppModel extends \ActiveRecord\Model{
     }
 
     /**
-     * Set before save excution functions
-     * 
-     * @param array $value
+     * before_create: called before a NEW model is to be inserted into the database
+     * @param string $value funtion name
+     */
+    public static function beforeCreate($value) {
+        static::$before_create[] = $value;
+    }
+    
+    /**
+     * before_update: called before an existing model has been saved
+     * @param string $value funtion name
+     */
+    public static function beforeUpdate($value) {
+        static::$before_update[] = $value;
+    }
+    
+    /**
+     * before_validation: called before running validators
+     * @param string $value funtion name
+     */
+    public static function beforeValidation($value) {
+        static::$before_validation[] = $value;
+    }
+    
+    /**
+     * before_validation_on_create: called before validation on a NEW model being inserted
+     * @param string $value funtion name
+     */
+    public static function beforeValidationOnCreate($value) {
+        static::$before_validation_on_create[] = $value;
+    }
+    
+    /**
+     * before_validation_on_update: same as above except for an existing model being saved
+     * @param string $value funtion name
+     */
+    public static function beforeValidationOnUpdate($value) {
+        static::$before_validation_on_update[] = $value;
+    }
+    
+    /**
+     * before_destroy: called after a model has been deleted
+     * @param string $value funtion name
+     */
+    public static function beforeDestroy($value) {
+        static::$before_destroy[] = $value;
+    }
+    
+    /**
+     * before_save: called before a model is saved     
+     * @param string $value funtion name
      */
     public static function beforeSave($value) {
         static::$before_save[] = $value;
     }
     
     /**
-     * Set after save excution functions
-     * 
-     * @param array $value
+     * after_save: called after a model is saved
+     * @param string $value funtion name
      */
     public static function afterSave($value) {
         static::$after_save[] = $value;
     }
+    
+    /**
+     * after_create: called after a NEW model has been inserted into the database
+     * @param string $value funtion name
+     */
+    public static function afterCreate($value) {
+        static::$after_create[] = $value;
+    }
+    
+    /**
+     * after_update: called after an existing model has been saved
+     * @param string $value funtion name
+     */
+    public static function afterUpdate($value) {
+        static::$after_update[] = $value;
+    }
 
     /**
-     * Set alias name for the field
-     * 
+     * after_validation: called after running validators
+     * @param string $value funtion name
+     */
+    public static function afterValidation($value) {
+        static::$after_validation[] = $value;
+    }
+    
+    /**
+     * after_validation_on_create: called after validation on a NEW model being inserted
+     * @param string $value funtion name
+     */
+    public static function afterValidationOnCreate($value) {
+        static::$after_validation_on_create[] = $value;
+    }
+    
+    /**
+     * after_validation_on_update: same as above except for an existing model being saved
+     * @param string $value funtion name
+     */
+    public static function afterValidationOnUpdate($value) {
+        static::$after_validation_on_update[] = $value;
+    }
+    
+    /**
+     * after_destroy: called after a model has been deleted
+     * @param string $value funtion name
+     */
+    public static function afterDestroy($value) {
+        static::$after_destroy[] = $value;
+    }
+
+    /**
+     * Set alias name for the field     
      * @param string $name Name of the field
      * @param string $alias Alias name of the field
      */
@@ -445,6 +538,24 @@ class AppModel extends \ActiveRecord\Model{
             }
         }
         return false;
+    }
+    
+    /**
+     * Get dirty attributes. If param set to all = true then 
+     * _version, _created, _state and _id were also includeed.
+     * @param type $all default true
+     * @return array Attributes
+     */
+    public function dirty_attributes($all = true) {
+        $attr = parent::dirty_attributes();
+        if(!$all){
+            foreach (array('_version', '_created', '_state', '_id') as $key) {
+                if(array_key_exists($key, $attr)){
+                    unset($attr[$key]);
+                }
+            }
+        }
+        return $attr;
     }
 }
 
