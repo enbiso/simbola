@@ -72,7 +72,7 @@ class ModelGenerator extends CodeGenerator {
     private function getModelHasMany($tblMeta) {
         $relations = $tblMeta['relations']['has_many'];
         $hasMany = array();
-        $template = 'self::hasMany(array("#NAME#", "class_name" => "\application\#REF_MODULE_NAME#\model\#REF_LU_NAME#\#REF_ITEM_NAME#", "foreign_key" => "#REF_COL_NAME#", "primary_key" => "#COL_NAME#"));';
+        $template = "self::hasMany(array('#NAME#', 'class_name' => '\application\#REF_MODULE_NAME#\model\#REF_LU_NAME#\#REF_ITEM_NAME#', 'foreign_key' => '#REF_COL_NAME#', 'primary_key' => '#COL_NAME#'));";
         foreach ($relations as $rel) {
             $content = $template;
             $content = str_replace("#NAME#", sstring_underscore_to_camelcase($rel['table']['name']) . "s", $content);
@@ -90,7 +90,7 @@ class ModelGenerator extends CodeGenerator {
     private function getModelBelongsTo($tblMeta) {
         $relations = $tblMeta['relations']['belongs_to'];
         $belongsTo = array();
-        $template = 'self::belongsTo(array("#NAME#", "class_name" => "\application\#REF_MODULE_NAME#\model\#REF_LU_NAME#\#REF_ITEM_NAME#", "foreign_key" => "#COL_NAME#", "primary_key" => "#REF_COL_NAME#"));';
+        $template = "self::belongsTo(array('#NAME#', 'class_name' => '\application\#REF_MODULE_NAME#\model\#REF_LU_NAME#\#REF_ITEM_NAME#', 'foreign_key' => '#COL_NAME#', 'primary_key' => '#REF_COL_NAME#'));";
         foreach ($relations as $rel) {
             $content = $template;
             $content = str_replace("#NAME#", sstring_underscore_to_camelcase(str_replace("_id", "", $rel['column_name'])), $content);
