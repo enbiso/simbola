@@ -357,10 +357,11 @@ function shtml_tab($id, $params) {
  * @param string $value String value to encode for html
  * @return string encoded string
  */
-function shtml_encode($value, $format) {
+function shtml_encode($value, $format = null) {
     if (!isset($value)) {
         $value = "";
     }elseif($value instanceof DateTime){
+        $format = is_null($format)?'Y-m-d H:i:s':$format;
         $value = $value->format($format);
     }
     return htmlspecialchars($value);
