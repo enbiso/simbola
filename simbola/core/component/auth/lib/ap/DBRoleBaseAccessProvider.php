@@ -351,7 +351,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $sql = "DELETE FROM {$this->getTableName(self::TBL_ASSIGN)} 
                      WHERE item_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}')";
             $this->dbExecute($sql);
-            $sql = "DELETE FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}'";
+            $sql = "DELETE FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$name}'";            
             $this->dbExecute($sql);
         }
     }
