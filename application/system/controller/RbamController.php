@@ -385,7 +385,7 @@ class RbamController extends \simbola\core\application\AppController {
         $objs = $this->post('objs');
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
         $count = 0;
-        foreach ($objs as $obj) {
+        foreach ($objs as $obj) {            
             $rbap->itemDelete($obj);
             $count++;
         }
@@ -662,7 +662,7 @@ class RbamController extends \simbola\core\application\AppController {
                                         if($currStateIndex < 0){
                                             $states[] = array(
                                                 'title' => $stateName,
-                                                'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName . "." . $entityDataName . "." . $stateName,
+                                                'key' => $moduleName . '.' . $typeName . "." . $logicalUnitName . "." . $entityName . "." . $entityStateDataName . "." . $stateName,
                                                 'isFolder' => false,
                                                 'select' => $selected,
                                             );
