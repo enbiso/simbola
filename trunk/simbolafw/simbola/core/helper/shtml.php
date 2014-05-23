@@ -403,12 +403,50 @@ function shtml_breadcrumb($values) {
  * Create bootstrap dropdown menu
  * 
  * @param array $values Dropmenu data
+ * @param String $title Title
  * @return string HTML tag
  */
-function shtml_dropmenu($values) {
+function shtml_state_dropmenu($values, $title = "") {
     $val = shtml_tag('div', array('class' => 'btn-group'));
     $val .= shtml_tag('button', array('type' => 'button', 'class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown'));
-    $val .= shtml_taged('span', array('class' => 'glyphicon glyphicon-th-large'));
+    $val .= shtml_tag('span', array('class' => 'glyphicon glyphicon-th-large'));
+    $val .= shtml_untag('span');
+    $val .= " " . $title;
+    $val .= shtml_untag('button');
+    $val .= shtml_tag("ul", array('class' => 'dropdown-menu simbola-state-menu', 'role' => 'menu'));
+    foreach ($values as $title => $value) {
+        $val .= shtml_tag('li');
+        $val .= shtml_link($title, false, array('data-title' => $title));
+        $val .= shtml_untag('li');
+    }
+    $val .= shtml_untag('ul');
+    $val .= shtml_untag('div');
+    $val .= "<script>
+                $('.simbola-state-menu li a').bind('click', function (e){
+                    var state_data = ". json_encode($values) .";                    
+                    simbola.call.service('system', 'state', 'change', 
+                    state_data[$(this).attr('data-title')], function(data){
+                        location.reload();
+                    });
+                });
+            </script>";
+    return $val;
+}
+
+
+/**
+ * Create bootstrap dropdown menu
+ * 
+ * @param array $values Dropmenu data
+ * @param String $title Title
+ * @return string HTML tag
+ */
+function shtml_dropmenu($values, $title = "") {
+    $val = shtml_tag('div', array('class' => 'btn-group'));
+    $val .= shtml_tag('button', array('type' => 'button', 'class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown'));
+    $val .= shtml_tag('span', array('class' => 'glyphicon glyphicon-th-large'));
+    $val .= shtml_untag('span');
+    $val .= " " . $title;
     $val .= shtml_untag('button');
     $val .= shtml_tag("ul", array('class' => 'dropdown-menu', 'role' => 'menu'));
     foreach ($values as $key => $value) {

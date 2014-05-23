@@ -39,7 +39,7 @@ class Url extends \simbola\core\component\system\lib\Component {
      * @return string
      */
     public function getAbsoluteUrl() {
-        return $this->getBaseUrl() . $_SERVER['REQUEST_URI'];
+        return $_SERVER['REQUEST_URI'];
     }
 
     /**
