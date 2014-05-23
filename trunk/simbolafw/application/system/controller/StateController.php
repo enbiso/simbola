@@ -7,17 +7,17 @@ namespace application\system\controller;
  *
  * @author Faraj
  */
-class StateController extends \simbola\core\application\AppController{
-    
+class StateController extends \simbola\core\application\AppController {
+
     public function actionIndex() {
         $this->view('state/index');
     }
-    
+
     public function actionChange() {
-        if($this->issetPost(array('model','state','redirect'))){            
+        if ($this->issetPost(array('model', 'keys', 'state', 'redirect'))) {
             try {
                 $this->invoke('system', 'state', 'change', array(
-                    'model' => (object)$this->post('model'),
+                    'model' => (object) $this->post('model'),
                     'state' => $this->post('state'),
                     'keys' => $this->post('keys'),
                 ));
@@ -27,8 +27,9 @@ class StateController extends \simbola\core\application\AppController{
                 $this->setViewData('error', $exc->getMessage());
                 $this->view('state/changeError');
             }
-        }else{
+        } else {
             $this->redirect('system/state/index');
         }
     }
+
 }
