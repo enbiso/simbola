@@ -257,7 +257,7 @@ class MySQLDriver extends AbstractDbDriver {
      * @return string
      */
     public function getProcedureName($module, $lu, $name) {
-        return "{$module}_{$lu}_{$func}";
+        return sstring_camelcase_to_underscore("{$module}_{$lu}_{$name}");
     }
 
     /**
@@ -269,7 +269,7 @@ class MySQLDriver extends AbstractDbDriver {
      * @return string
      */
     public function getTableName($module, $lu, $name) {
-        return "{$module}_{$lu}_tbl_{$name}";
+        return sstring_camelcase_to_underscore("{$module}_{$lu}_tbl_{$name}");
     }
 
     /**
@@ -281,7 +281,7 @@ class MySQLDriver extends AbstractDbDriver {
      * @return string
      */
     public function getViewName($module, $lu, $name) {
-        return "{$module}_{$lu}_{$name}";
+        return sstring_camelcase_to_underscore("{$module}_{$lu}_{$name}");
     }
 
     /**
@@ -386,7 +386,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => implode("_", array_slice($arr, 2)),
+            'name' => sstring_underscore_to_camelcase(implode("_", array_slice($arr, 2))),
         );
     }
 
@@ -401,7 +401,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => implode("_", array_slice($arr, 3)),
+            'name' => sstring_underscore_to_camelcase(implode("_", array_slice($arr, 3))),
         );
     }
 
@@ -416,7 +416,7 @@ class MySQLDriver extends AbstractDbDriver {
         return array(
             'module' => $arr[0],
             'lu' => $arr[1],
-            'name' => implode("_", array_slice($arr, 2)),
+            'name' => sstring_underscore_to_camelcase(implode("_", array_slice($arr, 2))),
         );
     }
 

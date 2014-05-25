@@ -403,20 +403,20 @@ function shtml_breadcrumb($values) {
  * Create bootstrap dropdown menu
  * 
  * @param array $values Dropmenu data
- * @param String $title Title
+ * @param String $label Label
  * @return string HTML tag
  */
-function shtml_state_dropmenu($values, $title = "") {
+function shtml_state_dropmenu($values, $label = "") {
     $val = shtml_tag('div', array('class' => 'btn-group'));
     $val .= shtml_tag('button', array('type' => 'button', 'class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown'));
     $val .= shtml_tag('span', array('class' => 'glyphicon glyphicon-th-large'));
     $val .= shtml_untag('span');
-    $val .= " " . $title;
+    $val .= " " . $label;
     $val .= shtml_untag('button');
     $val .= shtml_tag("ul", array('class' => 'dropdown-menu simbola-state-menu', 'role' => 'menu'));
     foreach ($values as $title => $value) {
         $val .= shtml_tag('li');
-        $val .= shtml_link($title, false, array('data-title' => $title));
+        $val .= shtml_link(sterm_get($title), false, array('data-title' => $title));
         $val .= shtml_untag('li');
     }
     $val .= shtml_untag('ul');

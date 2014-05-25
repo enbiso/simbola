@@ -2,40 +2,45 @@
 
 namespace simbola\core\application;
 
-/** 
+/**
  * The abstract base class that should be used to define the Application Models
  *
  * @author Faraj Farook
  */
-class AppModel extends \ActiveRecord\Model{    
+class AppModel extends \ActiveRecord\Model {
+
     static $delegate = array();
     static $alias_attribute = array();
-    static $state_config = array(
-        'states' => array('idle'),
-        'rules'  => array(
-            array('start' => 'idle'),
-            array('end' => 'idle')
-        ),
-    );
+    static $state_config;
     
+    private static function initDefaults() {
+        static::$state_config = array(
+            'states' => array('idle'),
+            'rules' => array(
+                array('start' => 'idle'),
+                array('end' => 'idle')
+            ),
+        );
+    }
+
     /**
      * State machine configuration
      * 
      * @param array $stateConfig State machine config
      */
     public static function stateMachine($stateConfig) {
-        self::$state_config = $stateConfig;
+        static::$state_config = $stateConfig;
     }
-    
+
     /**
      * Return array of available states
      * 
      * @return array of states
      */
     public static function getStates() {
-        return self::$state_config['states'];
+        return static::$state_config['states'];
     }
-    
+
     /**
      * Used to fetch the term associated with the model term file for 
      * the specified field 
@@ -43,20 +48,20 @@ class AppModel extends \ActiveRecord\Model{
      * @param string $fieldName
      * @return string
      */
-    public static function term($fieldName) {        
+    public static function term($fieldName) {
         return \simbola\Simbola::app()->term->getModelTerm(static::$class_name, $fieldName);
     }
-    
+
     /**
      * Used to fetch echo the term associated with the model term file for 
      * the specified field 
      * 
      * @param type $fieldName
      */
-    public static function eTerm($fieldName) {        
+    public static function eTerm($fieldName) {
         echo self::Term($fieldName);
     }
-    
+
     /**
      * Used to fetch the term associated with the model term file for 
      * the specified Enumeration and enumeration field
@@ -68,18 +73,18 @@ class AppModel extends \ActiveRecord\Model{
     public static function EnumTerm($enum, $name) {
         return self::Term("e_{$enum}.{$name}");
     }
-    
+
     /**
      * Used to fetch and echo the term associated with the model term file for 
      * the specified Enumeration and enumeration field
      * 
      * @param string $enum Enumeration name
      * @param string $name enumeration field     
-     */ 
+     */
     public static function eEnumTerm($enum, $name) {
         echo self::EnumTerm($enum, $name);
     }
-    
+
     /**
      * Used to get the class name string using for the specified model
      * 
@@ -90,18 +95,21 @@ class AppModel extends \ActiveRecord\Model{
      */
     public static function getClass($module, $lu, $model) {
         $mconf = \simbola\Simbola::app()->getModuleConfig($module);
-        return "{$mconf->getNamespace('model')}\\{$lu}\\".ucfirst($model);
+        return "{$mconf->getNamespace('model')}\\{$lu}\\" . ucfirst($model);
     }
 
     /**
      * Override this function to setup the model initializations.
      */
-    public static function initialize(){}
-    
+    public static function initialize() {
+        
+    }
+
     /**
      * Framework function used to initialize automatically
      */
     public static function __static() {
+        static::initDefaults();
         static::initialize();
     }
 
@@ -150,7 +158,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeCreate($value) {
         static::$before_create[] = $value;
     }
-    
+
     /**
      * before_update: called before an existing model has been saved
      * @param string $value funtion name
@@ -158,7 +166,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeUpdate($value) {
         static::$before_update[] = $value;
     }
-    
+
     /**
      * before_validation: called before running validators
      * @param string $value funtion name
@@ -166,7 +174,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeValidation($value) {
         static::$before_validation[] = $value;
     }
-    
+
     /**
      * before_validation_on_create: called before validation on a NEW model being inserted
      * @param string $value funtion name
@@ -174,7 +182,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeValidationOnCreate($value) {
         static::$before_validation_on_create[] = $value;
     }
-    
+
     /**
      * before_validation_on_update: same as above except for an existing model being saved
      * @param string $value funtion name
@@ -182,7 +190,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeValidationOnUpdate($value) {
         static::$before_validation_on_update[] = $value;
     }
-    
+
     /**
      * before_destroy: called after a model has been deleted
      * @param string $value funtion name
@@ -190,7 +198,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeDestroy($value) {
         static::$before_destroy[] = $value;
     }
-    
+
     /**
      * before_save: called before a model is saved     
      * @param string $value funtion name
@@ -198,7 +206,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function beforeSave($value) {
         static::$before_save[] = $value;
     }
-    
+
     /**
      * after_save: called after a model is saved
      * @param string $value funtion name
@@ -206,7 +214,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function afterSave($value) {
         static::$after_save[] = $value;
     }
-    
+
     /**
      * after_create: called after a NEW model has been inserted into the database
      * @param string $value funtion name
@@ -214,7 +222,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function afterCreate($value) {
         static::$after_create[] = $value;
     }
-    
+
     /**
      * after_update: called after an existing model has been saved
      * @param string $value funtion name
@@ -230,7 +238,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function afterValidation($value) {
         static::$after_validation[] = $value;
     }
-    
+
     /**
      * after_validation_on_create: called after validation on a NEW model being inserted
      * @param string $value funtion name
@@ -238,7 +246,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function afterValidationOnCreate($value) {
         static::$after_validation_on_create[] = $value;
     }
-    
+
     /**
      * after_validation_on_update: same as above except for an existing model being saved
      * @param string $value funtion name
@@ -246,7 +254,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function afterValidationOnUpdate($value) {
         static::$after_validation_on_update[] = $value;
     }
-    
+
     /**
      * after_destroy: called after a model has been deleted
      * @param string $value funtion name
@@ -275,7 +283,7 @@ class AppModel extends \ActiveRecord\Model{
     public static function delegate($delegate) {
         static::$delegate[] = $delegate;
     }
-    
+
     /**
      * Set the primary key of the table
      * 
@@ -289,39 +297,40 @@ class AppModel extends \ActiveRecord\Model{
      * validates uneditable variable
      */
     static $validates_uneditable = array();
+
     /**
      * App model validation
      * 
      * @param string $attr attribute name
      */
-    public static function validateUneditable($attr) {        
+    public static function validateUneditable($attr) {
         static::$validates_uneditable[] = $attr;
     }
-    
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validatePresenceOf($attr) {        
+    public static function validatePresenceOf($attr) {
         static::$validates_presence_of[] = $attr;
     }
-    
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validateSizeOf($attr) {        
+    public static function validateSizeOf($attr) {
         static::$validates_size_of[] = $attr;
     }
-    
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validateLengthOf($attr) {        
+    public static function validateLengthOf($attr) {
         static::$validates_length_of[] = $attr;
     }
 
@@ -330,7 +339,7 @@ class AppModel extends \ActiveRecord\Model{
      * 
      * @param array $attr attribute name
      */
-    public static function validateExclusionOf($attr) {        
+    public static function validateExclusionOf($attr) {
         static::$validates_exclusion_of[] = $attr;
     }
 
@@ -339,34 +348,34 @@ class AppModel extends \ActiveRecord\Model{
      * 
      * @param array $attr attribute name
      */
-    public static function validateInclusionOf($attr) {        
+    public static function validateInclusionOf($attr) {
         static::$validates_inclusion_of[] = $attr;
-    }   
-    
+    }
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validateFormatOf($attr) {        
+    public static function validateFormatOf($attr) {
         static::$validates_format_of[] = $attr;
     }
-    
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validateNumericalityOf($attr) {        
+    public static function validateNumericalityOf($attr) {
         static::$validates_numericality_of[] = $attr;
     }
-    
+
     /**
      * PHP activerecord validation
      * 
      * @param array $attr attribute name
      */
-    public static function validateUniquenessOf($attr) {        
+    public static function validateUniquenessOf($attr) {
         static::$validates_uniqueness_of[] = $attr;
     }
 
@@ -431,6 +440,56 @@ class AppModel extends \ActiveRecord\Model{
     }
 
     /**
+     * Returns the possible states of object
+     * @param bool $securityCheck Seccurity Check
+     * @return array States
+     */
+    public function getNextStates($securityCheck = false) {
+        $nextStates = array();
+        foreach (static::$state_config['states'] as $state) {
+            if($this->getStateRule($this->_state, $state)){
+                if($securityCheck){
+                    $model = (object)\simbola\Simbola::app()->db->getDriver()->getSourceFromTableName(static::$table_name);
+                    $permObj = new \simbola\core\component\auth\lib\PermObject(
+                            $model->module, $model->lu, $model->name, "entity.state.{$state}");   
+                    if(\simbola\Simbola::app()->auth->checkPermission($permObj)){
+                        $nextStates[] = $state;
+                    }
+                }else{
+                    $nextStates[] = $state;
+                }
+            }
+        }
+        return $nextStates;
+    }
+    
+    /**
+     * This function returns the state change info which can be used with the
+     * system service system.state.change
+     * @param bool $securityCheck Seccurity Check
+     * @return stateChangeInfo State Change Info
+     */
+    public function getStateChangeInfo($securityCheck = false) {
+        $source = \simbola\Simbola::app()->db->getDriver()->getSourceFromTableName(static::$table_name);
+        $keys = array();
+        foreach (static::Keys() as $key) {
+            $key = $key->name;
+            $keys[$key] = $this->$key;
+        }
+        $stateChangeInfo = array();
+        
+        foreach ($this->getNextStates($securityCheck) as $state) {
+            $label = \simbola\Simbola::app()->term->getModelTermName(static::$class_name, "state.{$state}");            
+            $stateChangeInfo[$label] = array(
+                'model' => $source,
+                'keys' => $keys,
+                'state' => $state
+            );
+        }
+        return $stateChangeInfo;
+    }
+    
+    /**
      * Overrides phpactive record default function set_timestamp
      */
     public function set_timestamps() {
@@ -445,9 +504,9 @@ class AppModel extends \ActiveRecord\Model{
                 $this->_created = $now;
             }
             if (in_array('_state', $colNameArr)) {
-                $rules = self::$state_config['rules'];                
+                $rules = static::$state_config['rules'];
                 foreach ($rules as $rule) {
-                    if(isset($rule['start'])){
+                    if (isset($rule['start'])) {
                         $this->_state = $rule['start'];
                     }
                 }
@@ -469,77 +528,98 @@ class AppModel extends \ActiveRecord\Model{
         }
         parent::set_attributes($attributes);
     }
-    
+
     /**
      * Set/Get state from state_machine
      * 
      * @param string $state State
      */
     public function state($state = false) {
-        if($state){
-            if($this->runStateLogic($this->_state, $state)){
-                $this->_state = $state;
+        if ($state) {
+            $rule = $this->getStateRule($this->_state, $state);
+            $result = $rule !== false;
+            if ($result && $rule['pre_action']) {
+                foreach ($rule['pre_action'] as $action) {
+                    $result &= $this->$action();
+                }
             }
-        }else{
+            if ($result) {
+                $this->_state = $state;
+                $result = $this->save();
+            }
+            if ($result && $rule['post_action']) {
+                foreach ($rule['post_action'] as $action) {
+                    $this->$action();
+                }
+            }
+            return $result;
+        } else {
             return $this->_state;
         }
     }
-    
+
     /**
-     * Returns created date
-     * 
-     * @return \ActiveRecord\DateTime
-     */
-    public function created($format = false) {
-        if($format){
-            return $this->_created->format($format);        
-        }else{
-            return $this->_created;
-        }
-    }
-    
-    /**
-     * Returns modified date
-     * 
-     * @return \ActiveRecord\DateTime
-     */
-    public function modified($format = false) {
-        if($format){
-            return $this->_version->format($format);        
-        }else{
-            return $this->_version;  
-        }
-    }
-    
-    /**
-     * Check state logic
+     * Get state rule
      * 
      * @param string $oldState Old State
      * @param string $newState New State
-     * @return boolean
+     * @return object of rule
      */
-    private function runStateLogic($oldState, $newState) {
-        if(in_array($oldState, self::$state_config['states'])&&
-           in_array($newState, self::$state_config['states'])){
-            $rules = self::$state_config['rules'];
+    private function getStateRule($oldState, $newState) {
+        if (in_array($oldState, static::$state_config['states']) &&
+                in_array($newState, static::$state_config['states'])) {
+            $rules = static::$state_config['rules'];
             foreach ($rules as $rule) {
-                if(isset($rule['start'])){
+                if (key_exists("start", $rule)) {
                     $rule['from'] = null;
-                    $rule['to'] = $rule['start'];        
+                    $rule['to'] = $rule['start'];                    
                 }
-                if($rule['from'] == $oldState && $rule['to'] == $newState){
-                    if(isset($rule['action'])){
-                        $action = $rule['action'];
-                        return $this->$action();
-                    }else{
-                        return true;
+                if (key_exists("from", $rule) && key_exists("to", $rule)) {
+                    if ($rule['from'] == $oldState && $rule['to'] == $newState) {
+                        //pre init
+                        if (!key_exists('pre_action', $rule)) {
+                            $rule['pre_action'] = false;
+                        }elseif(!is_array($rule['pre_action'])){
+                            $rule['pre_action'] = array($rule['pre_action']);
+                        }
+                        //post init
+                        if (!key_exists('post_action', $rule)) {
+                            $rule['post_action'] = false;
+                        }elseif(!is_array($rule['post_action'])){
+                            $rule['post_action'] = array($rule['post_action']);
+                        }
+                        return $rule;
                     }
                 }
             }
         }
         return false;
     }
-    
+
+    /**
+     * Returns created date     
+     * @return \ActiveRecord\DateTime
+     */
+    public function created($format = false) {
+        if ($format) {
+            return $this->_created->format($format);
+        } else {
+            return $this->_created;
+        }
+    }
+
+    /**
+     * Returns modified date     
+     * @return \ActiveRecord\DateTime
+     */
+    public function modified($format = false) {
+        if ($format) {
+            return $this->_version->format($format);
+        } else {
+            return $this->_version;
+        }
+    }
+
     /**
      * Get dirty attributes. If param set to all = true then 
      * _version, _created, _state and _id were also includeed.
@@ -548,15 +628,16 @@ class AppModel extends \ActiveRecord\Model{
      */
     public function dirty_attributes($all = true) {
         $attr = parent::dirty_attributes();
-        if(!$all){
+        if (!$all) {
             foreach (array('_version', '_created', '_state', '_id') as $key) {
-                if(array_key_exists($key, $attr)){
+                if (array_key_exists($key, $attr)) {
                     unset($attr[$key]);
                 }
             }
         }
         return $attr;
     }
+
 }
 
 ?>
