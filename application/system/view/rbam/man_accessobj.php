@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="form-group col-md-4">        
+    <div class="form-group col-md-4 col-sm-6 col-xs-6">        
         <div class="input-group input-group-sm">
             <select id="select_modules" class="form-control">
                 <?php foreach ($this->moduleNames as $moduleName):?>
