@@ -10,13 +10,17 @@ namespace application\system\controller;
 class SimGridController extends \simbola\core\application\AppController {
 
     public function checkSecurity($page) {
-        $source = (object)$this->post("source");
-        $permObj = new \simbola\core\component\auth\lib\PermObject(
-                $source->module,
-                $source->lu,
-                $source->name, 'entity.query');        
-        return parent::checkSecurity($page) 
-                && \simbola\Simbola::app()->auth->checkPermission($permObj);;
+        if($this->issetPost("source")){
+            $source = (object)$this->post("source");
+            $permObj = new \simbola\core\component\auth\lib\PermObject(
+                    $source->module,
+                    $source->lu,
+                    $source->name, 'entity.query');        
+            return parent::checkSecurity($page) 
+                    && \simbola\Simbola::app()->auth->checkPermission($permObj);;
+        }else{
+            return parent::checkSecurity($page);
+        }
     }
     
     function actionData() {
@@ -40,6 +44,15 @@ class SimGridController extends \simbola\core\application\AppController {
                 $queryOptions['conditions'] = $this->post("conditions");
             }
             
+            if ($this->issetPost("searchConditions")){
+                $searchConditions = $this->post('searchConditions');
+                if(isset($queryOptions['conditions']) && count($queryOptions['conditions']) > 0){
+                    $queryOptions['conditions'][0] .= " AND " . $searchConditions[0];
+                    array_push($queryOptions['conditions'], array_slice($searchConditions,1));
+                }else{
+                    $queryOptions['conditions'] = $searchConditions;
+                }
+            }                
             $rows = array();            
             $objects = $class::find('all', $queryOptions);
             $columns = array();
@@ -66,9 +79,11 @@ class SimGridController extends \simbola\core\application\AppController {
             $this->setViewData('columns', $columns);
             $this->setViewData('rows', $rows);
             $this->json();
+        } else {
+            $this->view("simGrid/data");
         }
     }
-
+    
 }
 
 ?>

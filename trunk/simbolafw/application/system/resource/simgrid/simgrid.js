@@ -19,13 +19,13 @@
             opts.actions = [];
         }        
         //save data
-        this.data('opts', opts);
+        $(grid).data('opts', opts);
         //post to get info
-        this.simGrid_Reload();
+        $(grid).simGrid_Reload();
 
         //event bindings
         this.find('.simGrid-Reload').bind('click', function(e) {
-            grid.simGrid_Reload();
+            $(grid).simGrid_Reload();
         });
         this.find('.simGrid-Pager-Prev').bind('click', function(e) {
             var page = parseInt(grid.find('.simGrid-Pager-Counter').val());
@@ -33,7 +33,7 @@
                 var opts = grid.data('opts');
                 opts.page = page - 1;
                 grid.data('opts', opts);
-                grid.simGrid_Reload();
+                $(grid).simGrid_Reload();
             }
         });
         this.find('.simGrid-Pager-Next').bind('click', function(e) {
@@ -42,25 +42,63 @@
                 var opts = grid.data('opts');
                 opts.page = page + 1;
                 grid.data('opts', opts);
-                grid.simGrid_Reload();
+                $(grid).simGrid_Reload();
             }
         });
         this.find('.simGrid-Pager-Counter').bind('change', function(e) {
             var opts = grid.data('opts');
             opts.page = grid.find('.simGrid-Pager-Counter').val();
             grid.data('opts', opts);
-            grid.simGrid_Reload();
+            $(grid).simGrid_Reload();
+        });        
+        this.find('.simGrid-Search-Search').bind('click', function(e){
+            var opts = grid.data('opts');
+            opts.page = 1
+            var searchObj = $(grid).find('#' + opts.id + "_search_modal_form").serializeObject();
+            var searchCondition = "";
+            var searchConditionData = [];
+            $.each(searchObj.data, function(key, value){                
+                if(searchCondition.length > 0 && value.trim().length > 0){
+                    searchCondition += " AND ";
+                }
+                if(value.indexOf(";") !== -1){
+                    searchCondition += key + " IN (?)";
+                    searchConditionData.push(value.split(";"));
+                }else if(value.indexOf("%") !== -1){
+                    searchCondition += key + " LIKE ?";
+                    searchConditionData.push(value);
+                }else if(value.indexOf("<") !== -1){
+                    searchCondition += key + " < ?";
+                    searchConditionData.push(value.substring(value.indexOf("<") + 1).trim());
+                }else if(value.indexOf(">") !== -1){
+                    searchCondition += key + " > ?";
+                    searchConditionData.push(value.substring(value.indexOf(">") + 1).trim());
+                }else if(value.trim().length !== 0){
+                    searchCondition += key + " = ?";
+                    searchConditionData.push(value);
+                }                
+            });
+            if(searchCondition.length > 0){
+                opts.searchConditions = [searchCondition];
+                opts.searchConditions = opts.searchConditions.concat(searchConditionData);
+            }else{
+                opts.searchConditions = undefined;
+            }
+            grid.data('opts', opts);
+            $(grid).simGrid_Reload();
         });
+        return grid;
     };
     $.fn.simGrid_Reload = function() {
         var grid = this;
-        var table = this.find('table.simGrid-Table')[0];
-        opts = this.data('opts');
+        var table = $(grid).find('table.simGrid-Table')[0];
+        opts = $(grid).data('opts');
         //init post data
         var data = {
             source: opts.source,
             columns: opts.columns,
             conditions: opts.conditions,
+            searchConditions: opts.searchConditions,
             limit: opts.pageLength,
             offset: (opts.page - 1) * opts.pageLength
         };
