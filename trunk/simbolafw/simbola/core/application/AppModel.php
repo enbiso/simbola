@@ -400,11 +400,21 @@ class AppModel extends \ActiveRecord\Model {
 
     /**
      * Returns the table columns associated with the model
-     * 
+     * @param bool $onlyPublic Fetch only the public columns. Default FALSE
      * @return array
      */
-    public static function Columns() {
-        return static::connection()->columns(static::$table_name);
+    public static function Columns($onlyPublic = false) {
+        $columns = array();
+        if($onlyPublic){
+            foreach (static::Columns() as $column) {
+                if(!sstring_starts_with($column->name,"_")){
+                    $columns[] = $column;
+                }
+            } 
+        }else{
+            $columns = static::connection()->columns(static::$table_name);
+        }
+        return $columns;
     }
 
     /**

@@ -421,15 +421,18 @@ function shtml_state_dropmenu($values, $label = "") {
     }
     $val .= shtml_untag('ul');
     $val .= shtml_untag('div');
-    $val .= "<script>
-                $('.simbola-state-menu li a').bind('click', function (e){
-                    var state_data = ". json_encode($values) .";                    
+    ob_start(); ?>
+        <script>
+            $('.simbola-state-menu li a').bind('click', function (e){
+                    var state_data = <?= json_encode($values) ?>;                    
                     simbola.call.service('system', 'state', 'change', 
                     state_data[$(this).attr('data-title')], function(data){
-                        location.reload();
-                    });
+                    location.reload();
                 });
-            </script>";
+            });
+        </script>
+        <?php
+    $val .= ob_get_clean();
     return $val;
 }
 
