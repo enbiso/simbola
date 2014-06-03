@@ -14,7 +14,10 @@ class Url extends \simbola\core\component\system\lib\Component {
      */
     public function setupDefault() {
         $this->setParamDefault("HIDE_INDEX", true);
-        $this->setParamDefault("URL_BASE", false);
+        $this->setParamDefault("URL_BASE", false);        
+        //Alias - Start
+        $this->setParamDefault("ALIAS", array());        
+        //Alias - End
     }
     
     /**
@@ -24,11 +27,21 @@ class Url extends \simbola\core\component\system\lib\Component {
      * @return \simbola\core\component\url\lib\Page
      */
     public function decode($urlString) {
-        $page = new lib\Page();
+        $page = new lib\Page();    
         $page->loadFromUrl($urlString);
+        //Alias - Start
+        $alias = $this->getParam("ALIAS");
+        $urlKey = ($urlString[0] == '/') ? substr($urlString, 1) : $urlString;        
+        if (($pos = strpos($urlString, "[")) > 0) {
+            $urlKey = substr($urlKey, 0, $pos);
+        }
+        if(array_key_exists($urlKey, $alias)){
+            $page->loadFromArray($alias[$urlKey], true);
+        }
+        //Alias - End        
         return $page;
     }
-    
+     
     /**
      * Fetch the absolute URL of the request 
      *  For example 

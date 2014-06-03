@@ -81,13 +81,18 @@ class Page {
      * array([PATH],[KEY_1] => [VALUE_1], [KEY_2] => [VALUE_2],... )
      * 
      * @param array $url
+     * @param bool $append Append Paramsters default false
      */
-    public function loadFromArray($url) {
+    public function loadFromArray($url, $append = false) {
         if (count($url) > 0) {
             $this->loadFromUrl($url[0]);
         }
         if (count($url) > 1) {
-            $this->params = array_slice($url, 1);
+            if($append) {
+                $this->params = array_slice($url, 1);
+            } else {
+                $this->params = array_merge($this->params, array_slice($url, 1));
+            }
         }
     }
 
@@ -96,9 +101,10 @@ class Page {
      * 
      * http://www.example.com/app/index.php/www/site/index[KEY:VALUE]...
      * @param string $urlString String representation of the URL
+     * @param boolean $append Append Parameters defalt false
      * @throws \Exception URL String is empty
      */
-    public function loadFromUrl($urlString) {
+    public function loadFromUrl($urlString, $append = false) {
         $urlString = urldecode($urlString);                
         if(strlen($urlString)==0){
             throw new \Exception("URL String empty");
@@ -111,6 +117,9 @@ class Page {
             $rpos = strrpos($paramString, "]");
             $paramString = substr($paramString, 1, $rpos - 1);
             $params = explode("][", $paramString);
+            if(!$append){
+                $this->params = array();
+            }
             foreach ($params as $param) {
                 $tempArr = explode(":", $param);
                 if (count($tempArr) == 1) {
