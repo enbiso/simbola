@@ -35,7 +35,7 @@ class Url extends \simbola\core\component\system\lib\Component {
         if (($pos = strpos($urlString, "[")) > 0) {
             $urlKey = substr($urlKey, 0, $pos);
         }
-        if(array_key_exists($urlKey, $alias)){
+        if(!empty($urlKey)&&array_key_exists($urlKey, $alias)){
             $page->loadFromArray($alias[$urlKey], true);
         }
         //Alias - End        
