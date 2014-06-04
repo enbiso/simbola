@@ -26,7 +26,7 @@ class Application {
      * @var array
      */
     public $components = array();
-    
+
     /**
      * The array of system configuration parameters
      * @var array() 
@@ -36,10 +36,10 @@ class Application {
     /**
      * Do not call this. Contructor is called as a singleton in the Simbola class
      */
-    public function __construct() {        
-        $this->import('core/initlib/include');        
+    public function __construct() {
+        $this->import('core/initlib/include');
     }
-    
+
     /**
      * Setup the simbola application with basic inputs as associate array as below
      * 
@@ -61,9 +61,9 @@ class Application {
         $this->includePathSetup();
         $this->importComponents();
         $this->fetchModuleNames();
-        $this->import('core/helper');        
+        $this->import('core/helper');
     }
-    
+
     /**
      * Configure the components in one whole array. Usefulll when you store the 
      * config as a PHP array ina seperate file
@@ -208,7 +208,7 @@ class Application {
     public function getAppNameSpace() {
         return $this->getParam('BASE');
     }
-    
+
     /**
      * Get the Module namespace or the namespace for the specific module component,
      * given the module component name in the second parameter
@@ -220,13 +220,13 @@ class Application {
      */
     public function getModuleNameSpace($moduleName, $moduleComponent = null) {
         $mconf = $this->getModuleConfig($moduleName);
-        $ns = $this->getAppNameSpace()."\\".$moduleName;
-        if($moduleComponent != null){
+        $ns = $this->getAppNameSpace() . "\\" . $moduleName;
+        if ($moduleComponent != null) {
             $ns .= "\\" . $mconf->$moduleComponent;
         }
         return $ns;
     }
-    
+
     /**
      * Get the Module file base or the file base for the specific module component,
      * given the module component name in the second parameter
@@ -239,12 +239,12 @@ class Application {
     public function getModuleBase($moduleName, $moduleComponent = null) {
         $mconf = $this->getModuleConfig($moduleName);
         $path = $this->getAppBase() . DIRECTORY_SEPARATOR . $mconf->name;
-        if($moduleComponent != null){
+        if ($moduleComponent != null) {
             $path .= DIRECTORY_SEPARATOR . $mconf->$moduleComponent;
         }
         return $path;
     }
-    
+
     /**
      * Used to get the application file base of the running application
      * 
@@ -315,9 +315,9 @@ class Application {
      */
     public function component($name, $params = array()) {
         $this->components[$name]->setParams($params);
-        $this->components[$name]->setup();        
+        $this->components[$name]->setup();
     }
-    
+
     /**
      * Used to fetch the components in the property style Used by the PHP interpreter
      * 
@@ -329,7 +329,7 @@ class Application {
         return $this->components[$name];
     }
 
-    /**     
+    /**
      * Execute application. Should be called at the index.php after the configurations
      * 
      * @access public
@@ -339,8 +339,27 @@ class Application {
         foreach ($this->components as $component) {
             $component->init();
         }
-        // run the dispatcher
-        $this->router->dispatch();
+        // cron-start
+        $argc = $_SERVER['argc'];
+        $argv = $_SERVER['argv'];
+        if ($argc >= 2) {
+            echo "Simbola Framework\n";
+            switch (strtolower($argv[1])) {
+                case "cron":
+                    $cronId = ($argc == 3) ? $argv[2] : "DEFAULT";
+                    echo "Executing Cron, {$cronId} ... ";
+                    $this->transaction->cron($cronId);
+                    echo "Completed.\n";
+                    break;
+                default:
+                    echo "Unknown Command\n";
+                    break;
+            }
+        } else {
+            // run the dispatcher
+            $this->router->dispatch();
+        }
+        // cron-end
         // cleanup components
         foreach ($this->components as $module) {
             $module->destroy();
@@ -372,7 +391,7 @@ class Application {
      * @throws \Exception
      */
     public function getModuleConfig($moduleName) {
-        if (empty($moduleName)) {            
+        if (empty($moduleName)) {
             throw new \Exception("Module cannot be empty", 202);
         }
         $config = null;
@@ -380,27 +399,27 @@ class Application {
             $config = $this->moduleConfigCache[$moduleName];
         } else {
             $app = \simbola\Simbola::app();
-            $moduleConfig = '\\' . $app->getParam('BASE') . '\\' . $moduleName . '\\Config';            
+            $moduleConfig = '\\' . $app->getParam('BASE') . '\\' . $moduleName . '\\Config';
             try {
                 $config = new $moduleConfig;
                 $config->setDefault($this->getParam('DEFAULT'));
-                $this->moduleConfigCache[$moduleName] = $config;            
-            } catch (\Exception $ex){
+                $this->moduleConfigCache[$moduleName] = $config;
+            } catch (\Exception $ex) {
                 $config = null;
                 throw new \Exception("Module {$moduleName} not found", 202);
             }
         }
         return $config;
-    }    
-    
-    /**     
+    }
+
+    /**
      * Get database script base
      * 
      * @access public
      * @param string $moduleName Module name
      * @return string
      */
-    public function getDBScriptBase($moduleName) {        
+    public function getDBScriptBase($moduleName) {
         $moduleConfig = $this->getModuleConfig($moduleName);
         return $moduleConfig->getPath('database', false);
     }
@@ -422,7 +441,7 @@ class Application {
         } else {
             $class = $moduleConfig->getNamespace('service') . '\\' . ucfirst($page->logicalUnit) . "Service";
         }
-        if($safeCheck && (!class_exists($class) || !method_exists($class, $page->getActionFunction()))){
+        if ($safeCheck && (!class_exists($class) || !method_exists($class, $page->getActionFunction()))) {
             throw new \Exception('Class/Action not found');
         }
         return $class;
