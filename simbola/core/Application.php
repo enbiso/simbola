@@ -341,21 +341,15 @@ class Application {
         }
         // cron-start
         $argc = $_SERVER['argc'];
-        $argv = $_SERVER['argv'];
-        if ($argc >= 2) {
-            echo "Simbola Framework\n";
-            switch (strtolower($argv[1])) {
-                case "cron":
-                    $cronId = ($argc == 3) ? $argv[2] : "DEFAULT";
-                    echo "Executing Cron, {$cronId} ... ";
-                    $this->transaction->cron($cronId);
-                    echo "Completed.\n";
-                    break;
-                default:
-                    echo "Unknown Command\n";
-                    break;
-            }
-        } else {
+        $argv = $_SERVER['argv'];        
+        if(SIMBOLA_CRON_MODE) {
+            $cronId = ($argc == 3) ? $argv[2] : "DEFAULT";
+            echo "Simbola: Executing cron, {$cronId} ... ";
+            $this->transaction->cron($cronId);
+            echo "completed.\n";
+        } elseif(SIMBOLA_CLI_MODE) {
+            echo "Simbola: CLI mode\n";
+        } else {            
             // run the dispatcher
             $this->router->dispatch();
         }
