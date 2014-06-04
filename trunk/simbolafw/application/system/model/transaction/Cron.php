@@ -15,8 +15,10 @@ namespace application\system\model\transaction;
  *
  * Properties
  * @property String $id Id
- * @property Long $last_executed Last executed
- * @property bigint $executed_count Executed count
+ * @property Long $executed Executed
+ * @property bigint $count Count
+ * @property Integer $interval Interval
+ * @property Integer $job_count Job count
  */
 class Cron extends \simbola\core\application\AppModel{
     static  //config params
@@ -48,6 +50,17 @@ class Cron extends \simbola\core\application\AppModel{
         self::setSource('system', 'transaction', 'cron');
         self::primaryKey('id');        
 
+        self::stateMachine(array(
+            'states' => array('ready', 'execute', 'halt'),
+            'rules' => array(
+                array('start' => 'ready'),
+                array('from' => 'ready', 'to' => 'execute'),
+                array('from' => 'execute', 'to' => 'ready'),
+                array('from' => 'ready', 'to' => 'halt'),
+                array('from' => 'halt', 'to' => 'ready'),
+                array('end' => 'ready')
+            ),
+        ));
         //Relationships - Has Many
         //None
 
@@ -57,10 +70,14 @@ class Cron extends \simbola\core\application\AppModel{
         //Validations
         // - id
         self::validateSizeOf(array("id", "maximum" => 20));
-        // - last_executed
-        self::validatePresenceOf(array("last_executed"));
-        // - executed_count
-        self::validateNumericalityOf(array("executed_count", "only_integer" => true));
+        // - executed
+        self::validatePresenceOf(array("executed"));
+        // - count
+        self::validateNumericalityOf(array("count", "only_integer" => true));
+        // - interval
+        self::validateNumericalityOf(array("interval", "only_integer" => true));
+        // - job_count
+        self::validateNumericalityOf(array("job_count", "only_integer" => true));
     }
 }
 

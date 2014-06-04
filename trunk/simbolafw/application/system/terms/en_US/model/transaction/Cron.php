@@ -13,5 +13,7 @@
  * @author faraj
  */
 $__term["system.model.transaction.cron.id"] = "Id";
-$__term["system.model.transaction.cron.last_executed"] = "Last Executed";
-$__term["system.model.transaction.cron.executed_count"] = "Executed Count";
+$__term["system.model.transaction.cron.executed"] = "Executed";
+$__term["system.model.transaction.cron.count"] = "Count";
+$__term["system.model.transaction.cron.interval"] = "Interval";
+$__term["system.model.transaction.cron.job_count"] = "Job Count";
