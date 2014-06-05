@@ -53,37 +53,38 @@
         });        
         this.find('.simGrid-Search-Search').bind('click', function(e){
             var opts = grid.data('opts');
-            opts.page = 1
+            opts.page = 1;
             var searchObj = $(grid).find('#' + opts.id + "_search_modal_form").serializeObject();
-            var searchCondition = "";
-            var searchConditionData = [];
-            $.each(searchObj.data, function(key, value){                
-                if(searchCondition.length > 0 && value.trim().length > 0){
-                    searchCondition += " AND ";
-                }
-                if(value.indexOf(";") !== -1){
-                    searchCondition += key + " IN (?)";
-                    searchConditionData.push(value.split(";"));
-                }else if(value.indexOf("%") !== -1){
-                    searchCondition += key + " LIKE ?";
-                    searchConditionData.push(value);
-                }else if(value.indexOf("<") !== -1){
-                    searchCondition += key + " < ?";
-                    searchConditionData.push(value.substring(value.indexOf("<") + 1).trim());
-                }else if(value.indexOf(">") !== -1){
-                    searchCondition += key + " > ?";
-                    searchConditionData.push(value.substring(value.indexOf(">") + 1).trim());
-                }else if(value.trim().length !== 0){
-                    searchCondition += key + " = ?";
-                    searchConditionData.push(value);
-                }                
-            });
-            if(searchCondition.length > 0){
-                opts.searchConditions = [searchCondition];
-                opts.searchConditions = opts.searchConditions.concat(searchConditionData);
-            }else{
-                opts.searchConditions = undefined;
-            }
+//            var searchCondition = "";
+//            var searchConditionData = [];
+//            $.each(searchObj.data, function(key, value){                
+//                if(searchCondition.length > 0 && value.trim().length > 0){
+//                    searchCondition += " AND ";
+//                }
+//                if(value.indexOf(";") !== -1){
+//                    searchCondition += key + " IN (?)";
+//                    searchConditionData.push(value.split(";"));
+//                }else if(value.indexOf("%") !== -1){
+//                    searchCondition += key + " LIKE ?";
+//                    searchConditionData.push(value);
+//                }else if(value.indexOf("<") !== -1){
+//                    searchCondition += key + " < ?";
+//                    searchConditionData.push(value.substring(value.indexOf("<") + 1).trim());
+//                }else if(value.indexOf(">") !== -1){
+//                    searchCondition += key + " > ?";
+//                    searchConditionData.push(value.substring(value.indexOf(">") + 1).trim());
+//                }else if(value.trim().length !== 0){
+//                    searchCondition += key + " = ?";
+//                    searchConditionData.push(value);
+//                }                
+//            });
+//            if(searchCondition.length > 0){
+//                opts.searchConditions = [searchCondition];
+//                opts.searchConditions = opts.searchConditions.concat(searchConditionData);
+//            }else{
+//                opts.searchConditions = undefined;
+//            }
+            opts.searchConditions = searchObj.data;
             grid.data('opts', opts);
             $(grid).simGrid_Reload();
         });
@@ -98,6 +99,7 @@
             source: opts.source,
             columns: opts.columns,
             conditions: opts.conditions,
+            order: opts.order,
             searchConditions: opts.searchConditions,
             limit: opts.pageLength,
             offset: (opts.page - 1) * opts.pageLength

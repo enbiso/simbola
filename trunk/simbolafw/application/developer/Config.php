@@ -21,7 +21,7 @@ class Config extends \simbola\core\application\AppModuleConfig{
     }
     
     public function setDefaultOverride() {
-        $this->set("LAYOUT", "layout/main");
+        $this->set("LAYOUT", "layout/main"); 
     }
 }
 

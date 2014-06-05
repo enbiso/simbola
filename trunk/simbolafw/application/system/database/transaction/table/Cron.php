@@ -27,8 +27,8 @@ class Cron extends \simbola\core\application\dbobj\AppDbTable{
         //r1 - setup columns
         $this->addColumns(array(
             'id varchar(20) PRIMARY KEY',
-            '`executed` TIMESTAMP',
-            '`count` BIGINT DEFAULT 0',
+            'last_execute TIMESTAMP',
+            'execute_count BIGINT DEFAULT 0',
         ));
         $this->addColumns(array(
             '`interval` INTEGER DEFAULT -1',

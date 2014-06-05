@@ -12,7 +12,8 @@
             <ul class="navbar-nav nav">
                 <?php
                 menu_item('RBAM', array('system/rbam'));
-                menu_item('Developer IDE', array('developer/ide'));
+                menu_item('Logs', array('system/log'));
+                menu_item('Transaction', array('system/transaction'), "lu");
                 ?>
             </ul>
             <ul class="nav navbar-nav navbar-right">                
