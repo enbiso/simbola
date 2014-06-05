@@ -19,13 +19,13 @@ namespace application\system\model\transaction;
  * @property bigint $execute_count Execute count
  * @property Integer $interval Interval
  * @property Integer $job_count Job count
- * @property array $cronQueues Cron Queues
+ * @property array $cronQueues Cron Queues 
  */
 class Cron extends \simbola\core\application\AppModel{
     static  //config params
             $table_name, 
             $primary_key, 
-            $class_name, 
+            $class_name,             
             //state machine
             $state_config,
             //relationships
@@ -82,6 +82,24 @@ class Cron extends \simbola\core\application\AppModel{
         self::validateNumericalityOf(array("interval", "only_integer" => true));
         // - job_count
         self::validateNumericalityOf(array("job_count", "only_integer" => true));
+    }
+    
+    /**
+     * Get queue infomation
+     * 
+     * @param string $attr Attribute name default FALSE
+     * @return array
+     */
+    public function getQueues($attr = false) {
+        $queues = array();
+        foreach ($this->cronQueues as $cronQueue) {
+            if($attr){
+                $queues[] = $cronQueue->queue->$attr;
+            }else{
+                $queues[] = $cronQueue->queue;
+            }
+        }
+        return $queues;
     }
 }
 
