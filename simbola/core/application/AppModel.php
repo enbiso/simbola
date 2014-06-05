@@ -9,10 +9,24 @@ namespace simbola\core\application;
  */
 class AppModel extends \ActiveRecord\Model {
 
+    /**     
+     * @var array Delegetes
+     */
     static $delegate = array();
+    
+    /**     
+     * @var array Alias Attributes
+     */
     static $alias_attribute = array();
+    
+    /**     
+     * @var array State configuration
+     */
     static $state_config;
     
+    /**
+     * Initialize defaults
+     */
     private static function initDefaults() {
         static::$state_config = array(
             'states' => array('idle'),

@@ -72,13 +72,13 @@ class Transaction extends \simbola\core\component\system\lib\Component {
         if ($this->cron == NULL) {
             $this->cron = new \application\system\model\transaction\Cron(array(
                 'id' => $cronId,
-                'count' => 0,
+                'execute_count' => 0,
             ));
         } else {
-            $this->cron->interval = time() - date_timestamp_get($this->cron->executed);
+            $this->cron->interval = time() - date_timestamp_get($this->cron->last_execute);
         }
-        $this->cron->count++;
-        $this->cron->executed = date("Y-m-d H:i:s");
+        $this->cron->execute_count++;
+        $this->cron->last_execute = date("Y-m-d H:i:s");
         return $this->cron->save();
     }
 
