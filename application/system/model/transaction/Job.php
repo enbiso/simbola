@@ -54,6 +54,17 @@ class Job extends \simbola\core\application\AppModel{
         self::setSource('system', 'transaction', 'job');
         self::primaryKey('id');        
 
+        self::stateMachine(array(
+            'states' => array('new', 'execute', 'compelete', 'error'),
+            'rules' => array(
+                array('start' => 'new'),
+                array('from' => 'new', 'to' => 'execute'),
+                array('from' => 'execute', 'to' => 'compelete'),
+                array('from' => 'execute', 'to' => 'error'),
+                array('from' => 'error', 'to' => 'execute'),
+                array('end' => 'compelete')
+            ),
+        ));
         //Relationships - Has Many
         //None
 
