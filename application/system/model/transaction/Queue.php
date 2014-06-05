@@ -3,25 +3,23 @@ namespace application\system\model\transaction;
 /**
  * Description of Model
  *
- * Model 	: cron
- * Created	: 04Jun2014
- * Purpose 	: Cron Model
+ * Model 	: queue
+ * Created	: 05Jun2014
+ * Purpose 	: Queue Model
  *
  * Change Logs
  * -----------------------------------------------------------
- * 04Jun2014 faraj: Created the model cron
+ * 05Jun2014 faraj: Created the model queue
  *  
  * @author faraj
  *
  * Properties
  * @property String $id Id
- * @property Long $last_execute Last execute
- * @property bigint $execute_count Execute count
- * @property Integer $interval Interval
- * @property Integer $job_count Job count
+ * @property String $description Description
+ * @property array $jobs Jobs
  * @property array $cronQueues Cron Queues
  */
-class Cron extends \simbola\core\application\AppModel{
+class Queue extends \simbola\core\application\AppModel{
     static  //config params
             $table_name, 
             $primary_key, 
@@ -48,40 +46,27 @@ class Cron extends \simbola\core\application\AppModel{
     public static function initialize() {
         //Model Setup
         self::setClass(__CLASS__);
-        self::setSource('system', 'transaction', 'cron');
+        self::setSource('system', 'transaction', 'queue');
         self::primaryKey('id');        
 
-        self::stateMachine(array(
-            'states' => array('ready', 'execute', 'halt'),
-            'rules' => array(
-                array('start' => 'ready'),
-                array('from' => 'ready', 'to' => 'execute'),
-                array('from' => 'execute', 'to' => 'ready'),
-                array('from' => 'ready', 'to' => 'halt'),
-                array('from' => 'halt', 'to' => 'ready'),
-                array('end' => 'ready')
-            ),
-        ));
         //Relationships - Has Many
-        self::hasMany(array("cronQueues", 
-            "class_name" => '\application\system\model\transaction\CronQueue', 
-            "foreign_key" => "cron_id", 
+        self::hasMany(array("jobs", 
+            "class_name" => '\application\system\model\transaction\Job', 
+            "foreign_key" => "queue_id", 
             "primary_key" => "id"));
 
+        self::hasMany(array("cronQueues", 
+            "class_name" => '\application\system\model\transaction\CronQueue', 
+            "foreign_key" => "queue_id", 
+            "primary_key" => "id"));
+        
         //Relationships - Belongs To
         //None
 
         //Validations
         // - id
         self::validateSizeOf(array("id", "maximum" => 20));
-        // - executed
-        self::validatePresenceOf(array("last_execute"));
-        // - count
-        self::validateNumericalityOf(array("execute_count", "only_integer" => true));
-        // - interval
-        self::validateNumericalityOf(array("interval", "only_integer" => true));
-        // - job_count
-        self::validateNumericalityOf(array("job_count", "only_integer" => true));
+        // - description
     }
 }
 

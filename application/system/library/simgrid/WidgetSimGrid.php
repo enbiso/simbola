@@ -64,6 +64,12 @@ class WidgetSimGrid {
     private $conditions = array();
 
     /**
+     * Order By cluse
+     * @var string
+     */
+    private $order = null;
+    
+    /**
      * Page Count
      * @var integer 
      */
@@ -88,6 +94,15 @@ class WidgetSimGrid {
         $this->conditions = $conditions;
     }
 
+    /**
+     * Set Order by clause
+     * 
+     * @param string $order Order by clause
+     */
+    public function setOrderBy($order) {
+        $this->order = $order;
+    }
+    
     /**
      * Set grid title
      * 
@@ -238,6 +253,7 @@ class WidgetSimGrid {
                 source         :<?= json_encode($this->dataSource) ?>,
                 columns        :<?= json_encode(array_keys($this->columns)) ?>,
                 conditions     :<?= json_encode($this->conditions) ?>,
+                order          :'<?= $this->order ?>',
                 actions        :<?= json_encode($this->actions) ?>,
                 hiddenColumns  :<?= json_encode(array_keys($this->columns, NULL)) ?>,
                 pageLength     :<?= $this->pageLength ?>

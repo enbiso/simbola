@@ -1,4 +1,9 @@
-<?php $url = simbola\Simbola::app()->url; ?>
+<?php
+$this->page_breadcrumb = array(
+    'System' => array('/system'),
+    'Role Based Access Manager');
+
+$url = simbola\Simbola::app()->url; ?>
 <div id="tabs-rbam-main">
     <ul>
         <li><?= shtml_action_link("Users", array('/system/rbam/tabUsers')) ?></li>
