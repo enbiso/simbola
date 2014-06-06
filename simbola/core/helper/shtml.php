@@ -110,6 +110,20 @@ function shtml_resource_include($include = array()){
         $incl .= shtml_css('system', 'codemirror/lib/codemirror.css'); 
         $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');   
         $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
+        $incl .= shtml_js('system', 'codemirror/lib/util/matchbrackets.js');
+        $incl .= shtml_js('system', 'codemirror/lib/util/continuecomment.js');
+        $incl .= shtml_js('system', 'codemirror/lib/util/simple-hint.js');
+        $incl .= shtml_js('system', 'codemirror/lib/util/javascript-hint.js');
+        $incl .= shtml_js('system', 'codemirror/lib/util/runmode.js');
+        $incl .= shtml_js('system', 'codemirror/mode/htmlmixed/htmlmixed.js');        
+        $incl .= shtml_js('system', 'codemirror/mode/xml/xml.js');        
+        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');        
+        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');        
+        $incl .= shtml_js('system', 'codemirror/mode/php/php.js');        
+        $incl .= shtml_js('system', 'codemirror/mode/clike/clike.js');                       
+        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');
+        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');       
+        $incl .= shtml_js('system', 'codemirror/mode/plsql/plsql.js');  
     }
     
     //Jquery related
