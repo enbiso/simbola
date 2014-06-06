@@ -19,7 +19,8 @@ namespace application\system\model\transaction;
  * @property bigint $execute_count Execute count
  * @property Integer $interval Interval
  * @property Integer $job_count Job count
- * @property array $cronQueues Cron Queues 
+ * @property array $cronqueues Cron Queues 
+ * @property array $queues Queues
  */
 class Cron extends \simbola\core\application\AppModel{
     static  //config params
@@ -62,11 +63,19 @@ class Cron extends \simbola\core\application\AppModel{
                 array('end' => 'ready')
             ),
         ));
+        
         //Relationships - Has Many
-        self::hasMany(array("cronQueues", 
+        self::hasMany(array("cronqueues", 
             "class_name" => '\application\system\model\transaction\CronQueue', 
             "foreign_key" => "cron_id", 
             "primary_key" => "id"));
+        
+        self::hasMany(array("queues",
+            'through' => "cronqueues",
+            "class_name" => '\application\system\model\transaction\Queue', 
+            "foreign_key" => "cron_id", 
+            "primary_key" => "id"
+        ));
 
         //Relationships - Belongs To
         //None
@@ -82,24 +91,6 @@ class Cron extends \simbola\core\application\AppModel{
         self::validateNumericalityOf(array("interval", "only_integer" => true));
         // - job_count
         self::validateNumericalityOf(array("job_count", "only_integer" => true));
-    }
-    
-    /**
-     * Get queue infomation
-     * 
-     * @param string $attr Attribute name default FALSE
-     * @return array
-     */
-    public function getQueues($attr = false) {
-        $queues = array();
-        foreach ($this->cronQueues as $cronQueue) {
-            if($attr){
-                $queues[] = $cronQueue->queue->$attr;
-            }else{
-                $queues[] = $cronQueue->queue;
-            }
-        }
-        return $queues;
     }
 }
 

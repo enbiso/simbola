@@ -59,13 +59,41 @@ class TransactionService extends \simbola\core\application\AppService {
         }
     }
 
+    //cron queue
+    public $schema_cronQueueCreate = array(
+        'req' => array('params' => array('data')),
+        'res' => array(),
+        'err' => array('CREATE_ERROR')
+    );
+
+    function actionCronQueueCreate() {
+        $object = new \application\system\model\transaction\CronQueue($this->_req_params('data'));
+        if (!$object->save()) {
+            $this->_err('CREATE_ERROR');
+        }
+        $this->_res('object', $object);
+    }
+    
+    public $schema_cronQueueDelete = array(
+        'req' => array('params' => array('keys')),
+        'res' => array(),
+        'err' => array('DELETE_ERROR')
+    );
+
+    function actionCronQueueDelete() {
+        $object = \application\system\model\transaction\CronQueue::find($this->_req_params('keys'));
+        if (!$object->delete()) {
+            $this->_err('DELETE_ERROR');
+        }
+    }
+    
+    //queue
     public $schema_queueView = array(
         'req' => array('params' => array('keys')),
         'res' => array('object'),
         'err' => array('VIEW_ERROR')
     );
 
-    //queue
     function actionQueueView() {
         $object = \application\system\model\transaction\Queue::find($this->_req_params('keys'));
         if ($object == NULL) {
@@ -168,6 +196,7 @@ class TransactionService extends \simbola\core\application\AppService {
 
     function actionJobCreate() {
         $object = new \application\system\model\transaction\Job($this->_req_params('data'));
+        $object->user_id = \simbola\Simbola::app()->auth->getId();
         if (!$object->save()) {
             $this->_err('CREATE_ERROR');
         }
@@ -183,6 +212,7 @@ class TransactionService extends \simbola\core\application\AppService {
     function actionJobUpdate() {
         $object = \application\system\model\transaction\Job::find($this->_req_params('keys'));
         $object->set_attributes($this->_req_params('data'));
+        $object->user_id = \simbola\Simbola::app()->auth->getId();
         if (!$object->save()) {
             $this->_err('UPDATE_ERROR');
         }

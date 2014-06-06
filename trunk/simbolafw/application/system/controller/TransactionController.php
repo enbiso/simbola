@@ -66,10 +66,7 @@ class TransactionController extends \simbola\core\application\AppController {
     }
 
     //queue
-    function actionQueue() {
-        $this->view('transaction/queue/index');
-    }
-
+    
     function actionQueueCreate() {
         $object = new \application\system\model\transaction\Queue();
         if ($this->issetPost('data')) {
@@ -178,7 +175,7 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
-    function actionQueueList() {
+    function actionQueue() {
         try {
             $response = $this->invoke('system', 'transaction', 'queueList', array(
                 'search' => $this->post('data'),
@@ -188,20 +185,21 @@ class TransactionController extends \simbola\core\application\AppController {
         } catch (\Exception $ex) {
             $this->setViewData("error", $ex->getMessage());
         }
-        $this->view('transaction/queue/list');
+        $this->view('transaction/queue/index');
     }
 
     //jobs
-    function actionJob() {
-        $this->view('transaction/job/index');
-    }
 
     function actionJobCreate() {
         $object = new \application\system\model\transaction\Job();
         if ($this->issetPost('data')) {
             try {
+                $data = $this->post('data');
+                if($object->type == 'service' && $this->issetPost("service")){
+                    $data['content'] = $this->getServiceContent($this->post('service'));                    
+                }
                 $response = $this->invoke('system', 'transaction', 'jobCreate', array(
-                    'data' => $this->post('data'),
+                    'data' => $data,
                 ));
                 $object = $response["body"]['response']['object'];
                 $keys = array(
@@ -231,9 +229,13 @@ class TransactionController extends \simbola\core\application\AppController {
                 $this->setViewData('object', $object);
                 if ($this->issetPost('data')) {
                     try {
+                        $data = $this->post('data');
+                        if($object->type == 'service' && $this->issetPost("service")){
+                            $data['content'] = $this->getServiceContent($this->post('service'));                    
+                        }
                         $response = $this->invoke('system', 'transaction', 'jobUpdate', array(
                             'keys' => $keysFromGet,
-                            'data' => $this->post('data'),
+                            'data' => $data,
                         ));
                         $object = $response["body"]['response']['object'];
                         $this->setViewData('object', $object);
@@ -248,7 +250,7 @@ class TransactionController extends \simbola\core\application\AppController {
                     } catch (\Exception $ex) {
                         $this->setViewData("error", $ex->getMessage());
                     }
-                }
+                }                
                 $this->view('transaction/job/update');
             }
         } else {
@@ -304,7 +306,7 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
-    function actionJobList() {
+    function actionJob() {
         try {
             $response = $this->invoke('system', 'transaction', 'jobList', array(
                 'search' => $this->post('data'),
@@ -314,7 +316,7 @@ class TransactionController extends \simbola\core\application\AppController {
         } catch (\Exception $ex) {
             $this->setViewData("error", $ex->getMessage());
         }
-        $this->view('transaction/job/list');
+        $this->view('transaction/job/index');
     }
 
     //private functions
@@ -351,4 +353,8 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
+    private function getServiceContent($serviceData) {
+        //$serviceData['params'] = json_decode($serviceData['params']);
+        return json_encode($serviceData);
+    }
 }

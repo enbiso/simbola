@@ -3,7 +3,7 @@
  * Description of Controller Term
  *
  * Controller 	: transaction.job
- * View 	: index
+ * View 	: list
  * Created	: 05Jun2014
  * Purpose 	: Transaction Job Controller
  *
@@ -13,10 +13,6 @@
  *  
  * @author faraj
  */
-$__term['system.transaction.job.create.title'] = 'Create';
-$__term['system.transaction.job.create.menu.list'] = 'List';
-$__term['system.transaction.job.index.title'] = 'Index';
-$__term['system.transaction.job.index.menu.list'] = 'List';
+$__term['system.transaction.job.index.title'] = 'List';
 $__term['system.transaction.job.index.menu.create'] = 'Add';
-$__term['system.transaction.job.index.button.create'] = 'Create';
-$__term['system.transaction.job.index.button.list'] = 'List All';
+$__term['system.transaction.job.index.table.title'] = 'Transaction Jobs';

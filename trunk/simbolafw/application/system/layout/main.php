@@ -5,16 +5,21 @@
     <head>
         <meta charset="utf-8">
         <title>Simbola Framework</title>
-        <?= shtml_meta('utf-8', array(
+        <?=
+        shtml_meta('utf-8', array(
             'description' => "Simbola Framework",
-            'author' => 'Faraj Farook')) ?>        
-        
-        <?= shtml_resource_include(array(
-            'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json',
-            'flexigrid', 'jquery-ui', 'jquery-dynatree', 'jquery-contextmenu', 
-            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>
-        
+            'author' => 'Faraj Farook'))
+        ?>        
+
         <?php
+        $resource_list = array(
+            'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json',
+            'flexigrid', 'jquery-ui', 'jquery-dynatree', 'jquery-contextmenu',
+            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify');
+        if ($this->isDataSet('resource_list')) {
+            $resource_list = array_merge($resource_list, $this->resource_list);
+        }
+        echo shtml_resource_include($resource_list);
         //setup pagemenu
         if ($this->isDataSet('page_menu')) {
             $this->page_menu = sauth_filter_menu_array($this->page_menu);
@@ -33,7 +38,7 @@
             body {
                 height: 100%;
             }
-            
+
             #wrap {
                 min-height: 100%;
                 height: auto !important;
@@ -41,7 +46,7 @@
                 margin: 0 auto -60px;                
                 padding: 0 0 60px;
             }
-            
+
             #footer {
                 height: 60px;
                 background-color: #f5f5f5;
@@ -55,24 +60,24 @@
                     padding-right: 20px;
                 }
             }
-            
+
             #wrap > .container {
                 padding: 60px 15px 0;
             }
-            
+
             .container .credit {
                 margin: 20px 0;
             }
-            
+
             .center{
                 text-align: center;
             }
         </style>
-        <?php simbola_js_init(); ?>
+<?php simbola_js_init(); ?>
     </head>
     <body>
         <div id="wrap">
-            <?php $this->includeFile('_header'); ?>
+<?php $this->includeFile('_header'); ?>
             <div class="container">
                 <div class="row">                    
                     <div class="col-md-<?= 12 - $pageMenuWidth ?>">
@@ -93,7 +98,7 @@
             <?php endif; ?>
             <?php echo $content; ?>               
             </div>        
-            <?php $this->includeFile('_footer'); ?>        
+<?php $this->includeFile('_footer'); ?>        
         </div>
     </body>
 </html>

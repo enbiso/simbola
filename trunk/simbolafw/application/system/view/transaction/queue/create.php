@@ -8,7 +8,7 @@ $this->page_breadcrumb = array(
 $this->page_menu = array(
     array(
         'title' => sterm_get('system.transaction.queue.create.menu.list'),
-        'link' => array('/system/transaction/queueList'),
+        'link' => array('/system/transaction/queue'),
         'icon' => 'list'
     ),
 );

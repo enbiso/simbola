@@ -84,10 +84,32 @@ class Job extends \simbola\core\application\AppModel{
         self::validateNumericalityOf(array("priority", "only_integer" => true));
         // - type
         self::validateSizeOf(array("type", "maximum" => 20));
+        self::validateUneditable("type");
         // - queue_id
         self::validateSizeOf(array("queue_id", "maximum" => 10));
         // - content
         // - output
+    }
+    
+    function isValidType(){
+        return in_array($this->type, array_keys(self::GetTypes()));
+    }
+    
+    static function getTypes(){
+        return array(
+            'php' => 'PHP Script Job',
+            'service' => 'Service Job'
+        );
+    }
+    
+    static function getPriorities() {
+        return array(
+            1 => 'Very High',
+            2 => 'High',
+            3 => 'Normal',
+            4 => 'Low',
+            5 => 'Very Low',
+        );
     }
 }
 
