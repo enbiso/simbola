@@ -20,3 +20,4 @@ $this->page_menu = array(
         <?php $this->pview('transaction/cron/_display'); ?>
     </div>
 </div>
+<?php $this->pview('transaction/cron/_queue') ?>

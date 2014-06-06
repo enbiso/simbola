@@ -11,19 +11,6 @@
             'flexigrid', 'jquery-ui', 'jquery-pnotify', 'jquery-dynatree', 'jquery-contextmenu', 
             'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>     
         
-        <?= shtml_js('system', 'codemirror/lib/util/matchbrackets.js') ?>    
-        <?= shtml_js('system', 'codemirror/lib/util/continuecomment.js') ?>    
-        <?= shtml_js('system', 'codemirror/lib/util/simple-hint.js') ?>    
-        <?= shtml_js('system', 'codemirror/lib/util/javascript-hint.js') ?>    
-        <?= shtml_js('system', 'codemirror/mode/htmlmixed/htmlmixed.js') ?>            
-        <?= shtml_js('system', 'codemirror/mode/xml/xml.js') ?>            
-        <?= shtml_js('system', 'codemirror/mode/javascript/javascript.js') ?>            
-        <?= shtml_js('system', 'codemirror/mode/css/css.js') ?>            
-        <?= shtml_js('system', 'codemirror/mode/php/php.js') ?>            
-        <?= shtml_js('system', 'codemirror/mode/clike/clike.js') ?>                           
-        <?= shtml_js('system', 'codemirror/mode/css/css.js') ?>    
-        <?= shtml_js('system', 'codemirror/mode/javascript/javascript.js') ?>           
-        <?= shtml_js('system', 'codemirror/mode/plsql/plsql.js') ?>  
         <style>
             body{
                 padding-top: 80px;

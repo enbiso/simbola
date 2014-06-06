@@ -3,7 +3,7 @@
  * Description of Controller Term
  *
  * Controller 	: transaction.queue
- * View 	: index
+ * View 	: list
  * Created	: 05Jun2014
  * Purpose 	: Transaction Queue Controller
  *
@@ -13,10 +13,6 @@
  *  
  * @author faraj
  */
-$__term['system.transaction.queue.create.title'] = 'Create';
-$__term['system.transaction.queue.create.menu.list'] = 'List';
-$__term['system.transaction.queue.index.title'] = 'Index';
-$__term['system.transaction.queue.index.menu.list'] = 'List';
+$__term['system.transaction.queue.index.title'] = 'List';
 $__term['system.transaction.queue.index.menu.create'] = 'Add';
-$__term['system.transaction.queue.index.button.create'] = 'Create';
-$__term['system.transaction.queue.index.button.list'] = 'List All';
+$__term['system.transaction.queue.index.table.title'] = 'Transaction Queues';

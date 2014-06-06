@@ -13,7 +13,7 @@ $this->page_menu = array(
     ),   
     array(
         'title' => sterm_get('system.transaction.queue.notFound.menu.list'),
-        'link' => array('/system/transaction/queueList'),
+        'link' => array('/system/transaction/queue'),
         'icon' => 'list'
     ),
 );

@@ -13,7 +13,7 @@ $this->page_menu = array(
     ),   
     array(
         'title' => sterm_get('system.transaction.job.notFound.menu.list'),
-        'link' => array('/system/transaction/jobList'),
+        'link' => array('/system/transaction/job'),
         'icon' => 'list'
     ),
 );

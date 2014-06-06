@@ -1,4 +1,5 @@
 <?php
+$this->resource_list = array('codemirror');
 $this->page_breadcrumb = array(
     'System' => array('/system'),
     'Transaction' => array('/system/transaction'),
@@ -27,6 +28,6 @@ $this->page_menu = array(
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('system.transaction.job.view.panel.heading') ?></div>
     <div class="panel-body">
-        <?php $this->pview('transaction/job/_display'); ?>
+        <?php $this->pview('transaction/job/display/_'.$this->object->type); ?>
     </div>
 </div>
