@@ -3,31 +3,32 @@ $this->resource_list = array('codemirror');
 $this->page_breadcrumb = array(
     'System' => array('/system'),
     'Transaction' => array('/system/transaction'),
-    'Job' => array('/system/transaction/job'),       
+    'Job' => array('/system/transaction/job'),
     sterm_get('system.transaction.job.view.title'));
 
 $object = $this->object;
-$this->page_menu = array(    
+$this->page_menu = array(
     array(
         'title' => sterm_get('system.transaction.job.view.menu.create'),
         'link' => array('/system/transaction/jobCreate'),
         'icon' => 'plus'
-    ),   
+    ),
     array(
         'title' => sterm_get('system.transaction.job.view.menu.update'),
-        'link' => array('/system/transaction/jobUpdate',"id" => $object->id),
+        'link' => array('/system/transaction/jobUpdate', "id" => $object->id),
         'icon' => 'edit'
     ),
     array(
         'title' => sterm_get('system.transaction.job.view.menu.delete'),
-        'link' => array('/system/transaction/jobDelete',"id" => $object->id),
+        'link' => array('/system/transaction/jobDelete', "id" => $object->id),
         'icon' => 'remove'
-    ),    
+    ),
 );
+$this->state_menu = $object->getStateChangeInfo(true, array('execute'));
 ?>
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('system.transaction.job.view.panel.heading') ?></div>
     <div class="panel-body">
-        <?php $this->pview('transaction/job/display/_'.$this->object->type); ?>
+        <?php $this->pview('transaction/job/display/_' . $this->object->type); ?>
     </div>
 </div>

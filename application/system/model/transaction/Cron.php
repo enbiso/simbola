@@ -58,7 +58,7 @@ class Cron extends \simbola\core\application\AppModel{
                 array('start' => 'ready'),
                 array('from' => 'ready', 'to' => 'execute'),
                 array('from' => 'execute', 'to' => 'ready'),
-                array('from' => 'ready', 'to' => 'halt'),
+                array('from' => 'ready', 'to' => 'halt', 'post_action' => 'resetJobCount'),
                 array('from' => 'halt', 'to' => 'ready'),
                 array('end' => 'ready')
             ),
@@ -91,6 +91,11 @@ class Cron extends \simbola\core\application\AppModel{
         self::validateNumericalityOf(array("interval", "only_integer" => true));
         // - job_count
         self::validateNumericalityOf(array("job_count", "only_integer" => true));
+    }
+    
+    function resetJobCount(){
+        $this->job_count = 0;
+        $this->save();
     }
 }
 

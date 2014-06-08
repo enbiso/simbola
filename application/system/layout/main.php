@@ -27,6 +27,12 @@
         } else {
             $pageMenuWidth = 0;
         }
+        //state menu
+        if ($this->isDataSet('state_menu')) {            
+            $stateMenuWidth = ceil(count($this->state_menu) * 1);
+        } else {
+            $stateMenuWidth = 0;
+        }  
         //page header        
         if ($this->isDataSet('page_header') && is_array($this->page_header)) {
             $this->page_subheader = $this->page_header[1];
@@ -80,18 +86,23 @@
 <?php $this->includeFile('_header'); ?>
             <div class="container">
                 <div class="row">                    
-                    <div class="col-md-<?= 12 - $pageMenuWidth ?>">
+                    <div class="col-md-<?= 12 - $pageMenuWidth - ($stateMenuWidth > 0 ? 1 : 0) ?>">
                         <?php
                         if ($this->isDataSet('page_breadcrumb')) {
                             echo shtml_breadcrumb($this->page_breadcrumb);
                         }
                         ?>
                     </div>
-                        <?php if ($pageMenuWidth > 0): ?>
-                        <div class="col-md-<?= $pageMenuWidth ?>">
-                        <?= shtml_btngroupmenu($this->page_menu); ?>
+                    <?php if ($pageMenuWidth > 0 || $stateMenuWidth > 0): ?>
+                        <div class="col-md-<?= $pageMenuWidth + ($stateMenuWidth > 0 ? 1 : 0) ?>">
+                            <?php if ($pageMenuWidth > 0): ?>
+                                <?= shtml_btngroupmenu($this->page_menu); ?>
+                            <?php endif ?>
+                            <?php if ($stateMenuWidth > 0): ?>
+                                <?= shtml_state_dropmenu($this->state_menu, 'State'); ?>
+                            <?php endif ?>
                         </div>
-                <?php endif ?>
+                    <?php endif ?>  
                 </div>
                 <?php if ($this->isDataSet('page_header')): ?>
                     <h2><?= $this->page_header ?> <small><?= $this->isDataSet('page_subheader') ? $this->page_subheader : '' ?></small></h2><hr/>

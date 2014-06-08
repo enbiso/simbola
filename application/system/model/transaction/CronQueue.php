@@ -47,7 +47,7 @@ class CronQueue extends \simbola\core\application\AppModel{
         //Model Setup
         self::setClass(__CLASS__);
         self::setSource('system', 'transaction', 'cron_queue');
-        self::primaryKey('cron_id','queue_id');        
+        self::primaryKey(array('cron_id','queue_id'));        
 
         //Relationships - Has Many
         //None

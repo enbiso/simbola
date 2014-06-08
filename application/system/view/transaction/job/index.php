@@ -16,6 +16,7 @@ $grid = new application\system\library\simgrid\WidgetSimGrid("system_transaction
 $grid->setTitle(sterm_get('system.transaction.job.index.table.title'));
 $grid->setTableCss('table-condensed table-hover');
 $grid->setDataSource("system", "transaction", "job");
+$grid->setOrderBy("_state desc, id desc");
 $grid->setColumns(array(
     	"id" => "ID",
         "_state" => "Status",

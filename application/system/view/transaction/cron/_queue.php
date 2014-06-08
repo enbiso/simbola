@@ -3,20 +3,15 @@
 $grid = new application\system\library\simgrid\WidgetSimGrid("system_transactionQueue_list");
 $grid->setTitle("Queues Attached");
 $grid->setTableCss('table-condensed table-hover');
-$grid->setDataSource("system", "transaction", "queue");
-$queueIds = array();
-foreach ($this->object->queues as $queue) {
-    $queueIds[] = $queue->id;
-}
-$queueIds = "'" . implode("','", $queueIds) . "'";
-$grid->setCondition(array("id IN ({$queueIds})"));
+$grid->setDataSource("system", "transaction", "cronQueue");
+$grid->setCondition(array("cron_id = ?", $this->object->id));
 $grid->setColumns(array(
-    "id" => "Queue ID",
-    "description" => "Description",
+    "queue_id" => "Queue ID",
+    "queue.description" => "Description",
     "Actions",
 ));
 $grid->setActions(array(
-    shtml_link("remove", '#', array('class' => 'btnCronQueueRemove btn btn-xs btn-default', 'onclick' => '{removeQueue("%id%")}')),
+    shtml_link("remove", false, array('class' => 'btnCronQueueRemove btn btn-xs btn-default', 'onclick' => '{removeCronQueue("%queue_id%")}')),
 ));
 ?>
 <hr/>
@@ -36,18 +31,17 @@ $grid->setActions(array(
     $('#create_queue_line').bind('submit',function(e){
         e.preventDefault();        
         simbola.call.service('system', 'transaction', 'cronQueueCreate', $(this).serializeObject(), function(data){            
-            window.location = window.location;
+            $('#system_transactionQueue_list').simGrid_Reload();
         });
     });
-    function removeQueue(queue){
+    function removeCronQueue(queue){
         simbola.call.service('system', 'transaction', 'cronQueueDelete', {
             keys: {
                 queue_id: queue,
                 cron_id: '<?=$this->object->id?>'
             }
         }, function(data){    
-            //$('#system_transactionQueue_list').simGrid_Reload();
-            window.location = window.location;
+            $('#system_transactionQueue_list').simGrid_Reload();            
         });        
     }
 </script>
