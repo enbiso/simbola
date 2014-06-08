@@ -491,9 +491,10 @@ class AppModel extends \ActiveRecord\Model {
      * This function returns the state change info which can be used with the
      * system service system.state.change
      * @param bool $securityCheck Seccurity Check
+     * @param array $filter Filter out states
      * @return stateChangeInfo State Change Info
      */
-    public function getStateChangeInfo($securityCheck = false) {
+    public function getStateChangeInfo($securityCheck = false, $filter = array()) {
         $source = \simbola\Simbola::app()->db->getDriver()->getSourceFromTableName(static::$table_name);
         $keys = array();
         foreach (static::Keys() as $key) {
@@ -503,12 +504,14 @@ class AppModel extends \ActiveRecord\Model {
         $stateChangeInfo = array();
         
         foreach ($this->getNextStates($securityCheck) as $state) {
-            $label = \simbola\Simbola::app()->term->getModelTermName(static::$class_name, "state.{$state}");            
-            $stateChangeInfo[$label] = array(
-                'model' => $source,
-                'keys' => $keys,
-                'state' => $state
-            );
+            if(!in_array($state, $filter)){
+                $label = \simbola\Simbola::app()->term->getModelTermName(static::$class_name, "state.{$state}");            
+                $stateChangeInfo[$label] = array(
+                    'model' => $source,
+                    'keys' => $keys,
+                    'state' => $state
+                );
+            }
         }
         return $stateChangeInfo;
     }

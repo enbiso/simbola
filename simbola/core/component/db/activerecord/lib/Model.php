@@ -994,7 +994,7 @@ class Model
 		$this->verify_not_readonly('delete');
 
 		$pk = $this->values_for_pk();
-
+                
 		if (empty($pk))
 			throw new ActiveRecordException("Cannot delete, no primary key defined for: " . get_called_class());
 

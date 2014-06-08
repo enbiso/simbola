@@ -413,9 +413,9 @@ class Table
 
 	private function set_primary_key()
 	{
-		if (($pk = $this->class->getStaticPropertyValue('pk',null)) || ($pk = $this->class->getStaticPropertyValue('primary_key',null)))
+		if (($pk = $this->class->getStaticPropertyValue('pk',null)) || ($pk = $this->class->getStaticPropertyValue('primary_key',null)))                        
 			$this->pk = is_array($pk) ? $pk : array($pk);
-		else
+                else
 		{
 			$this->pk = array();
 

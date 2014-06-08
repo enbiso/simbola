@@ -23,14 +23,10 @@ abstract class AbstractJob {
         
     /**
      * Execute the job
+     * @param string $content Content
      * @return string Output content
      */
-    abstract protected function execute();
-    
-    /**
-     * Create new instance of job
-     */
-    abstract static function CreateDbInstance();
+    abstract protected function execute($content);    
     
     /**
      * DB Instance generator
@@ -58,8 +54,8 @@ abstract class AbstractJob {
      * Perform the job
      */
     function perform() {
-        try {
-            $output = $this->execute();
+        try {            
+            $output = $this->execute($this->dbObj->content);            
             $this->complete($output);
         } catch (\Exception $ex) {
             $this->error($ex->getMessage());
