@@ -16,17 +16,17 @@ class Transaction extends \simbola\core\component\system\lib\Component {
     public function cron($cronId) {
         $cronUtil = new lib\CronUtil();
         $jobUtil = new lib\JobUtil();
-        try {            
-            if (!$cronUtil->initialize($cronId)) {
-                slog_syserror(__METHOD__, "Cron table update failed for Cron ID {$cronId}");
+        try {               
+            if ($cronUtil->initialize($cronId)) {                                
+                $cronUtil->beginCron();                
+                $queueIds = $cronUtil->getQueueIds();                                                        
+                while ($job = $jobUtil->getNextJob($queueIds)) {
+                    $job->perform();                  
+                }
+                $cronUtil->finishCron();
+            }else{                
                 return false;
             }
-            $cronUtil->beginCron();
-            $queueIds = $cronUtil->getQueueIds();
-            while ($job = $jobUtil->getNextJob($queueIds)) {
-                $job->execute();
-            }
-            $cronUtil->finishCron();
         } catch (\Exception $ex) {
             slog_syserror(__METHOD__, "Cron Error: " . $ex->getMessage());
             $cronUtil->finishCron();

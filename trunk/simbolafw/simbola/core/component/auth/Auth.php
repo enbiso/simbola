@@ -78,7 +78,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
      * @param string $username Username
      * @param string $password Password
      * @param string $sessionInfo Session Information
-     * @return boolean
+     * @return string Session Key
      */
     public function login($username, $password = false, $sessionInfo = '') {
         $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo);        

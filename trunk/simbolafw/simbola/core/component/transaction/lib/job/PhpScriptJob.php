@@ -8,10 +8,14 @@ namespace simbola\core\component\transaction\lib\job;
 class PhpScriptJob extends AbstractJob{
     
     /**
-     * Execute
+     * Execute the job
+     * @param type $content Content
+     * @return type Output
      */
-    protected function execute() {
-        
+    protected function execute($content) {        
+        ob_start();
+        eval($content);
+        return ob_get_clean();        
     }
     
     /**
@@ -21,7 +25,7 @@ class PhpScriptJob extends AbstractJob{
      * @param type $queueId Queue ID
      * @return \application\system\model\transaction\Job
      */
-    public static function CreateDbInstance($script, $priority, $queueId) {
+    public static function createDbInstance($script, $priority, $queueId) {
         return self::dbInstance("php", $script, $priority, $queueId);
     }
 

@@ -55,20 +55,24 @@ class CronUtil {
         if ($this->cron == NULL) {
             $this->cron = new \application\system\model\transaction\Cron(array(
                 'id' => $cronId,
-                'execute_count' => 0,
+                'execute_count' => 1,
+                'last_execute' => date("Y-m-d H:i:s"),
             ));
-        } else {
+            return $this->cron->save();
+        } elseif($this->cron->state() == 'ready'){
             $this->cron->interval = time() - date_timestamp_get($this->cron->last_execute);
+            $this->cron->execute_count++;
+            return $this->cron->save();
+        }else{
+            return false;
         }
-        $this->cron->execute_count++;
-        $this->cron->last_execute = date("Y-m-d H:i:s");
-        return $this->cron->save();
     }
     
-    public function getQueueIds() {
-        if($this->cron instanceof \application\system\model\transaction\Cron){
-            return $this->cron->getQueues("id");
+    public function getQueueIds() {        
+        $queueIds = array();
+        foreach($this->cron->queues as $queue){
+            $queueIds[] = $queue->id;
         }
-        return array();
+        return $queueIds;
     }
 }
