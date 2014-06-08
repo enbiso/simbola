@@ -13,7 +13,7 @@ class TransactionController extends \simbola\core\application\AppController {
         $this->view('transaction/index');
     }
 
-    function actionCron() {
+    function actionCron() {     
         $this->view('transaction/cron/index');
     }
 
@@ -195,7 +195,7 @@ class TransactionController extends \simbola\core\application\AppController {
         if ($this->issetPost('data')) {
             try {
                 $data = $this->post('data');
-                if($object->type == 'service' && $this->issetPost("service")){
+                if($data['type'] == 'service' && $this->issetPost("service")){
                     $data['content'] = $this->getServiceContent($this->post('service'));                    
                 }
                 $response = $this->invoke('system', 'transaction', 'jobCreate', array(

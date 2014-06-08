@@ -63,15 +63,20 @@ class TransactionService extends \simbola\core\application\AppService {
     public $schema_cronQueueCreate = array(
         'req' => array('params' => array('data')),
         'res' => array(),
-        'err' => array('CREATE_ERROR')
+        'err' => array('CREATE_ERROR', 'QUEUE_ALREADY_ASSIGNED')
     );
 
     function actionCronQueueCreate() {
-        $object = new \application\system\model\transaction\CronQueue($this->_req_params('data'));
-        if (!$object->save()) {
-            $this->_err('CREATE_ERROR');
+        $object = \application\system\model\transaction\CronQueue::find($this->_req_params('data'));
+        if(is_null($object)){
+            $object = new \application\system\model\transaction\CronQueue($this->_req_params('data'));            
+            if (!$object->save()) {
+                $this->_err('CREATE_ERROR');
+            }                   
+        }else{
+            $this->_err('QUEUE_ALREADY_ASSIGNED');
         }
-        $this->_res('object', $object);
+        $this->_res('object', $object);        
     }
     
     public $schema_cronQueueDelete = array(
@@ -81,7 +86,7 @@ class TransactionService extends \simbola\core\application\AppService {
     );
 
     function actionCronQueueDelete() {
-        $object = \application\system\model\transaction\CronQueue::find($this->_req_params('keys'));
+        $object = \application\system\model\transaction\CronQueue::find($this->_req_params('keys'));        
         if (!$object->delete()) {
             $this->_err('DELETE_ERROR');
         }

@@ -13,6 +13,7 @@ $this->page_menu = array(
         'icon' => 'remove'
     ),    
 );
+$this->state_menu = $object->getStateChangeInfo(true, array('execute'));
 ?>
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('system.transaction.cron.view.panel.heading') ?></div>
