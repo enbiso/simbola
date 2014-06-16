@@ -44,7 +44,7 @@ class Log extends \simbola\core\component\system\lib\Component {
         if ($this->isNewInstallation()) {
             $dbObjClassName = \simbola\core\application\dbobj\AbstractDbObject::getClass($this->moduleName, $this->luName, "table", $this->tableName);
             $dbObj = new $dbObjClassName($dbDriver);
-            $dbObj->execute(true);
+            $dbObj->setup();
         }
 
         if (!isset($this->params['TYPES'])) {
