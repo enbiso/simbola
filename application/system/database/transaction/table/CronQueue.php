@@ -30,8 +30,8 @@ class CronQueue extends \simbola\core\application\dbobj\AppDbTable{
             'queue_id VARCHAR(20)',
         ));
         $this->addForeignKeys(array(
-            'fkey_queue' => array('queue_id', 'system', 'transaction', 'queue', 'id'),
-            'fkey_cron' => array('cron_id', 'system', 'transaction', 'cron', 'id'),
+            'fkey_cq_queue' => array('queue_id', 'system', 'transaction', 'queue', 'id'),
+            'fkey_cq_cron' => array('cron_id', 'system', 'transaction', 'cron', 'id'),
         ));
         $this->addPrimaryKey(array('cron_id', 'queue_id'));
     }
