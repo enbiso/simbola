@@ -64,7 +64,7 @@ class LogicalUnit {
     function getObj($type, $name) { 
         $name = sstring_camelcase_to_underscore($name);
         foreach ($this->objs[$type] as $obj) {
-            slog_info("name: " . $obj->getName());
+            //slog_info("name: " . $obj->getName());
             if ($obj->getName() == $name) {
                 return $obj;
             }
@@ -74,9 +74,8 @@ class LogicalUnit {
 
     private function loadObjs($type) {
         $path = $this->getBasePath() . DIRECTORY_SEPARATOR . $type . DIRECTORY_SEPARATOR . "*.php";
-        foreach (glob($path) as $filePath) {
-            $class = \simbola\Simbola::app()->getModuleNamespace($this->module, "database")
-                    . "\\" . $this->name . '\\' . $type . '\\' . basename($filePath, ".php");
+        foreach (glob($path) as $filePath){ 
+            $class = \simbola\core\application\dbobj\AbstractDbObject::getClass($this->module, $this->name, $type, basename($filePath, ".php"));
             $obj = new $class($this->dbDriver);
             $this->objs[$type][] = $obj;
         }
