@@ -5,7 +5,7 @@ namespace application\system\database\auth\table;
  *
  * @author FARFLK
  */
-class Assign extends \simbola\core\application\dbobj\AppDbTable{
+class User extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');
@@ -14,6 +14,14 @@ class Assign extends \simbola\core\application\dbobj\AppDbTable{
     }
     
     public function setup() { 
-        //table created by framework execution. dummy table definition for the security
+        //r0
+        $this->addTable();
+        //r1
+        $this->addColumns(array(
+            'user_id BIGINT PRIMARY KEY AUTO_INCREMENT',
+            'user_active BOOL DEFAULT TRUE',
+            'user_name VARCHAR(100) UNIQUE',
+            'user_password TEXT'
+        ));
     }
 }

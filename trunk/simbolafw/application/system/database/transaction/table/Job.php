@@ -27,6 +27,7 @@ class Job extends \simbola\core\application\dbobj\AppDbTable{
         //r1 - setup columns
         $this->addColumns(array(
             'id BIGINT AUTO_INCREMENT PRIMARY KEY',
+            'user_id bigint not null', 
             'priority INT DEFAULT 3',
             'type VARCHAR(20) NOT NULL',
             'queue_id VARCHAR(10)',
@@ -34,12 +35,7 @@ class Job extends \simbola\core\application\dbobj\AppDbTable{
             'output TEXT',
         ));
         $this->addForeignKeys(array(
-            'fkey_queue' => array('queue_id', 'system', 'transaction', 'queue', 'id')
-        ));
-        $this->addColumns(array(
-            'user_id bigint not null', 
-        ));
-        $this->addForeignKeys(array(
+            'fkey_queue' => array('queue_id', 'system', 'transaction', 'queue', 'id'),
             'fkey_user' => array('user_id', 'system', 'auth', 'user', 'user_id')
         ));
     }
