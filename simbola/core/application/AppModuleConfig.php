@@ -29,7 +29,7 @@ abstract class AppModuleConfig {
     private $config = array(
         'LAYOUT' => 'layout/main',
         'VIEW' => 'view',
-        'NAME' => null,
+        'NAME' => null,        
         'MODEL' => 'model',
         'SERVICE' => 'service',
         'LIBRARY' => 'library',
@@ -39,7 +39,7 @@ abstract class AppModuleConfig {
         'RESOURCE' => 'resource',
         'DEFAULT_ROUTE' => 'site/index',
     );    
-
+    
     /**
      * Used to set the module name in the configuration
      * 

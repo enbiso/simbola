@@ -134,7 +134,7 @@ abstract class AbstractDbObject {
      */
     private function insertRevScript() {
         $content = $this->dbDriver->escapeString(implode(";\n", $this->content).";");
-        $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
+        $tblName = $this->dbDriver->getTableName('system', 'setup', 'dbRevision');
         $sql = "INSERT INTO {$tblName} (rev, content) VALUES('{$this->getRevId()}','{$content}')";
         return $sql;
     }
@@ -143,8 +143,8 @@ abstract class AbstractDbObject {
      * Initalization of revision table
      */
     private function initTables() {        
-        if (!$this->dbDriver->tableExist('system', 'dbsetup', 'revision')) {
-            $dbObjClassName = AbstractDbObject::getClass("system", "dbsetup", "table", "revision");
+        if (!$this->dbDriver->tableExist('system', 'setup', 'dbRevision')) {
+            $dbObjClassName = AbstractDbObject::getClass("system", "setup", "table", "dbRevision");
             $dbObj = new $dbObjClassName($this->dbDriver);
             $dbObj->setup();            
         }
@@ -154,7 +154,7 @@ abstract class AbstractDbObject {
      * @return boolean
      */
     public function isNotExecuted() {
-        $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
+        $tblName = $this->dbDriver->getTableName('system', 'setup', 'dbRevision');
         $sql = "SELECT count(1) cnt FROM {$tblName} WHERE rev = '{$this->getRevId()}'";
         $out = $this->dbDriver->query($sql);
         return $out[0]['cnt'] == '0';

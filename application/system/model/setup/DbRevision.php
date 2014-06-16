@@ -3,7 +3,7 @@ namespace application\system\model\dbsetup;
 /**
  * Description of Model
  *
- * Model 	: revision
+ * Model 	: db_revision
  * Created	: 18Apr2014
  * Purpose 	: Revision Model
  *
@@ -17,7 +17,7 @@ namespace application\system\model\dbsetup;
  * @property String $rev Rev
  * @property String $content Content
  */
-class Revision extends \simbola\core\application\AppModel{
+class DbRevision extends \simbola\core\application\AppModel{
     static  //config params
             $table_name, 
             $primary_key, 
@@ -44,7 +44,7 @@ class Revision extends \simbola\core\application\AppModel{
     public static function initialize() {
         //Model Setup
         self::setClass(__CLASS__);
-        self::setSource('system', 'dbsetup', 'revision');
+        self::setSource('system', 'setup', 'db_revision');
         self::primaryKey('rev');        
 
         //Relationships - Has Many

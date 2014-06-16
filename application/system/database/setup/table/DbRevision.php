@@ -1,17 +1,17 @@
 <?php
-namespace application\system\database\dbsetup\table;
+namespace application\system\database\setup\table;
 
 /**
  * Description of Revision
  *
  * @author FARFLK
  */
-class Revision extends \simbola\core\application\dbobj\AppDbTable{
+class DbRevision extends \simbola\core\application\dbobj\AppDbTable{
     
     public function init() {
         $this->setModule('system');
-        $this->setLu("dbsetup");
-        $this->setName("revision");
+        $this->setLu("setup");
+        $this->setName("db_revision");
     }
     
     public function setup() { 
