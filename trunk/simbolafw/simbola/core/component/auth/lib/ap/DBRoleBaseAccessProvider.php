@@ -62,14 +62,17 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $this->dbExecute($sql);
         }
     }
-
-    //create table abstraction
-    abstract function createTblAuthAssign();
-    abstract function createTblAuthChild();
-    abstract function createTblAuthItem();
-    abstract function createTblAuthUser();
-    abstract function createTblAuthSession();
-
+    
+    /**
+     * Setup database table
+     * @param type $name Table name
+     */
+    private function setupTable($name) {
+        $objName = \simbola\core\application\dbobj\AbstractDbObject::getClass("system", 'auth', "table", $name);
+        $obj = new $objName(\simbola\Simbola::app()->db->getDriver());
+        $obj->setup();
+    }    
+    
     //create view abstraction
     abstract function createViewAccessRole();
     abstract function createViewAccessObject();
@@ -155,11 +158,11 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $this->moduleCreate();
         }
         if ($this->isNewInstallation()) {
-            $this->createTblAuthItem();
-            $this->createTblAuthChild();
-            $this->createTblAuthUser();
-            $this->createTblAuthAssign();
-            $this->createTblAuthSession();
+            $this->setupTable(self::TBL_ITEM);
+            $this->setupTable(self::TBL_CHILD);            
+            $this->setupTable(self::TBL_USER);            
+            $this->setupTable(self::TBL_ASSIGN);            
+            $this->setupTable(self::TBL_SESSION);
             $this->createViewAccessObject();
             $this->createViewAccessRole();
             $this->createViewEnduserRole();
