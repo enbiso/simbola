@@ -36,10 +36,19 @@ class MySQLDriver extends AbstractDbDriver {
      * @param boolean $log Used to setup the logging on database query execution
      *          TRUE  - enable DB logs on execution (default)
      *          FALSE - disable DB logs on execution 
-     * @return \mysqli_result MySQLi result
+     * @return Boolean First statement executed or not
      */
     protected function _execute_multi($sql, $params = array(), $log = true) {
-        throw new \Exception(__METHOD__." Not Implemented.");
+        if ($log) {
+            slog_db($sql . " - " . var_export($params, true));
+        }
+        $output = mysqli_multi_query($this->connection, $sql);
+        do {            
+            $result = mysqli_store_result($this->connection);
+            if($result){ mysqli_free_result($result); }            
+        } while (mysqli_more_results($this->connection) 
+                && mysqli_next_result($this->connection));        
+        return $output;
     }
 
     /**

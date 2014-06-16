@@ -67,7 +67,7 @@ class Transaction extends \simbola\core\component\system\lib\Component {
      */
     public function isNewInstallation() {
         $dbDriver = \simbola\Simbola::app()->db->getDriver();
-        return !$dbDriver->tableExist("system", "transaction", "cron");
+        return !$dbDriver->tableExist("system", "transaction", "cronQueue");
     }
 
 }

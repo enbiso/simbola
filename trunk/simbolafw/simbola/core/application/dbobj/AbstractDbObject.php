@@ -17,7 +17,7 @@ abstract class AbstractDbObject {
     protected $module;
     protected $lu;
     protected $name;
-    protected $content;
+    protected $content = array();
     protected $type;
     protected $revCount = 0;
     
@@ -80,42 +80,35 @@ abstract class AbstractDbObject {
     }
 
     /**
-     * Execute db object
-     * @return returnValue
+     * Execute db object     
      */
-    protected function execute() {
-        $returnValue = array();
+    protected function execute() {  
         if ($this->enableRev) {
             $this->initTables();
             if ($this->isNotExecuted()) {
-                foreach ($this->content as $contentEntry) {
-                    $returnValue[] = $this->dbDriver->execute($contentEntry);
-                }
-                $this->insertRev();
+                $this->content[] = $this->insertRevScript();
+                $this->dbDriver->executeMulti(implode(";", $this->content));          
             }
             $this->increaseRev();
-        } else {            
-            foreach ($this->content as $contentEntry) {
-                $returnValue[] = $this->dbDriver->execute($contentEntry);
-            }
-        }
-        return $returnValue;
+        } else {
+            $this->dbDriver->executeMulti(implode(";", $this->content));
+        }        
     }
 
     /**
      * Initialization
      */
-    abstract function init();
+    protected abstract function init();
 
     /**
      * Setup db object
      */
-    abstract function setup();
+    public abstract function setup();
 
     /**
      * Dummy DB execute to enable revision increase
      */
-    public function dummyExecute() {
+    protected function dummyExecute() {
         $this->increaseRev();
     }
 
@@ -137,12 +130,13 @@ abstract class AbstractDbObject {
 
     /**
      * Insert new revison
+     * @return string SQL Stmt
      */
-    private function insertRev() {
+    private function insertRevScript() {
         $content = $this->dbDriver->escapeString(implode(";\n", $this->content).";");
         $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
         $sql = "INSERT INTO {$tblName} (rev, content) VALUES('{$this->getRevId()}','{$content}')";
-        $this->dbDriver->execute($sql);
+        return $sql;
     }
 
     /**
