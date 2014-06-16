@@ -1,5 +1,5 @@
 <?php
-namespace \application\system\database\logger\table;
+namespace application\system\database\logger\table;
 /**
  * Description of Log
  *

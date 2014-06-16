@@ -1,5 +1,5 @@
 <?php
-namespace \application\system\database\auth\table;
+namespace application\system\database\auth\table;
 /**
  * Description of Item
  *
