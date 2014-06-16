@@ -20,6 +20,12 @@ abstract class AbstractDbObject {
     protected $content;
     protected $type;
     protected $revCount = 0;
+    
+    /**
+     * Enable revisions Flag
+     * @var boolean 
+     */
+    protected $enableRev = true;
 
     /**
      * Constructor
@@ -75,12 +81,11 @@ abstract class AbstractDbObject {
 
     /**
      * Execute db object
-     * @param boolean $revision enable revisions
      * @return returnValue
      */
-    function execute($revision = false) {
+    protected function execute() {
         $returnValue = array();
-        if ($revision) {
+        if ($this->enableRev) {
             $this->initTables();
             if ($this->isNotExecuted()) {
                 foreach ($this->content as $contentEntry) {
@@ -89,7 +94,7 @@ abstract class AbstractDbObject {
                 $this->insertRev();
             }
             $this->increaseRev();
-        } else {
+        } else {            
             foreach ($this->content as $contentEntry) {
                 $returnValue[] = $this->dbDriver->execute($contentEntry);
             }
@@ -147,7 +152,7 @@ abstract class AbstractDbObject {
         if (!$this->dbDriver->tableExist('system', 'dbsetup', 'revision')) {
             $dbObjClassName = AbstractDbObject::getClass("system", "dbsetup", "table", "revision");
             $dbObj = new $dbObjClassName($this->dbDriver);
-            $dbObj->execute(false);
+            $dbObj->setup();            
         }
     }
     /**

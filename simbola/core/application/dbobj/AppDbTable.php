@@ -35,7 +35,7 @@ abstract class AppDbTable extends AbstractDbObject {
                 . "_version TIMESTAMP NOT NULL, "
                 . "_created TIMESTAMP NOT NULL, "
                 . "_state VARCHAR(15))");
-        $this->execute(true);
+        $this->execute();
     }
 
     /**
@@ -45,7 +45,7 @@ abstract class AppDbTable extends AbstractDbObject {
     function addColumns($columns) {
         foreach ($columns as $column) {
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD COLUMN {$column}");
-            $this->execute(true);
+            $this->execute();
         }        
     }
 
@@ -56,7 +56,7 @@ abstract class AppDbTable extends AbstractDbObject {
     function removeColumns($columns) {        
         foreach ($columns as $column) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP COLUMN {$column}");
-            $this->execute(true);
+            $this->execute();
         }        
     }
 
@@ -67,7 +67,7 @@ abstract class AppDbTable extends AbstractDbObject {
     function alterColumns($columns) {        
         foreach ($columns as $column => $newColumnDesc) {
             $this->setContent("ALTER TABLE {$this->getTableName()} CHANGE COLUMN {$column} {$newColumnDesc}");
-            $this->execute(true);
+            $this->execute();
         }        
     }
 
@@ -80,7 +80,7 @@ abstract class AppDbTable extends AbstractDbObject {
             $columns = implode(",", $columns);
         }
         $this->setContent("ALTER TABLE {$this->getTableName()} ADD PRIMARY KEY({$columns})");
-        $this->execute(true);
+        $this->execute();
     }
     
     /**
@@ -94,7 +94,7 @@ abstract class AppDbTable extends AbstractDbObject {
         $content[] = "ALTER TABLE {$this->getTableName()} DROP PRIMARY KEY";
         $content[] = "ALTER TABLE {$this->getTableName()} ADD PRIMARY KEY({$columns})";
         $this->setContent($content);
-        $this->execute(true);
+        $this->execute();
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class AppDbTable extends AbstractDbObject {
      */
     function removePrimaryKey() {
         $this->setContent("ALTER TABLE {$this->getTableName()} DROP PRIMARY KEY");
-        $this->execute(true);
+        $this->execute();
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class AppDbTable extends AbstractDbObject {
                 $fkeyDesc = "({$fkeyDesc[0]}) REFERENCES {$tableName}({$fkeyDesc[4]})";
             }
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD CONSTRAINT {$fkey} FOREIGN KEY {$fkeyDesc}");
-            $this->execute(true);
+            $this->execute();
         }        
     }
 
@@ -127,7 +127,7 @@ abstract class AppDbTable extends AbstractDbObject {
     function removeForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP FOREIGN KEY {$fkey}");
-            $this->execute(true);
+            $this->execute();
         }        
     }
 

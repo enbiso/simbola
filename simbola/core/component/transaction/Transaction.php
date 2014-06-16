@@ -31,7 +31,7 @@ class Transaction extends \simbola\core\component\system\lib\Component {
     private function setupTable($module, $lu, $name) {
         $objName = \simbola\core\application\dbobj\AbstractDbObject::getClass($module, $lu, "table", $name);
         $obj = new $objName(\simbola\Simbola::app()->db->getDriver());
-        $obj->execute(true);
+        $obj->setup();
     }
     
     /**
