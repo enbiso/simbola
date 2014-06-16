@@ -42,7 +42,7 @@ class Log extends \simbola\core\component\system\lib\Component {
     public function init() {
         $dbDriver = \simbola\Simbola::app()->db->getDriver();
         if ($this->isNewInstallation()) {
-            $dbObjClassName = AbstractDbObject::getClass($this->moduleName, $this->luName, "table", $this->tableName);
+            $dbObjClassName = \simbola\core\application\dbobj\AbstractDbObject::getClass($this->moduleName, $this->luName, "table", $this->tableName);
             $dbObj = new $dbObjClassName($dbDriver);
             $dbObj->execute(true);
         }

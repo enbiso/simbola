@@ -143,8 +143,7 @@ abstract class AbstractDbObject {
     /**
      * Initalization of revision table
      */
-    private function initTables() {
-        $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
+    private function initTables() {        
         if (!$this->dbDriver->tableExist('system', 'dbsetup', 'revision')) {
             $dbObjClassName = AbstractDbObject::getClass("system", "dbsetup", "table", "revision");
             $dbObj = new $dbObjClassName($this->dbDriver);
