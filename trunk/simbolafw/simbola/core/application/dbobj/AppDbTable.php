@@ -9,15 +9,26 @@ namespace simbola\core\application\dbobj;
  */
 abstract class AppDbTable extends AbstractDbObject {
 
+    /**
+     * Constructor
+     * @param \simbola\core\component\db\driver\AbstractDbDriver $db DB Driver
+     */
     public function __construct($db) {
         parent::__construct($db);
         $this->type = "table";
     }
 
+    /**
+     * Get table name
+     * @return String
+     */
     function getTableName() {
         return $this->dbDriver->getTableName($this->module, $this->lu, $this->name);
     }
 
+    /**
+     * create table
+     */
     function addTable() {
         $this->setContent("CREATE TABLE {$this->getTableName()} ("
                 . "_id VARCHAR(64) NOT NULL, "
@@ -27,6 +38,10 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->execute(true);
     }
 
+    /**
+     * Add columns
+     * @param Array $columns Column definition
+     */
     function addColumns($columns) {
         foreach ($columns as $column) {
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD COLUMN {$column}");
@@ -34,6 +49,10 @@ abstract class AppDbTable extends AbstractDbObject {
         }        
     }
 
+    /**
+     * Remove columns
+     * @param Array $columns Column names
+     */
     function removeColumns($columns) {        
         foreach ($columns as $column) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP COLUMN {$column}");
@@ -41,6 +60,10 @@ abstract class AppDbTable extends AbstractDbObject {
         }        
     }
 
+    /**
+     * Alter columns
+     * @param Array $columns Column name => new definition
+     */
     function alterColumns($columns) {        
         foreach ($columns as $column => $newColumnDesc) {
             $this->setContent("ALTER TABLE {$this->getTableName()} CHANGE COLUMN {$column} {$newColumnDesc}");
@@ -48,6 +71,10 @@ abstract class AppDbTable extends AbstractDbObject {
         }        
     }
 
+    /**
+     * Add primary key
+     * @param array $columns Keys
+     */
     function addPrimaryKey($columns) {
         if (is_array($columns)) {
             $columns = implode(",", $columns);
@@ -56,6 +83,10 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->execute(true);
     }
     
+    /**
+     * Remove the existing and change the primary key
+     * @param array $columns keys
+     */
     function changePrimaryKey($columns) {
         if (is_array($columns)) {
             $columns = implode(",", $columns);
@@ -66,11 +97,18 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->execute(true);
     }
 
+    /**
+     * Remove the primary key
+     */
     function removePrimaryKey() {
         $this->setContent("ALTER TABLE {$this->getTableName()} DROP PRIMARY KEY");
         $this->execute(true);
     }
 
+    /**
+     * Add foriegn key
+     * @param array $fkeys key_name => Key definitions
+     */
     function addForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey => $fkeyDesc) {
             if(is_array($fkeyDesc)){
@@ -82,6 +120,10 @@ abstract class AppDbTable extends AbstractDbObject {
         }        
     }
 
+    /**
+     * Remove foriegn keys
+     * @param array $fkeys Key name array
+     */
     function removeForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey) {
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP FOREIGN KEY {$fkey}");
