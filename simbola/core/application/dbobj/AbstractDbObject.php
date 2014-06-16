@@ -21,27 +21,51 @@ abstract class AbstractDbObject {
     protected $type;
     protected $revCount = 0;
 
+    /**
+     * Constructor
+     * @param \simbola\core\component\db\driver\AbstractDbDriver $db Database Driver
+     */
     function __construct($db) {
         $this->dbDriver = $db;
         $this->init();
     }
 
+    /**
+     * Set module name
+     * @param string $module Module name
+     */
     function setModule($module) {
         $this->module = $module;
     }
 
+    /**
+     * Set LU name
+     * @param string $lu logical unit name
+     */
     function setLu($lu) {
         $this->lu = $lu;
     }
 
+    /**
+     * Set database object name
+     * @param string $name Name
+     */
     function setName($name) {
         $this->name = $name;
     }
 
+    /**
+     * Get DB object name
+     * @return string Name
+     */
     function getName() {
         return $this->name;
     }
 
+    /**
+     * Set SQL content
+     * @param string $content SQL content
+     */
     function setContent($content) {
         if(is_string($content)){
             $content = array($content);
@@ -49,6 +73,11 @@ abstract class AbstractDbObject {
         $this->content = $content;
     }
 
+    /**
+     * Execute db object
+     * @param boolean $revision enable revisions
+     * @return returnValue
+     */
     function execute($revision = false) {
         $returnValue = array();
         if ($revision) {
@@ -68,23 +97,42 @@ abstract class AbstractDbObject {
         return $returnValue;
     }
 
+    /**
+     * Initialization
+     */
     abstract function init();
 
+    /**
+     * Setup db object
+     */
     abstract function setup();
 
+    /**
+     * Dummy DB execute to enable revision increase
+     */
     public function dummyExecute() {
         $this->increaseRev();
     }
 
+    /**
+     * Increase revision
+     */
     private function increaseRev() {
         $this->revCount++;
     }
 
+    /**
+     * Get revision ID
+     * @return string Rev ID
+     */
     private function getRevId() {
         $rev = "{$this->module}.{$this->lu}.{$this->type}.{$this->name}.r{$this->revCount}";
         return $rev;
     }
 
+    /**
+     * Insert new revison
+     */
     private function insertRev() {
         $content = $this->dbDriver->escapeString(implode(";\n", $this->content).";");
         $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
@@ -92,25 +140,41 @@ abstract class AbstractDbObject {
         $this->dbDriver->execute($sql);
     }
 
+    /**
+     * Initalization of revision table
+     */
     private function initTables() {
         $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
         if (!$this->dbDriver->tableExist('system', 'dbsetup', 'revision')) {
-            $this->dbDriver->execute(
-                    "CREATE TABLE {$tblName} ( 
-                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                        rev VARCHAR(100) NOT NULL UNIQUE,
-                        content TEXT NOT NULL
-                    )");
+            $dbObjClassName = AbstractDbObject::getClass("system", "dbsetup", "table", "revision");
+            $dbObj = new $dbObjClassName($this->dbDriver);
+            $dbObj->execute(false);
         }
     }
-
-    private function isNotExecuted() {
+    /**
+     * Check if object not executed
+     * @return boolean
+     */
+    public function isNotExecuted() {
         $tblName = $this->dbDriver->getTableName('system', 'dbsetup', 'revision');
         $sql = "SELECT count(1) cnt FROM {$tblName} WHERE rev = '{$this->getRevId()}'";
         $out = $this->dbDriver->query($sql);
         return $out[0]['cnt'] == '0';
     }
 
+    /**
+     * Get object class name
+     * @param type $module Module name
+     * @param type $lu Logical Unit
+     * @param type $type Object Type
+     * @param type $name Object name
+     * @return String Class name
+     */
+    public static function getClass($module, $lu, $type, $name) {
+        return \simbola\Simbola::app()->getModuleNamespace($module, "database")
+                    . "\\" . $lu . '\\' . $type . '\\' . $name;
+    }
+    
 }
 
 ?>

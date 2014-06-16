@@ -356,8 +356,8 @@ class Application {
         }
         // cron-end
         // cleanup components
-        foreach ($this->components as $module) {
-            $module->destroy();
+        foreach ($this->components as $component) {
+            $component->destroy();
         }
     }
 

@@ -35,12 +35,6 @@ class Log extends \simbola\core\component\system\lib\Component {
      * @var string 
      */
     private $tableName = 'log';
-    
-    /**
-     * View name
-     * @var string 
-     */
-    private $viewName = 'log';
 
     /**
      * Initialization of the component
@@ -48,21 +42,9 @@ class Log extends \simbola\core\component\system\lib\Component {
     public function init() {
         $dbDriver = \simbola\Simbola::app()->db->getDriver();
         if ($this->isNewInstallation()) {
-            if (!$dbDriver->moduleExist($this->moduleName)) {
-                $dbDriver->moduleCreate($this->moduleName);
-            }
-            $tableName = $dbDriver->getTableName($this->moduleName, $this->luName, $this->tableName);
-            $sql = "CREATE TABLE {$tableName} (
-                            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            type VARCHAR(10),
-                            trace VARCHAR(1000),
-                            message VARCHAR(1000)
-                        )";
-            $dbDriver->execute($sql);
-            $viewName = $dbDriver->getViewName($this->moduleName, $this->luName, $this->viewName);
-            $sql = "CREATE OR REPLACE VIEW {$viewName} AS 
-                        SELECT * FROM {$tableName} ORDER BY date DESC";
-            $dbDriver->execute($sql);
+            $dbObjClassName = AbstractDbObject::getClass($this->moduleName, $this->luName, "table", $this->tableName);
+            $dbObj = new $dbObjClassName($dbDriver);
+            $dbObj->execute(true);
         }
 
         if (!isset($this->params['TYPES'])) {
