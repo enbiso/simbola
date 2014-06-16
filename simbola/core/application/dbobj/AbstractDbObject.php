@@ -176,7 +176,7 @@ abstract class AbstractDbObject {
      */
     public static function getClass($module, $lu, $type, $name) {
         return \simbola\Simbola::app()->getModuleNamespace($module, "database")
-                    . "\\" . $lu . '\\' . $type . '\\' . $name;
+                    . "\\" . $lu . '\\' . $type . '\\' . ucfirst($name);
     }
     
 }

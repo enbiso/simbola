@@ -49,44 +49,7 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         return true;
     }
 
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthUser() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_USER)} (                     
-                    user_id INTEGER PRIMARY KEY,
-                    user_active BOOLEAN DEFAULT TRUE,
-                    user_name TEXT UNIQUE,
-                    user_password TEXT
-                );
-                CREATE SEQUENCE {$this->getTableName(self::TBL_USER)}_seq;
-                ALTER TABLE {$this->getTableName(self::TBL_USER)} 
-                    ALTER COLUMN user_id 
-                    SET DEFAULT NEXTVAL('{$this->getTableName(self::TBL_USER)}_seq')";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthSession() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_SESSION)} (  
-                    id INTEGER PRIMARY KEY,
-                    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    client_addr VARCHAR(50),
-                    user_id INTEGER,
-                    skey TEXT,
-                    description TEXT
-                );
-                CREATE SEQUENCE {$this->getTableName(self::TBL_SESSION)}_seq;
-                ALTER TABLE {$this->getTableName(self::TBL_SESSION)} 
-                    ALTER COLUMN id 
-                    SET DEFAULT NEXTVAL('{$this->getTableName(self::TBL_SESSION)}_seq')";
-        $this->dbExecute($sql);
-    }
-
+  
     /**
      * Create view
      * Framework function. Do not use.
@@ -96,24 +59,6 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                     SELECT user_id,user_name,
                            (CASE WHEN user_active THEN 'ACTIVE' ELSE 'DEACTIVE' END) AS user_active
                     FROM {$this->getTableName(self::TBL_USER)}";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthItem() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_ITEM)} (                     
-                    item_id INTEGER PRIMARY KEY,
-                    item_type INTEGER,
-                    item_name TEXT UNIQUE,
-                    item_description TEXT
-                );
-                CREATE SEQUENCE {$this->getTableName(self::TBL_ITEM)}_seq;
-                ALTER TABLE {$this->getTableName(self::TBL_ITEM)} 
-                    ALTER COLUMN item_id 
-                    SET DEFAULT NEXTVAL('{$this->getTableName(self::TBL_ITEM)}_seq')";
         $this->dbExecute($sql);
     }
 
@@ -165,32 +110,6 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                     END) AS item_type
                     FROM {$this->getTableName(self::TBL_ITEM)}
                     WHERE item_type IN(" . AuthType::ENDUSER_ROLE . "," . AuthType::ACCESS_ROLE . ")";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthChild() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_CHILD)} (                     
-                    parent_id INTEGER REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    child_id INTEGER REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    PRIMARY KEY(parent_id, child_id)
-                )";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthAssign() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_ASSIGN)} (                     
-                    user_id INTEGER REFERENCES {$this->getTableName(self::TBL_USER)}(user_id),
-                    item_id INTEGER REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    PRIMARY KEY(user_id, item_id)
-                )";
         $this->dbExecute($sql);
     }
 

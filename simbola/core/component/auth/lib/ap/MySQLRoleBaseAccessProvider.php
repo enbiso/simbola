@@ -19,60 +19,6 @@ class MySQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
     }
 
     /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthChild() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_CHILD)} (                     
-                    parent_id BIGINT REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    child_id BIGINT REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    PRIMARY KEY(parent_id, child_id)
-                )";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthAssign() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_ASSIGN)} (                     
-                    user_id BIGINT REFERENCES {$this->getTableName(self::TBL_USER)}(user_id),
-                    item_id BIGINT REFERENCES {$this->getTableName(self::TBL_ITEM)}(item_id),
-                    PRIMARY KEY(user_id, item_id)
-                )";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthItem() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_ITEM)} (                     
-                    item_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                    item_type BIGINT,
-                    item_name VARCHAR(500) UNIQUE,
-                    item_description TEXT
-                )";
-        $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthUser() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_USER)} (                     
-                    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                    user_active BOOL DEFAULT TRUE,
-                    user_name VARCHAR(100) UNIQUE,
-                    user_password TEXT
-                )";
-        $this->dbExecute($sql);
-    }
-
-    /**
      * Create view
      * Framework function. Do not use.
      */
@@ -157,23 +103,7 @@ class MySQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
                            (SELECT item_name FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_id = tbl_asgn.item_id) role
                     FROM {$this->getTableName(self::TBL_ASSIGN)} tbl_asgn";
         $this->dbExecute($sql);
-    }
-
-    /**
-     * Create table
-     * Framework function. Do not use.
-     */
-    public function createTblAuthSession() {
-        $sql = "CREATE TABLE {$this->getTableName(self::TBL_SESSION)} (          
-                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    client_addr VARCHAR(50),
-                    user_id BIGINT,
-                    skey TEXT,
-                    description TEXT)";
-        $this->dbExecute($sql);
-    }
-    
+    }    
 }
 
 ?>
