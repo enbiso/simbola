@@ -18,7 +18,7 @@ function setup_application() {
     
     if($appconfig['execute'] == 'YES'){
         setup_application_htaccess();
-        setup_application_index();
+        setup_application_index();        
         header("location:../");
     }
 }
