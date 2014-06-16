@@ -14,6 +14,17 @@ class Child extends \simbola\core\application\dbobj\AppDbTable{
     }
     
     public function setup() { 
-        //table created by framework execution. dummy table definition for the security
+        //r0
+        $this->addTable();
+        //r1
+        $this->addColumns(array(
+            'parent_id BIGINT',
+            'child_id BIGINT'
+        ));
+        $this->addPrimaryKey(array('parent_id', 'child_id'));
+        $this->addForeignKeys(array(
+            'fkey_authchild_parent' => array('parent_id', 'system', 'auth', 'item', 'item_id'),
+            'fkey_authchild_child' => array('child_id', 'system', 'auth', 'item', 'item_id'),
+        ));
     }
 }
