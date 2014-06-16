@@ -14,6 +14,14 @@ class Log extends \simbola\core\application\dbobj\AppDbTable{
     }
     
     public function setup() { 
-        //table created by framework execution. dummy table definition for the security
+        //r0
+        $this->addTable();
+        //r1 - setup columns
+        $this->addColumns(array(
+            'id bigint primary key auto_increment',            
+            'type VARCHAR(10)',
+            'trace VARCHAR(1000)',
+            'message VARCHAR(1000)'
+        ));
     }
 }
