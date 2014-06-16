@@ -15,6 +15,7 @@ class Revision extends \simbola\core\application\dbobj\AppDbTable{
     }
     
     public function setup() { 
+        $this->enableRev = false;
         //r0
         $this->addTable();
         //r1 - setup columns
