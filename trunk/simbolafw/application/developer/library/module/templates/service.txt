@@ -30,15 +30,20 @@ class #SERVICE_CLASS_NAME#Service extends \simbola\core\application\AppService {
     }
     
     public $schema_list = array(
-        'req' => array('params' => array('search')),
+        'req' => array('params' => array()),
         'res' => array('data'),
         'err' => array('LIST_ERROR')
     );
 
     function actionList() {
         try {
-            $data = #MODEL_CLASS#::find($this->_req_params('search'));  
-            $this->_res('data', $data);
+            $search = $this->_req_params('search');
+            if(empty($search)){
+               $data = #MODEL_CLASS#::find('all');   
+            }else{
+               $data = #MODEL_CLASS#::find('all', $search);  
+            }
+            $this->_res('data', $data);            
         } catch(Exception $ex) {
             $this->_err('LIST_ERROR');
         }
