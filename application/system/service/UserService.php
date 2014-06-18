@@ -124,4 +124,27 @@ class UserService extends \simbola\core\application\AppService {
             $rbap->userResetPassword($this->_req_params('username'),$this->_req_params('password'));    
         }
     }
+    
+    public $schema_list = array(
+        'req' => array('params' => array()),
+        'res' => array('data'),
+        'err' => array('LIST_ERROR')
+    );
+
+    function actionList() {
+        try {
+            $search = $this->_req_params('search');
+            if(empty($search)){
+               $data = \application\system\model\auth\User::find('all');   
+            }else{
+               $data = \application\system\model\auth\User::find('all', $search);  
+            }            
+            for ($index = 0; $index < count($data); $index++) {
+                $data[$index]->user_password = null;
+            }
+            $this->_res('data', $data);
+        } catch(Exception $ex) {
+            $this->_err('LIST_ERROR');
+        }
+    }
 }
