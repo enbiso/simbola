@@ -80,8 +80,12 @@ class Log extends \simbola\core\component\system\lib\Component {
                 $traces[] = (isset($trace['class'])?$trace['class'].".":'') . $trace['function'] . "()";                                    
             }            
             $traces = $dbDriver->escapeString(implode("\n", $traces));
-            $sql = "INSERT INTO {$tableName}(type, message, trace) VALUES('{$type}','{$message}','{$traces}')";
-            $dbDriver->execute($sql, array(), false);
+            $log = new \application\system\model\logger\Log(array(
+                'type' => $type,
+                'message' => $message,
+                'trace' => $trace
+            ));
+            $log->save();
         }
     }
 

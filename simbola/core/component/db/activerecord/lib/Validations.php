@@ -138,7 +138,9 @@ class Validations
 		foreach ($this->validators as $validate)
 		{
 			$definition = $this->klass->getStaticPropertyValue($validate);
-			$this->$validate(wrap_strings_in_arrays($definition));
+                        if(!is_null($definition)){
+                            $this->$validate(wrap_strings_in_arrays($definition));
+                        }
 		}
 
 		$model_reflection = Reflections::instance()->get($this->model);
