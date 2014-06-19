@@ -6,6 +6,10 @@ namespace application\system\model\auth;
  * Description of AuthUser
  *
  * @author Faraj
+ * @property string $user_name User Name
+ * @property int $user_id User ID
+ * @property string $user_password Password
+ * @property boolean $user_active User Active
  */
 class User extends \simbola\core\application\AppModel {
     static  //config params
@@ -37,7 +41,7 @@ class User extends \simbola\core\application\AppModel {
             'class_name' => '\application\system\model\auth\Session', 
             'foreign_key' => 'user_id', 
             'primary_key' => 'user_id'));        
-        self::aliasAttribute('user_name', 'username');
+        self::aliasAttribute('user_name', 'username');               
     }
     
     public function changePassword($current, $new, $repeat) {

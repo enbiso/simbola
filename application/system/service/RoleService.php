@@ -11,13 +11,15 @@ class RoleService extends \simbola\core\application\AppService{
     public $schema_register = array(
         'req' => array('params' => array('rolename')),
         'res' => array(),
-        'err' => array(),
+        'err' => array('ROLE_REGISTER_FAILED'),
     );
     
     function actionRegister() {
         $rolename = $this->_req_params('rolename');
         $rbap = \simbola\Simbola::app()->auth->getRBAP();
-        $rbap->itemCreate($rolename, \simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE);
+        if(!$rbap->itemCreate($rolename, \simbola\core\component\auth\lib\ap\AuthType::ACCESS_ROLE)){
+            $this->_err("ROLE_REGISTER_FAILED");
+        }
     }
     
     public $schema_unregister = array(
