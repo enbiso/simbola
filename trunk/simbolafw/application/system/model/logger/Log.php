@@ -13,8 +13,7 @@ namespace application\system\model\logger;
  *  
  * @author faraj
  *
- * Properties
- * @property Long $date Date
+ * Properties 
  * @property String $type Type
  * @property String $trace Trace
  * @property String $message Message
@@ -47,7 +46,7 @@ class Log extends \simbola\core\application\AppModel{
         //Model Setup
         self::setClass(__CLASS__);
         self::setSource('system', 'logger', 'log');
-        self::primaryKey('');        
+        self::primaryKey('_id');        
 
         //Relationships - Has Many
         //None
@@ -55,9 +54,7 @@ class Log extends \simbola\core\application\AppModel{
         //Relationships - Belongs To
         //None
 
-        //Validations
-        // - date
-        self::validatePresenceOf(array("date"));
+        //Validations                
         // - type
         self::validateSizeOf(array("type", "maximum" => 10));
         // - trace

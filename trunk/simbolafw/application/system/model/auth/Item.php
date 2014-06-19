@@ -55,9 +55,7 @@ class Item extends \simbola\core\application\AppModel{
         //Relationships - Belongs To
         //None
 
-        //Validations
-        // - item_id
-        self::validateNumericalityOf(array("item_id", "only_integer" => true));
+        //Validations                
         // - item_type
         self::validateNumericalityOf(array("item_type", "only_integer" => true));
         // - item_name
