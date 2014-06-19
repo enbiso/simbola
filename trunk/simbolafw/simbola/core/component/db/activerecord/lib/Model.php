@@ -786,7 +786,7 @@ class Model
 	 * @return boolean True if the model was saved to the database otherwise false
 	 */
 	private function insert($validate=true)
-	{
+	{            
 		$this->verify_not_readonly('insert');
 
 		if (($validate && !$this->_validate() || !$this->invoke_callback('before_create',false)))

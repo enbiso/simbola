@@ -56,10 +56,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function itemSwitch($name, $type) {
         if ($this->itemExist($name)) {
-            $sql = "UPDATE {$this->getTableName(self::TBL_ITEM)} 
-                       SET item_type = {$type}
-                     WHERE item_name = '{$name}'";
-            $this->dbExecute($sql);
+            $item = \application\system\model\auth\Item::find(array('item_name' => $name));
+            $item->item_type = $type;
+            $item->save();
         }
     }
     
@@ -329,12 +328,12 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param AuthType $type Auth Item type
      * @return boolean
      */
-    public function itemCreate($name, $type) {
+    public function itemCreate($name, $type) {        
         if (!empty($name) && !$this->itemExist($name)) {
-            $sql = "INSERT INTO {$this->getTableName(self::TBL_ITEM)} (item_name,item_type)
-                        VALUES('{$name}','{$type}')";
-            $this->dbExecute($sql);
-            return true;
+            return \application\system\model\auth\Item::create(array(
+                'item_name' => $name,
+                'item_type' => $type
+            ));
         } else {
             return false;
         }
@@ -363,14 +362,13 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * Rename an item
      * 
      * @param string $name Item name
-     * @param string $newUsername Item new name
+     * @param string $newName Item new name
      */
-    public function itemRename($name, $newUsername) {
+    public function itemRename($name, $newName) {
         if ($this->itemExist($name)) {
-            $sql = "UPDATE {$this->getTableName(self::TBL_ITEM)} 
-                       SET item_name = '{$newUsername}'
-                     WHERE item_name = '{$name}'";
-            $this->dbExecute($sql);
+            $item = \application\system\model\auth\Item::find(array('item_name' => $name));
+            $item->item_name = $newName;
+            $item->save();
         }
     }
 
@@ -382,10 +380,13 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function childAssign($parent, $child) {
         if ((!$this->childExist($parent, $child)) && (!$this->childExistRecurse($child, $parent))) {
-            $sql = "INSERT INTO {$this->getTableName(self::TBL_CHILD)} (parent_id,child_id)
-                        VALUES ((SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}'),
-                                (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$child}'))";
-            $this->dbExecute($sql);
+            $parentItem = \application\system\model\auth\Item::find(array('item_name' => $parent));
+            $childItem = \application\system\model\auth\Item::find(array('item_name' => $child));
+            
+            $childObj = new \application\system\model\auth\Child();
+            $childObj->parent_id = $parentItem->item_id;
+            $childObj->child_id = $childItem->item_id;
+            $childObj->save();
         }
     }
 
@@ -472,17 +473,21 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userCreate($username, $password = null, $with_default_role = false) {
         $password = is_null($password) ? $username : $password;
-        $sql = "INSERT INTO {$this->getTableName(self::TBL_USER)} (user_name, user_password)
-                    VALUES('{$username}',md5('{$password}'))";
-        $this->dbExecute($sql);
-        if ($with_default_role) {
-            $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
-            if (!$this->itemExist($default_role)) {
-                $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
+        $user = new \application\system\model\auth\User(array(
+            'user_name' => $username,
+            'user_password' => md5($password),
+        ));
+        if($user->save()){
+            if ($with_default_role) {
+                $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
+                if (!$this->itemExist($default_role)) {
+                    $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
+                }
+                $this->userAssign($username, $default_role);
             }
-            $this->userAssign($username, $default_role);
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -500,12 +505,15 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * 
      * @param string $username Username
      * @param string $newUsername New username
+     * @return boolean 
      */
     public function userRename($username, $newUsername) {
-        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
-                   SET user_name = '{$newUsername}'
-                 WHERE user_name = '{$username}'";
-        $this->dbExecute($sql);
+        $user = \application\system\model\auth\User::find(array('user_name' => $username));
+        if(!is_null($user)){
+            $user->user_name = $newUsername;
+            return $user->save();
+        }        
+        return false;
     }
 
     /**
@@ -513,36 +521,45 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * 
      * @param string $username Usename
      * @param string $newPassword New password
+     * @return boolean 
      */
     public function userResetPassword($username, $newPassword) {
-        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
-                   SET user_password = md5('{$newPassword}')
-                 WHERE user_name = '{$username}'";
-        $this->dbExecute($sql);
+        $user = \application\system\model\auth\User::find(array('user_name' => $username));
+        if(!is_null($user)){
+            $user->user_password = md5($newPassword);
+            return $user->save();
+        }        
+        return false;
     }
 
     /**
      * Activate the user
      * 
      * @param string $username Username
+     * @return boolean
      */
     public function userActivate($username) {
-        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
-                   SET user_active = true
-                 WHERE user_name = '{$username}'";
-        $this->dbExecute($sql);
+        $user = \application\system\model\auth\User::find(array('user_name' => $username));
+        if(!is_null($user)){
+            $user->user_active = true;
+            return $user->save();
+        }        
+        return false;
     }
 
     /**
      * Deactivate the user
      * 
      * @param string $username Username
+     * @return boolean 
      */
     public function userDeactivate($username) {
-        $sql = "UPDATE {$this->getTableName(self::TBL_USER)} 
-                   SET user_active = false
-                 WHERE user_name = '{$username}'";
-        $this->dbExecute($sql);
+        $user = \application\system\model\auth\User::find(array('user_name' => $username));
+        if(!is_null($user)){
+            $user->user_active = false;
+            return $user->save();
+        }        
+        return false;
     }
 
     /**
@@ -565,13 +582,18 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             if ($sessionInfo !== FALSE) {
                 //create session
                 $session_key = uniqid("simbola.session.", TRUE);
-                $sql = "INSERT INTO {$this->getTableName(self::TBL_SESSION)} (client_addr, user_id, skey, description) 
-                            VALUES (
-                                '" . $_SERVER['REMOTE_ADDR'] . "',
-                                (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'),
-                                '" . $session_key . "','" . $sessionInfo . "')";
-                $this->dbExecute($sql);
-                return $session_key;
+                $userObj = \application\system\model\auth\User::find(array('user_name' => $username));
+                
+                $sessionObj = new \application\system\model\auth\Session();
+                $sessionObj->client_addr = $_SERVER['REMOTE_ADDR'];
+                $sessionObj->user_id = $userObj->user_id;
+                $sessionObj->skey = $session_key;
+                $sessionObj->description = $sessionInfo;
+                if($sessionObj->save()){
+                    return $session_key;
+                }else{
+                    return true;
+                }
             } else {
                 //do not create session if description is set to bool FALSE                
                 return true;
@@ -622,14 +644,19 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * 
      * @param type $username Username
      * @param type $role Role item name
+     * @return boolean
      */
     public function userAssign($username, $role) {
         if (!$this->userAssigned($username, $role)) {
-            $sql = "INSERT INTO {$this->getTableName(self::TBL_ASSIGN)} (user_id,item_id)
-                        VALUES (
-                            (SELECT user_id FROM {$this->getTableName(self::TBL_USER)} WHERE user_name = '{$username}'),
-                            (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$role}'))";
-            $this->dbExecute($sql);
+            $userObj = \application\system\model\auth\User::find(array('user_name' => $username));
+            $itemObj = \application\system\model\auth\Item::find(array('item_name' => $role));
+            
+            $assignObj = new \application\system\model\auth\Assign();
+            $assignObj->item_id = $itemObj->item_id;
+            $assignObj->user_id = $userObj->user_id;
+            return $assignObj->save();
+        }else{
+            return true;
         }
     }
 
