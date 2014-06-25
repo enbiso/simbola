@@ -22,9 +22,8 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <?php
-                        menu_item('Login', array('system/auth/login'));
-                        menu_item(ucfirst(simbola\Simbola::app()->auth->getUsername()), array('system'));
-                        menu_item('Logout', array('system/auth/logout'));
+                        menu_item('Login', array('system/auth/login'));                        
+                        menu_item('Logout (' . simbola\Simbola::app()->auth->getUsername() . ")", array('system/auth/logout'));
                         ?>
                     </ul>
                 </li>
