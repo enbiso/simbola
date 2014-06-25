@@ -20,6 +20,11 @@ class AppModel extends \ActiveRecord\Model {
     static $model_id = false;
     
     /**     
+     * @var int Model ID Range. This is the value interval assigned to the model ID per user.
+     */
+    static $model_id_range = 100;
+    
+    /**     
      * @var array Alias Attributes
      */
     static $alias_attribute = array();
@@ -43,6 +48,16 @@ class AppModel extends \ActiveRecord\Model {
     }
 
     /**
+     * Model ID configuration
+     * @param type $columnName Column name to which model ID applys
+     * @param type $range The range set to the model ID per user
+     */
+    public static function modelIdConfig($columnName, $range = 100) {
+        static::$model_id = $columnName;
+        static::$model_id_range = $range;
+    }
+    
+    /**
      * Init and Get the modelID assigned
      * 
      * @return \application\system\model\setup\ModelId Model ID Object
@@ -58,11 +73,12 @@ class AppModel extends \ActiveRecord\Model {
             $idStart = 0;            
             foreach (\application\system\model\setup\ModelId::find('all', $source) as $currModelId) {
                 if($idStart < $currModelId->end){
-                    $idStart = $currModelId->end + 1;
+                    $idStart = $currModelId->end;
                 }
             }
             $modelId->start = $idStart;
-            $modelId->end = $idStart + 100;
+            $modelId->end = $idStart + static::$model_id_range;
+            $modelId->current = $modelId->start;
             $modelId->save();
         }  
         return $modelId;
@@ -110,14 +126,14 @@ class AppModel extends \ActiveRecord\Model {
      */
     public function save($validate = true) {
         $attr = static::$model_id;
-        if($attr && $this->is_new_record()){
-            if(is_null($this->$attr)){
+        if($attr && $this->is_new_record()){            
+            if(empty($this->$attr)){
                 $this->$attr = static::modelIdGenerateNext();
             }else{
                 static::modelIdSetCurrent($this->$attr);
             }
         }
-        parent::save($validate);
+        return parent::save($validate);
     }
     
     /**
@@ -220,8 +236,8 @@ class AppModel extends \ActiveRecord\Model {
     public static function setSource($module, $lu, $name) {
         $dbDriver = \simbola\Simbola::app()->db->getDriver();
         if (!$dbDriver->tableExist($module, $lu, $name)) {
-            $dbObjClassName = AbstractDbObject::getClass($module, $lu, "table", $name);
-            $dbObj = new $dbObjClassName($this->dbDriver);
+            $dbObjClassName = dbobj\AbstractDbObject::getClass($module, $lu, "table", $name);
+            $dbObj = new $dbObjClassName($dbDriver);
             $dbObj->setup();            
         }
         static::$table_name = $dbDriver->getTableName($module, $lu, $name);

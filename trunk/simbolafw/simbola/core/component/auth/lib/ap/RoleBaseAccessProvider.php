@@ -58,7 +58,7 @@ abstract class RoleBaseAccessProvider {
 
     abstract function userResetPassword($username, $newPassword);
 
-    abstract function userAuthenticate($username, $password, $sessionInfo);
+    abstract function userAuthenticate($username, $password, $sessionInfo, $singleUser);
 
     abstract function userAssigned($username, $itemName);
 

@@ -155,6 +155,9 @@ class Column
 		if ($value === null)
 			return null;
 
+                if(is_array($value)){
+                    $value = $value;
+                }
 		switch ($this->type)
 		{
 			case self::STRING:	return (string)$value;

@@ -88,8 +88,7 @@ class SimGridController extends \simbola\core\application\AppController {
             $objects = $class::find('all', $queryOptions);
             $columns = array();
             foreach ($objects as $object) {
-                $row = array();
-                slog_trace(var_export($this->post('columns'), true));
+                $row = array();                
                 foreach ($this->post('columns') as $column) {
                     if (!is_numeric($column)) {
                         $value = $object;

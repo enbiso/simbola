@@ -53,6 +53,14 @@ class ModelId extends \simbola\core\application\AppModel{
         self::setSource('system', 'setup', 'model_id');
         self::primaryKey('id');        
 
+        self::stateMachine(array(
+           'states' => array('active', 'finished'),
+           'rules' => array(
+               array('start' => 'active'),
+               array('end' => 'finished'),
+               array('from' => 'active', 'to' => 'finished')
+           )
+        ));
         //Relationships - Has Many
         //None
 

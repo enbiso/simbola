@@ -568,9 +568,10 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @param string $username Username
      * @param string $password Password
      * @param string $sessionInfo Session information
+     * @param boolean $singleUser Single User flag
      * @return boolean
      */
-    public function userAuthenticate($username, $password = false, $sessionInfo = '') {
+    public function userAuthenticate($username, $password = false, $sessionInfo = '', $singleUser = false) {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_USER)} 
                 WHERE user_name = '{$username}' 
                   AND user_active = true";
@@ -582,7 +583,13 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             if ($sessionInfo !== FALSE) {
                 //create session
                 $session_key = uniqid("simbola.session.", TRUE);
-                $userObj = \application\system\model\auth\User::find(array('user_name' => $username));
+                $userObj = \application\system\model\auth\User::find(array('user_name' => $username));   
+                
+                if($singleUser){
+                    \application\system\model\auth\Session::delete_all(array(
+                        'conditions' => array('user_id = ?', $userObj->user_id)
+                        ));
+                }
                 
                 $sessionObj = new \application\system\model\auth\Session();
                 $sessionObj->client_addr = $_SERVER['REMOTE_ADDR'];
@@ -592,6 +599,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                 if($sessionObj->save()){
                     return $session_key;
                 }else{
+                    throw new \Exception("Session object saving failed");
                     return true;
                 }
             } else {
