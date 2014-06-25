@@ -26,10 +26,11 @@ class ModelId extends \simbola\core\application\dbobj\AppDbTable{
         $this->addTable();
         //r1 - setup columns
         $this->addColumns(array(
+            'id int primary key auto_increment',
             'module varchar(100)',
             'lu varchar(100)',
             'name varchar(100)',
-            'user_id int',
+            'user_id bigint',
             'start bigint',
             'end bigint',
             'current bigint',
@@ -37,9 +38,5 @@ class ModelId extends \simbola\core\application\dbobj\AppDbTable{
         $this->addForeignKeys(array(
             'fkey_muser' => array('user_id', 'system', "auth", "user", "user_id"),
         ));
-        $this->addColumns(array(
-            'id int primary key auto_increment' 
-        ));
-        
     }
 }

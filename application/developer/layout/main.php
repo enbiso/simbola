@@ -13,7 +13,7 @@
         
         <style>
             body{
-                padding-top: 80px;
+                padding-top: 60px;
             }
         </style>
         <?php simbola_js_init() ?>
@@ -21,6 +21,11 @@
     <body>
         <?php $this->includeFile('_header'); ?>
         <div class="container">
+            <?php
+            if ($this->isDataSet('page_breadcrumb')) {
+                echo shtml_breadcrumb($this->page_breadcrumb);
+            }
+            ?>
             <?php echo $content; ?>   
             <hr>
             <footer>

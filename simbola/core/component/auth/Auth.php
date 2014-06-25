@@ -27,6 +27,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
     public function setupDefault() {
         parent::setupDefault();
         $this->setParamDefault('BYPASS', false);           
+        $this->setParamDefault('SINGLE_USER', false);           
         $this->setParamDefault('DEFAULT_ROLE', 'app_user'); 
         $this->setParamDefault('GUEST_ROLE', 'app_guest'); 
         $this->setParamDefault('GUEST_USERNAME', 'guest'); 
@@ -81,7 +82,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
      * @return string Session Key
      */
     public function login($username, $password = false, $sessionInfo = '') {
-        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo);        
+        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo, $this->getParam('SINGLE_USER'));        
         if ($sessionKey) {
             $session = Simbola::app()->session;
             $session->set(self::USERNAME, $username);

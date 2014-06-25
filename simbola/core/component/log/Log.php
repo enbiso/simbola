@@ -83,7 +83,7 @@ class Log extends \simbola\core\component\system\lib\Component {
             $log = new \application\system\model\logger\Log(array(
                 'type' => $type,
                 'message' => $message,
-                'trace' => $trace
+                'trace' => $traces
             ));
             $log->save();
         }

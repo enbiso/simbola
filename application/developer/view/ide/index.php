@@ -1,7 +1,18 @@
+<?php 
+$this->page_breadcrumb = array(
+    'Developer' => array('/developer'),    
+    'Integrated Development Environment');
+?>
+
 <div class="row">
     <div class="col-lg-3" id="file_browser" style="border-right: 1px solid silver">
     </div>
     <div class="col-lg-8" id="display">        
+        <div class="btn-group btn-group-sm">
+            <a href="#" onclick="{call_action('save')}" class="btn btn-success btn-sm">Save</a>        
+            <button class="btn btn-default disabled">Reload</button>
+        </div>
+        <hr/>
         <div class="_form"></div>
         <div class="_editor"></div>
         <img class="_image"/>

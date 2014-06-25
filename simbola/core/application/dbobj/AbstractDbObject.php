@@ -169,8 +169,9 @@ abstract class AbstractDbObject {
      * @return String Class name
      */
     public static function getClass($module, $lu, $type, $name) {
+        $name = sstring_underscore_to_camelcase($name, true);
         return \simbola\Simbola::app()->getModuleNamespace($module, "database")
-                    . "\\" . $lu . '\\' . $type . '\\' . ucfirst($name);
+                    . "\\" . $lu . '\\' . $type . '\\' . $name;
     }
     
 }
