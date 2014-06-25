@@ -53,7 +53,7 @@ abstract class AbstractDbDriver {
     abstract protected function _num_fields($result);       
     abstract protected function _field_name($result,$index);       
     abstract protected function _fetch_assoc($result);   
-    abstract protected function _escape_string($string);
+    abstract protected function _escape_string($string);    
     abstract function tableExist($module, $lu, $name);
     abstract function viewExist($module, $lu, $name);
     abstract function moduleExist($module);
