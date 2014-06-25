@@ -7,12 +7,17 @@ namespace simbola\core\application;
  *
  * @author Faraj Farook
  */
-class AppModel extends \ActiveRecord\Model {
-
+class AppModel extends \ActiveRecord\Model {    
+       
     /**     
      * @var array Delegetes
      */
     static $delegate = array();
+    
+    /**     
+     * @var string/boolean Model ID name. By default it's disabled by setting false
+     */
+    static $model_id = false;
     
     /**     
      * @var array Alias Attributes
@@ -23,7 +28,7 @@ class AppModel extends \ActiveRecord\Model {
      * @var array State configuration
      */
     static $state_config;
-    
+
     /**
      * Initialize defaults
      */
@@ -37,6 +42,84 @@ class AppModel extends \ActiveRecord\Model {
         );
     }
 
+    /**
+     * Init and Get the modelID assigned
+     * 
+     * @return \application\system\model\setup\ModelId Model ID Object
+     */
+    public static function modelIdInit() {
+        $source = \simbola\Simbola::app()->db->getDriver()->getSourceFromTableName(static::table_name());
+        $keys = $source;
+        $keys['user_id'] = \simbola\Simbola::app()->auth->getId();
+        $keys['_state'] = "active";
+        $modelId = \application\system\model\setup\ModelId::find($keys);
+        if(is_null($modelId)){
+            $modelId = new \application\system\model\setup\ModelId($keys);      
+            $idStart = 0;            
+            foreach (\application\system\model\setup\ModelId::find('all', $source) as $currModelId) {
+                if($idStart < $currModelId->end){
+                    $idStart = $currModelId->end + 1;
+                }
+            }
+            $modelId->start = $idStart;
+            $modelId->end = $idStart + 100;
+            $modelId->save();
+        }  
+        return $modelId;
+    }
+    
+    /**
+     * Generate th next model ID
+     * 
+     * @return integer
+     */
+    public static function modelIdGenerateNext(){
+        $modelId = static::modelIdInit();
+        $modelId->current += 1;
+        $modelId->save();
+        if($modelId->current >= $modelId->end){
+            $modelId->state("finished");
+        }
+        return $modelId->current;
+    }
+    
+    /**
+     * Set the current model ID
+     * 
+     * @param int $id ID
+     * @param boolean $safeSet Safe set flag default true
+     */
+    public static function modelIdSetCurrent($id, $safeSet = true) {
+        $modelId = static::modelIdInit();
+        if($id > $modelId->end){
+            throw new \Exception("Invalid model ID");
+        }
+        if($safeSet){
+            $id = $modelId->current < $id? $id: $modelId->current;
+        }
+        $modelId->current = $id;
+        $modelId->save();
+        if($modelId->current >= $modelId->end){
+            $modelId->state("finished");
+        }
+    }
+    
+    /**
+     * Overriden PHP Acive record model save with modelID
+     * @param boolean $validate Validate
+     */
+    public function save($validate = true) {
+        $attr = static::$model_id;
+        if($attr && $this->is_new_record()){
+            if(is_null($this->$attr)){
+                $this->$attr = static::modelIdGenerateNext();
+            }else{
+                static::modelIdSetCurrent($this->$attr);
+            }
+        }
+        parent::save($validate);
+    }
+    
     /**
      * State machine configuration
      * 
@@ -128,14 +211,20 @@ class AppModel extends \ActiveRecord\Model {
     }
 
     /**
-     * Set the model source 
+     * Set the model source and setup table if not exist
      * 
      * @param string $module Module name
      * @param string $lu Logical Unit name
      * @param string $name Table name
      */
     public static function setSource($module, $lu, $name) {
-        static::$table_name = \simbola\Simbola::app()->db->getDriver()->getTableName($module, $lu, $name);
+        $dbDriver = \simbola\Simbola::app()->db->getDriver();
+        if (!$dbDriver->tableExist($module, $lu, $name)) {
+            $dbObjClassName = AbstractDbObject::getClass($module, $lu, "table", $name);
+            $dbObj = new $dbObjClassName($this->dbDriver);
+            $dbObj->setup();            
+        }
+        static::$table_name = $dbDriver->getTableName($module, $lu, $name);
     }
 
     /**
