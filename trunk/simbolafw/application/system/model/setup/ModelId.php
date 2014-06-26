@@ -18,6 +18,7 @@ namespace application\system\model\setup;
  * @property String $lu Lu
  * @property String $name Model
  * @property Integer $user_id User id
+ * @property String $allocator Allocator
  * @property bigint $start Start
  * @property bigint $end End
  * @property bigint $current Current

@@ -1,5 +1,5 @@
 <?php
-namespace application\system\model\dbsetup;
+namespace application\system\model\setup;
 /**
  * Description of Model
  *
