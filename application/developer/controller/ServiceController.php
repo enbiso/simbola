@@ -18,7 +18,7 @@ class ServiceController extends \simbola\core\application\AppController {
             $serviceWildcard = $servicePath . DIRECTORY_SEPARATOR . "*.php";
             foreach (glob($serviceWildcard) as $serviceFile) {
                 $service = array();
-                $serviceName = strtolower(str_replace("Service", "", basename($serviceFile, ".php")));
+                $serviceName = lcfirst(str_replace("Service", "", basename($serviceFile, ".php")));
                 $serviceClass = $serviceNs . "\\" . basename($serviceFile, ".php");                
                 foreach (get_class_vars($serviceClass) as $propName => $value) {      
                     if(sstring_starts_with($propName, "schema_")){

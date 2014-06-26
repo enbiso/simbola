@@ -31,9 +31,10 @@ class ModelId extends \simbola\core\application\dbobj\AppDbTable{
             'lu varchar(100)',
             'name varchar(100)',
             'user_id bigint',
+            'allocator varchar(20)',
             'start bigint',
             'end bigint',
-            'current bigint',
+            'current bigint',            
         ));
         $this->addForeignKeys(array(
             'fkey_muser' => array('user_id', 'system', "auth", "user", "user_id"),

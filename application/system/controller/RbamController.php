@@ -309,7 +309,7 @@ class RbamController extends \simbola\core\application\AppController {
         return $count;
     }
 
-    private function registerModule($module) {
+    private function registerModule($module) {                        
         $count = 0;
         $mconf = \simbola\Simbola::app()->getModuleConfig($module);
         $basepath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR
@@ -324,7 +324,7 @@ class RbamController extends \simbola\core\application\AppController {
             $page->type = \simbola\core\component\url\lib\Page::TYPE_CONTROLLER;
             $page->logicalUnit = lcfirst(str_replace("Controller.php", "", basename($fileName)));
             $count += $this->registerPage($page);
-        }
+        }        
         //get all services
         $serviceBasePath = $basepath . DIRECTORY_SEPARATOR
                 . $mconf->service . DIRECTORY_SEPARATOR . "*";
@@ -334,15 +334,15 @@ class RbamController extends \simbola\core\application\AppController {
             $page->type = \simbola\core\component\url\lib\Page::TYPE_SERVICE;
             $page->logicalUnit = lcfirst(str_replace("Service.php", "", basename($fileName)));
             $count += $this->registerPage($page);
-        }
+        }        
         //get all db objects
         $dbBasePath = $basepath . DIRECTORY_SEPARATOR . $mconf->database;
         $dbBasePathWithWildcard = $dbBasePath . DIRECTORY_SEPARATOR . "*";
         foreach (array_filter(glob($dbBasePathWithWildcard), 'is_dir') as $dbLuPath) {
             $luName = basename($dbLuPath);
-            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'procedure');
-            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'table');
-            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'view');
+            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'procedure');            
+            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'table');                        
+            $count += $this->registerDbObjects($module, $dbBasePath, $luName, 'view');            
         }
         return $count;
     }
@@ -356,20 +356,20 @@ class RbamController extends \simbola\core\application\AppController {
             $dbObjName = basename($fileName, ".php");
             if ($dbObjType == 'table') { //consider as entity
                 //query
-                $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, "entity.query");
+                $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, "entity.query");                
                 if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
                     $count++;
-                }
+                }                
                 //state machine actions
-                $modelClass = \simbola\core\application\AppModel::getClass($module, $luName, $dbObjName);
+                $modelClass = \simbola\core\application\AppModel::getClass($module, $luName, $dbObjName);                
                 if (class_exists($modelClass)) {
-                    foreach ($modelClass::getStates() as $stateName) {
+                    foreach ($modelClass::getStates() as $stateName) {                        
                         $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, "entity.state." . $stateName);
                         if ($rbap->itemCreate($perbObj->getAccessItem(), \simbola\core\component\auth\lib\ap\AuthType::ACCESS_OBJECT)) {
                             $count++;
                         }
                     }
-                }
+                }                
             } else {
                 //views/procedures
                 $perbObj = new \simbola\core\component\auth\lib\PermObject($module, $luName, $dbObjName, $dbObjType);
