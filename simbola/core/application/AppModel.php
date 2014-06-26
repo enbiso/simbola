@@ -59,14 +59,18 @@ class AppModel extends \ActiveRecord\Model {
     
     /**
      * Init and Get the modelID assigned
-     * 
-     * @return \application\system\model\setup\ModelId Model ID Object
+     * @param String $allocator Allocator id default 'default'
+     * @return \application\system\model\setup\ModelId Model ID Object     
      */
-    public static function modelIdInit() {
+    public static function modelIdInit($allocator = 'default') {
+        if(!static::$model_id){
+            throw new \Exception('Model ID not enabled');
+        }
         $source = \simbola\Simbola::app()->db->getDriver()->getSourceFromTableName(static::table_name());
         $keys = $source;
         $keys['user_id'] = \simbola\Simbola::app()->auth->getId();
         $keys['_state'] = "active";
+        $keys['allocator'] = $allocator;
         $modelId = \application\system\model\setup\ModelId::find($keys);
         if(is_null($modelId)){
             $modelId = new \application\system\model\setup\ModelId($keys);      
@@ -76,6 +80,7 @@ class AppModel extends \ActiveRecord\Model {
                     $idStart = $currModelId->end;
                 }
             }
+            $modelId->allocator = $allocator;
             $modelId->start = $idStart;
             $modelId->end = $idStart + static::$model_id_range;
             $modelId->current = $modelId->start;
@@ -86,11 +91,11 @@ class AppModel extends \ActiveRecord\Model {
     
     /**
      * Generate th next model ID
-     * 
+     * @param String $allocator Allocator id default 'default'
      * @return integer
      */
-    public static function modelIdGenerateNext(){
-        $modelId = static::modelIdInit();
+    public static function modelIdGenerateNext($allocator = 'default'){
+        $modelId = static::modelIdInit($allocator);
         $modelId->current += 1;
         $modelId->save();
         if($modelId->current >= $modelId->end){
@@ -101,12 +106,12 @@ class AppModel extends \ActiveRecord\Model {
     
     /**
      * Set the current model ID
-     * 
+     * @param String $allocator Allocator id default 'default'
      * @param int $id ID
      * @param boolean $safeSet Safe set flag default true
      */
-    public static function modelIdSetCurrent($id, $safeSet = true) {
-        $modelId = static::modelIdInit();
+    public static function modelIdSetCurrent($id, $safeSet = true, $allocator = 'default') {
+        $modelId = static::modelIdInit($allocator);
         if($id > $modelId->end){
             throw new \Exception("Invalid model ID");
         }
