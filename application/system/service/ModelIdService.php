@@ -24,6 +24,9 @@ class ModelIdService extends \simbola\core\application\AppService {
     function actionList() {
         try {
             $search = $this->_req_params('search');
+            if($this->_req_params('mine_only') == "yes"){
+                $search['user_id'] = \simbola\Simbola::app()->auth->getId();
+            }
             if(empty($search)){
                $data = \application\system\model\setup\ModelId::find('all');   
             }else{
