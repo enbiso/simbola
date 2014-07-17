@@ -73,6 +73,16 @@ class AppService extends AppController {
     }
 
     /**
+     * Returns the user id allocated for the service invoking user
+     * 
+     * @return int User ID
+     */
+    public function _req_auth_user_id() {
+        $auth = $this->_req_auth();
+        return \simbola\Simbola::app()->auth->getId($auth['username'], $auth['skey']);
+    }
+    
+    /**
      * Check if the authentication information is set of not
      * 
      * @return boolean
@@ -155,6 +165,17 @@ class AppService extends AppController {
         return $params;
     }
 
+    /**
+     * Check if the request paramter is set
+     * 
+     * @param string $name Parameter name
+     * @return boolean
+     */
+    public function _req_param_isset($name) {
+        $params = $this->currentPage->params;
+        return isset($params[$name]);
+    }
+    
     /**
      * Used to set the response user specific error message
      * 
