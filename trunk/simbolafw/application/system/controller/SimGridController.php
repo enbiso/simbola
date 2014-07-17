@@ -86,14 +86,16 @@ class SimGridController extends \simbola\core\application\AppController {
             }
             $rows = array();
             $objects = $class::find('all', $queryOptions);
-            $columns = array();
+            $columns = array();            
             foreach ($objects as $object) {
                 $row = array();                
                 foreach ($this->post('columns') as $column) {
                     if (!is_numeric($column)) {
-                        $value = $object;
-                        foreach (explode(".", $column) as $property) {
-                            $value = $value->$property;
+                        $value = $object;                        
+                        foreach (explode(".", $column) as $property) {                            
+                            if(!is_null($value)){
+                                $value = $value->$property;
+                            }
                         }
                         if ($value instanceof \ActiveRecord\DateTime) {
                             $value = $value->format('Y-m-d H:i:s P');
