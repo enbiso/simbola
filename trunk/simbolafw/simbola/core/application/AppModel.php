@@ -62,7 +62,7 @@ class AppModel extends \ActiveRecord\Model {
      * @param String $allocator Allocator id default 'default'
      * @return \application\system\model\setup\ModelId Model ID Object     
      */
-    public static function modelIdInit($allocator = 'default') {
+    public static function modelIdInit($allocator = 'default') {        
         if(!static::$model_id){
             throw new \Exception('Model ID not enabled');
         }
@@ -112,8 +112,8 @@ class AppModel extends \ActiveRecord\Model {
      */
     public static function modelIdSetCurrent($id, $safeSet = true, $allocator = 'default') {
         $modelId = static::modelIdInit($allocator);
-        if($id > $modelId->end){
-            throw new \Exception("Invalid model ID");
+        if($id > $modelId->end || $id < $modelId->start){
+            throw new \Exception("Model ID '{$modelId->allocator}' for {$modelId->module}.{$modelId->lu}.{$modelId->name} should range {$modelId->start} - {$modelId->end}");
         }
         if($safeSet){
             $id = $modelId->current < $id? $id: $modelId->current;
@@ -125,17 +125,30 @@ class AppModel extends \ActiveRecord\Model {
         }
     }
     
+    /**          
+     * @var String Allocator name
+     */
+    private $_allocator = 'default';        
+    
+    /**
+     * Set the Model ID allocator from 'default'
+     * @param type $allocator Allocator Name
+     */
+    public function setAllocator($allocator){
+        $this->_allocator = $allocator;
+    }
+    
     /**
      * Overriden PHP Acive record model save with modelID
      * @param boolean $validate Validate
      */
-    public function save($validate = true) {
+    public function save($validate = true) {        
         $attr = static::$model_id;
         if($attr && $this->is_new_record()){            
             if(empty($this->$attr)){
-                $this->$attr = static::modelIdGenerateNext();
+                $this->$attr = static::modelIdGenerateNext($this->_allocator);
             }else{
-                static::modelIdSetCurrent($this->$attr);
+                static::modelIdSetCurrent($this->$attr, false, $this->_allocator);
             }
         }
         return parent::save($validate);

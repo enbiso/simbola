@@ -198,7 +198,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
      */
     public function getId($username = null, $sessionKey = null) {
         $params = $this->getUserSession($username, $sessionKey);
-        return $this->getRBAP()->userId($this->getUsername($params[self::USERNAME]));
+        return $this->getRBAP()->userId($this->getUsername($params[self::USERNAME],$params[self::SESSION_KEY]));
     }
     
     /**
