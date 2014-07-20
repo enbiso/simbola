@@ -94,35 +94,6 @@ class Auth extends \simbola\core\component\system\lib\Component {
     }
 
     /**
-     * Update the user session and returns the session data
-     * 
-     * @param string $username Username
-     * @param string $sessionKey Session Key
-     * @return array
-     */
-    public function updateSession($username, $sessionKey) {
-        $session = Simbola::app()->session;
-        if ($this->isLogged()) {            
-            return array('auth' => array(
-                            'username' => $session->get(self::USERNAME), 
-                            'skey' => $session->get(self::SESSION_KEY)), 
-                         'reload' => false);
-        } elseif ($this->getRBAP()->userSessionCheck($username, $sessionKey)) {            
-            $session->set(self::USERNAME, $username);
-            $session->set(self::SESSION_KEY, $sessionKey);
-            return array('auth' => array(
-                            'username' => $session->get(self::USERNAME), 
-                            'skey' => $session->get(self::SESSION_KEY)), 
-                         'reload' => true);
-        } else {
-            return array('auth' => array(
-                            'username' => $this->params['GUEST_USERNAME'], 
-                            'skey' => ''), 
-                         'reload' => false);
-        }
-    }
-
-    /**
      * User logout
      * 
      * @param string $username Username
