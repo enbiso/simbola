@@ -71,6 +71,9 @@ function shtmlform_end() {
  * @return string HTML tag
  */
 function shtmlform_input($type, $opts = array()) {
+    if($type == 'number'){
+        $opts['step'] = 'any';
+    }
     $opts = array_merge(array(
         'type' => $type), $opts);
     return shtml_taged("input", $opts);
