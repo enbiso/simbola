@@ -41,8 +41,7 @@ var simbola = {
             simbola.log("error", "Simbola not initialized. Add <?php simbola_js_init() ?> to your layout");
         }
     },
-    auth: {
-        updateInterval: 5000,
+    auth: {        
         set: function(auth_data) {
             $.cookie("auth", JSON.stringify(auth_data), {path: "/"});
         },
@@ -65,7 +64,7 @@ var simbola = {
             return simbola.auth.get().skey;
         }
     },
-    init: function(params) {
+    init: function(params, auth) {
         simbola.log('log', 'simbola.init()');
         this.params = params;
         this.baseUrl = location.protocol + "//" + location.host;
@@ -76,17 +75,9 @@ var simbola = {
             this.baseUrl = this.baseUrl + "/index.php";
         }
         simbola.log("log", "simbola.baseUrl set to :" + this.baseUrl);
-        this.isInit = true;
-        setInterval(function() {
-            url = simbola.url.action('system/auth/session');
-            $.post(url, simbola.auth.get(), function(data) {
-                simbola.auth.set(data.auth);
-                if (data.reload) {
-                    window.location = window.location;
-                }
-            }, 'json');
-        }, simbola.auth.updateInterval);
+        simbola.auth.set(auth);
         simbola.log('info', "Simbola Initialized");
+        this.isInit = true;
     },
     url: {
         action: function(action, params) {
