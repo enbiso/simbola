@@ -24,7 +24,7 @@ class AuthController extends \simbola\core\application\AppController {
                     'username' => $this->post('username'),
                     'password' => $this->post('password'),
                 ));
-                $this->redirect('/system/www/index');
+                $this->redirect(\simbola\Simbola::app()->router->getParam('DEFAULT'));
             } catch (\Exception $ex) {
                 $this->setViewData("errorMessage", $ex->getMessage());
             }
@@ -34,7 +34,7 @@ class AuthController extends \simbola\core\application\AppController {
 
     public function actionLogout() {
         $this->invoke("system", "auth", "logout", array());
-        $this->redirect('/system/www/index');
+        $this->redirect(\simbola\Simbola::app()->router->getParam('DEFAULT'));
     }
 
 }
