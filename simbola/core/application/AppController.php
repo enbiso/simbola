@@ -144,10 +144,11 @@ abstract class AppController {
             }
             $this->postAction($page);
         } else if (!Simbola::app()->auth->isLogged()) {
-            \simbola\Simbola::app()->session->set('PRE_LOGIN_PAGE', Simbola::app()->router->page);
+            \simbola\Simbola::app()->session->set('PRE_LOGIN_PAGE', Simbola::app()->router->getCurrentPage());
             $this->redirect(Simbola::app()->router->LOGIN);
         } else {
-            $this->redirect(Simbola::app()->router->NOACCESS);
+            $pageName = "{$page->module}/{$page->logicalUnit}/{$page->action}";
+            $this->redirect(Simbola::app()->router->NOACCESS, array('page' => $pageName));
         }
     }
 

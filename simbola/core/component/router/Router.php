@@ -10,8 +10,7 @@ namespace simbola\core\component\router;
  * @property-read string $default Default route
  * @property-read string $noaccess No access route
  * @property-read string $nopage No page route
- * @property-read string $login Login page route
- * @property-read \simbola\core\component\url\lib\Page $page Current page
+ * @property-read string $login Login page route 
  */
 class Router extends \simbola\core\component\system\lib\Component {
 
@@ -118,8 +117,8 @@ class Router extends \simbola\core\component\system\lib\Component {
      * 
      * @param \simbola\core\component\url\lib\Page $page
      */
-    private function executeController($page) {
-        //set default if the route is empty                
+    private function executeController($page) {                    
+        $this->currentPage = $page;            
         try {
             $controller_name = \simbola\Simbola::app()->getPageClass($page, true);
         }catch(\Exception $ex){
@@ -127,7 +126,6 @@ class Router extends \simbola\core\component\system\lib\Component {
             $page->loadFromUrl($this->params['NOPAGE']);
             $controller_name = \simbola\Simbola::app()->getPageClass($page);
         }
-        $this->currentPage = $page;            
         $controller = new $controller_name();
         $controller->init();
         $controller->run($page);
