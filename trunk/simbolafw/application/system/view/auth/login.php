@@ -1,5 +1,7 @@
 <h1>Simbola Login.</h1>
-To customize, configure params of 'Auth' component, <strong>Default login ' admin / admin '</strong>
+<?php if(\simbola\Simbola::app()->isDev()): ?>
+    To customize, configure params of 'Auth' component, <strong>Default login ' admin / admin '</strong>
+<?php endif; ?>
 <hr/>
 <div class="row">
     <?php if($this->isDataSet('errorMessage')): ?>

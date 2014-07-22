@@ -10,10 +10,16 @@ namespace application\system\controller;
 class WwwController extends \simbola\core\application\AppController {
 
     function actionPagenotfound() {
+        $this->setViewData("page", \simbola\Simbola::app()->router->getCurrentPage());
         $this->view('www/pagenotfound');
     }
 
     function actionNoaccess() {
+        if($this->issetGet("page")){
+            $this->setViewData("pageName", $this->get('page'));
+        }else{
+            $this->setViewData("pageName", "/");
+        }
         $this->view('www/noaccess');
     }
 
