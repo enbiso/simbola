@@ -23,18 +23,22 @@ class IdeService extends \simbola\core\application\AppService {
     public $schema_promoteFile = array(
         'req' => array('params' => array('path', 'promotePath')),
         'res' => array('status'),
-        'err' => array('PROMOTE_FAILED')
+        'err' => array('PROMOTE_FAILED','PROMOTE_PATH_FAILED')
     );
 
     public function actionPromoteFile() {
         $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $this->_req_params('path');
         $promotePath = $this->_req_params('promotePath');
-        if (!sstring_starts_with(DIRECTORY_SEPARATOR, $promotePath)) {
-            $promotePath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $promotePath;
+        if($promotePath == "../prod" || $promotePath == "../dev" || $promotePath == "../test" ){
+            if (!sstring_starts_with(DIRECTORY_SEPARATOR, $promotePath)) {
+                $promotePath = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR . $promotePath;
+            }
+            $dest = $promotePath . DIRECTORY_SEPARATOR . $this->_req_params('path');
+            sfile_recursive_copy($path, $dest);
+            $this->_res('status', true);
+        }else{
+            $this->_err('PROMOTE_PATH_FAILED');
         }
-        $dest = $promotePath . DIRECTORY_SEPARATOR . $this->_req_params('path');
-        sfile_recursive_copy($path, $dest);
-        $this->_res('status', true);
     }
 
     public $schema_createFile = array(
