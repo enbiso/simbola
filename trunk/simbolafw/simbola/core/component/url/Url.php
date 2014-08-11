@@ -29,22 +29,6 @@ class Url extends \simbola\core\component\system\lib\Component {
     public function decode($urlString) {
         $page = new lib\Page();    
         $page->loadFromUrl($urlString);
-        //Alias - Start
-        $alias = $this->getParam("ALIAS");
-        $urlKey = ($urlString[0] == '/') ? substr($urlString, 1) : $urlString;        
-        if (($pos = strpos($urlString, "[")) > 0) {
-            $urlKey = substr($urlKey, 0, $pos);
-        }
-        if($this->getParam('URL_BASE')){
-            $urlKey = substr($urlKey, strlen($this->getParam('URL_BASE')) + 1);
-        }
-        if(!$this->getParam('HIDE_INDEX')){
-            $urlKey = substr($urlKey, strlen('index.php/'));
-        }        
-        if(!empty($urlKey)&&array_key_exists($urlKey, $alias)){
-            $page->loadFromArray($alias[$urlKey], true);
-        }
-        //Alias - End        
         return $page;
     }
      

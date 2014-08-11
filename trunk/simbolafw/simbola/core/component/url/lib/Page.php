@@ -32,6 +32,24 @@ class Page {
     );
     
     /**
+     * Alias value if exist
+     * @var string Alias
+     */
+    private $alias = false;
+    
+    /**
+     * Consturct Page object
+     * @param type $value Array or String
+     */
+    public function __construct($value = NULL) {
+        if(is_array($value)){
+            $this->loadFromArray($value);
+        }elseif(is_string($value)){
+            $this->loadFromUrl($value);
+        }
+    }
+    
+    /**
      * Returns the function name of the action
      * 
      * @return string
@@ -84,7 +102,7 @@ class Page {
      * @param bool $append Append Paramsters default false
      */
     public function loadFromArray($url, $append = false) {
-        if (count($url) > 0) {
+        if (count($url) > 0) {            
             $this->loadFromUrl($url[0]);
         }
         if (count($url) > 1) {
@@ -93,7 +111,7 @@ class Page {
             } else {
                 $this->params = array_merge($this->params, array_slice($url, 1));
             }
-        }
+        }        
     }
 
     /**
@@ -110,6 +128,17 @@ class Page {
             throw new \Exception("URL String empty");
         }
         $urlString = ($urlString[0] == '/') ? substr($urlString, 1) : $urlString;
+        //remove index.php if exist        
+        $urlString = str_replace(array("index.php/","index.php"), "", $urlString);        
+        //remove url_base if exist
+        $url_base = \simbola\Simbola::app()->url->getParam('URL_BASE');
+        if($url_base){
+            $urlString = str_replace($url_base."/", "", $urlString);
+        }        
+        //Alias - Start
+        $urlString = $this->resolveAlias($urlString);        
+        //Alias - End 
+        
         if (($pos = strpos($urlString, "[")) > 0) {
             $temp_url = substr($urlString, 0, $pos);
             $paramString = str_replace($temp_url, "", $urlString);
@@ -136,16 +165,7 @@ class Page {
         //remove the params from url
         if (strpos($urlString, '?')) {
             $urlString = substr($urlString, 0, strpos($urlString, '?'));
-        }
-        
-        //remove index.php if exist        
-        $urlString = str_replace(array("index.php/","index.php"), "", $urlString);        
-        
-        //remove url_base if exist
-        $url_base = \simbola\Simbola::app()->url->getParam('URL_BASE');
-        if($url_base){
-            $urlString = str_replace($url_base."/", "", $urlString);
-        }
+        }        
                 
         if ($urlString == \simbola\Simbola::app()->getParam('SERVICE_API')) {
             //service            
@@ -160,10 +180,37 @@ class Page {
             $urlData = explode("/", $urlString);
             $this->module = empty($urlData[0]) ? null : $urlData[0];
             $this->logicalUnit = empty($urlData[1]) ? null : $urlData[1];
-            $this->action = empty($urlData[2]) ? null : $urlData[2];
-        }
+            $this->action = empty($urlData[2]) ? null : $urlData[2];            
+        }       
     }
 
+    /**
+     * Resolve the URL with URL String accoding to the ALIAS
+     * @param String $urlString URL String
+     * @return String
+     */
+    private function resolveAlias($urlString) {
+        $url = \simbola\Simbola::app()->url;
+        $alias = $url->getParam("ALIAS");
+        $urlKey = $urlString;
+        $urlParam = null;
+        if (($pos = strpos($urlKey, "[")) > 0) {
+            $urlKey = substr($urlKey, 0, $pos);
+            $urlParam  = substr($urlKey, $pos);
+        }        
+        if(!empty($urlKey) && array_key_exists($urlKey, $alias)){
+            $this->alias = $this->parseBase() . $urlKey;
+            if(is_array($alias[$urlKey])){
+                $aliasPage = new Page();
+                $aliasPage->loadFromArray($alias[$urlKey]);
+                $urlString = $aliasPage->encode(false) . $aliasPage->parseParams() . (is_null($urlParam)? "" : $urlParam);
+            }else{
+                $urlString = $alias[$urlKey] . (is_null($urlParam) ? "" : $urlParam);
+            }
+        }
+        return $urlString;
+    }
+    
     /**
      * Check if the parameter is set for the given name
      * 
@@ -177,10 +224,27 @@ class Page {
     /**
      * Get the URL string
      *  (index.php)/www/site/index[KEY:VALUE]     
+     * @param boolean $ignoreAlias Ignore Alias DEFAULT false
      * @return string
      */
-    public function getUrl() {
-        $path = $this->encode();        
+    public function getUrl($ignoreAlias = false) {
+        $path = "";
+        if(!$ignoreAlias && $this->alias){
+            $path = $this->alias;
+        }else{
+            $path = $this->encode();
+        }
+        $path .= $this->parseParams();
+        return $path;
+    }
+    
+    /**
+     * Get the param String as 
+     *  [KEY:VALUE][KEY:VALUE]
+     * @return string
+     */
+    private function parseParams() {
+        $path = "";
         foreach ($this->params as $key => $value) {
             $path .= "[$key:$value]";
         }        
@@ -188,16 +252,29 @@ class Page {
     }
 
     /**
-     * Implementation function of the URL string generator
-     * @return string
+     * Parse the app base with index
+     * @return string URL String
      */
-    private function encode() {
-        $path = "/";        
+    private function parseBase() {
+        $path = "/";
         if(\simbola\Simbola::app()->url->getParam('URL_BASE')){
             $path .= \simbola\Simbola::app()->url->getParam('URL_BASE');
         }
         if (!\simbola\Simbola::app()->url->getParam('HIDE_INDEX')) {
             $path .= "/index.php/";
+        }
+        return $path;
+    }
+    
+    /**
+     * Implementation function of the URL string generator
+     * @param bool $absolute Absolute encoding with app path and index.php DEFAULT TRUE
+     * @return string
+     */
+    private function encode($absolute = true) {
+        $path = "";
+        if($absolute){
+            $path = $this->parseBase();        
         }
         $action = "";
         if($this->module != null){
@@ -220,11 +297,11 @@ class Page {
     /**
      * Returns the URL string representation with the base URL
      *  http://www.example.com/app/index.php/www/site/index[KEY:VALUE]
-     * 
+     * @param boolean $ignoreAlias Ignore Alias DEFAULT false
      * @return string
      */
-    public function getAbsoluteUrl() {
-        return \simbola\Simbola::app()->url->getBaseUrl(false) . $this->getUrl();
+    public function getAbsoluteUrl($ignoreAlias = false) {
+        return \simbola\Simbola::app()->url->getBaseUrl(false) . $this->getUrl($ignoreAlias);
     }
 
 }

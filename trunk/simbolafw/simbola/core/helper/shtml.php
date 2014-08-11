@@ -161,16 +161,20 @@ function shtml_resource_include($include = array()){
     //Bootstrap
     if(in_array('bootstrap', $include)){
         $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
-        $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
+        if(in_array('bootstrap-bootflat', $include)){
+            $incl .= shtml_css("system", "bootstrap-bootflat/css/bootflat.min.css");
+        }else{
+            $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
+        }
         $incl .= '<!--[if lt IE 9]>';
         $incl .= shtml_js('system', 'bootstrap/js/html5shiv.min.js');     
         $incl .= shtml_js('system', 'bootstrap/js/respond.min.js');
         $incl .= '<![endif]-->';
         $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');        
-    }
-    if(in_array('bootstrap-notify', $include)){
-        $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
-        $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
+        if(in_array('bootstrap-notify', $include)){
+            $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
+            $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
+        }
     }
     
     //Simbola
@@ -300,7 +304,7 @@ function shtml_action_link($value, $url, $opts = array(), $icon = null, $tooltip
         }
         $page = new \simbola\core\component\url\lib\Page();
         $page->loadFromArray($url);
-    }
+    }    
     return shtml_Link($value, $page->getUrl(), $opts, $icon, $tooltip);
 }
 
