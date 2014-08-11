@@ -356,7 +356,7 @@ abstract class AppController {
      *                body   => array( response     => [RESPONSE_DATA],
      *                                 message      => [RESPONSE_MESSAGE]))
      */
-    protected function invoke($module, $service, $action, $params) {
+    protected function invoke($module, $service, $action, $params = array()) {
         $this->serviceClient = new \simbola\core\component\system\lib\ServiceClient();
         $this->serviceClient->module = $module;
         $this->serviceClient->service = $service;
