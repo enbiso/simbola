@@ -118,7 +118,7 @@ class Router extends \simbola\core\component\system\lib\Component {
      * @param \simbola\core\component\url\lib\Page $page
      */
     private function executeController($page) {                    
-        $this->currentPage = $page;            
+        $this->currentPage = $page;                    
         try {
             $controller_name = \simbola\Simbola::app()->getPageClass($page, true);
         }catch(\Exception $ex){

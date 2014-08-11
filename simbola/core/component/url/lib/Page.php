@@ -138,8 +138,8 @@ class Page {
             $urlString = substr($urlString, 0, strpos($urlString, '?'));
         }
         
-        //remove index.php if exist
-        $urlString = str_replace(array("index.php/","index.php"), "", $urlString);
+        //remove index.php if exist        
+        $urlString = str_replace(array("index.php/","index.php"), "", $urlString);        
         
         //remove url_base if exist
         $url_base = \simbola\Simbola::app()->url->getParam('URL_BASE');
@@ -176,27 +176,28 @@ class Page {
     
     /**
      * Get the URL string
-     *  www/site/index[KEY:VALUE]
-     * 
+     *  (index.php)/www/site/index[KEY:VALUE]     
      * @return string
      */
     public function getUrl() {
-        $path = \simbola\Simbola::app()->url->getBaseUrl() . "/" . $this->encode();
+        $path = $this->encode();        
         foreach ($this->params as $key => $value) {
             $path .= "[$key:$value]";
-        }
+        }        
         return $path;
     }
 
     /**
      * Implementation function of the URL string generator
-     * 
      * @return string
      */
     private function encode() {
-        $path = "";
+        $path = "/";        
+        if(\simbola\Simbola::app()->url->getParam('URL_BASE')){
+            $path .= \simbola\Simbola::app()->url->getParam('URL_BASE');
+        }
         if (!\simbola\Simbola::app()->url->getParam('HIDE_INDEX')) {
-            $path = "index.php/";
+            $path .= "/index.php/";
         }
         $action = "";
         if($this->module != null){
@@ -222,8 +223,8 @@ class Page {
      * 
      * @return string
      */
-    public function getUrlWithBaseUrl() {
-        return \simbola\Simbola::app()->url->getBaseUrl() . "/" . $this->getUrl();
+    public function getAbsoluteUrl() {
+        return \simbola\Simbola::app()->url->getBaseUrl(false) . $this->getUrl();
     }
 
 }
