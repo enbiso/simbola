@@ -64,8 +64,8 @@ class Router extends \simbola\core\component\system\lib\Component {
     private function execute($page) {
         $_GET = $page->params;
         switch ($page->type) {
-            case \simbola\core\component\url\lib\Page::TYPE_CONTROLLER:
-                $page = $this->initWithDefaults($page);
+            case \simbola\core\component\url\lib\Page::TYPE_CONTROLLER:                
+                $page = $this->initWithDefaults($page, false);
                 $this->executeController($page);
                 break;
             case \simbola\core\component\url\lib\Page::TYPE_SERVICE:
