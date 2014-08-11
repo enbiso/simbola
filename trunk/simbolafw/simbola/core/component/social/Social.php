@@ -39,7 +39,7 @@ class Social extends \simbola\core\component\system\lib\Component {
             $socialPage->type = \simbola\core\component\url\lib\Page::TYPE_CONTROLLER;
             $socialPage->logical_unit = "system";
             $socialPage->action = "social";            
-            $this->params['BASE_URL'] = $socialPage->getUrlWithBaseUrl();
+            $this->params['BASE_URL'] = $socialPage->getAbsoluteUrl();
         }
         
         if($this->params['DEBUG']['ENABLE'] && !file_exists($this->params['DEBUG']['FILE'])){

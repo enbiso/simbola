@@ -35,6 +35,12 @@ class Url extends \simbola\core\component\system\lib\Component {
         if (($pos = strpos($urlString, "[")) > 0) {
             $urlKey = substr($urlKey, 0, $pos);
         }
+        if($this->getParam('URL_BASE')){
+            $urlKey = substr($urlKey, strlen($this->getParam('URL_BASE')) + 1);
+        }
+        if(!$this->getParam('HIDE_INDEX')){
+            $urlKey = substr($urlKey, strlen('index.php/'));
+        }        
         if(!empty($urlKey)&&array_key_exists($urlKey, $alias)){
             $page->loadFromArray($alias[$urlKey], true);
         }
@@ -57,15 +63,15 @@ class Url extends \simbola\core\component\system\lib\Component {
 
     /**
      * Fetch and returns the base URL of the application
-     *  http://www.example.com/app     
+     *  http://www.example.com/[app_base] - returns if set withAppBaseUrl to TRUE
      *  http://www.example.com
-     * 
+     * @param bool $withAppBaseUrl withAppBaseUrl default TRUE
      * @return string
      */
-    public function getBaseUrl() {        
+    public function getBaseUrl($withAppBaseUrl = true) {        
         $url = 'http' . ((!empty($_SERVER['HTTPS'])) ? "s" : "") . "://" . $_SERVER['SERVER_NAME'];
         $appBaseUrl = $this->getAppUrlBase();
-        if($appBaseUrl != ""){
+        if($withAppBaseUrl && $appBaseUrl != ""){
             $url  = $url . "/" . $this->getAppUrlBase();
         }
         return $url;
