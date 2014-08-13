@@ -58,9 +58,9 @@ abstract class AppDbTable extends AbstractDbObject {
     function removeColumns($columns) {        
         $colStmts = array();
         foreach ($columns as $column) {
-             $colStmts[] = "DROP COLUMN {$column}";            
+             $colStmts[] = "DROP `{$column}`";            
         }           
-        $this->setContent("ALTER TABLE {$this->getTableName()} " . implode(",", $colStmts));                   
+        $this->setContent("ALTER TABLE {$this->getTableName()} " . implode(", ", $colStmts));                   
         $this->execute();
     }
 
