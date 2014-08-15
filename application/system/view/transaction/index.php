@@ -6,5 +6,5 @@ $this->page_breadcrumb = array(
 <ul>
     <li><?= shtml_action_link("Crons", array('system/transaction/cron')) ?></li>
     <li><?= shtml_action_link("Jobs", array('system/transaction/job')) ?></li>
-    <li><?= shtml_action_link("Queues", array('system/transaction/queue')) ?></li>
+    <li><?= shtml_action_link("Queues", array('system/transaction/queue')) ?></li>    
 </ul>
