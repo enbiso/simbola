@@ -13,8 +13,8 @@ class JobUtil {
      * @param array $queueIds Array of Queues ID
      * @return \simbola\core\component\transaction\lib\job\AbstractJob Job
      */
-    function getNextJob($queueIds) {        
-        $options['conditions'] = array('_state = ? AND queue_id IN (?)', 'new', array('QUEUE01'));        
+    function getNextJob($queueIds) {                
+        $options['conditions'] = array('_state = ? AND queue_id IN (?)', 'new', $queueIds);        
         $options['order'] = 'priority desc';        
         $jobObj = \application\system\model\transaction\Job::find('first', $options);
         if(is_null($jobObj)){
