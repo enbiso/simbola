@@ -30,7 +30,7 @@ $this->page_menu = array(
 <div class="panel panel-default">
     <div class="panel-heading"><?= sterm_get('system.transaction.job.delete.panel.heading') ?></div>
     <div class="panel-body">
-        <?php $this->pview('transaction/job/_display'); ?>
+        <?php $this->pview('transaction/job/display/_' . $this->object->type); ?>
     </div>
     <div class="panel-footer">
         <form method="POST"><?= shtmlform_input_hidden_for($this->object, 'id', 'keys') ?><input type="submit" class="btn-warning btn" value="<?= sterm_get('system.transaction.job.delete.panel.btn_ok')?>"/></form>

@@ -42,20 +42,15 @@ var simbola = {
         }
     },
     auth: {        
+        auth_data: {username: 'guest', skey: ''},
         set: function(auth_data) {
-            $.cookie("auth", JSON.stringify(auth_data), {path: "/"});
+            simbola.auth.auth_data = auth_data;
         },
         get: function() {
-            var auth_data = $.cookie('auth');
-            if (auth_data === undefined) {
-                auth_data = {username: 'guest', skey: ''};
-            } else {
-                auth_data = JSON.parse(auth_data);
-            }
-            return auth_data;
+            return simbola.auth.auth_data;
         },
         isLogged: function() {
-            return simbola.auth.username() === 'guest';
+            return simbola.auth.username() !== 'guest';
         },
         username: function() {
             return simbola.auth.get().username;
