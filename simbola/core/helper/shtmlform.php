@@ -309,7 +309,7 @@ function shtmlform_group_input_for($type, $object, $fieldName, $dataName = 'data
     $output .= shtmlform_label_for($object, $fieldName);
     $output .= shtmlform_input_for($type, $object, $fieldName, $dataName, $opts);
     if($hasError){ 
-        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_taged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
         $output .= shtml_tag("span", array('class'=>'help-text'));
         $output .= $object->errors->on($fieldName);
         $output .= shtml_untag("span");
@@ -338,7 +338,7 @@ function shtmlform_group_select_for($object, $fieldName, $data, $dataName = 'dat
     $output .= shtmlform_label_for($object, $fieldName);
     $output .= shtmlform_select_for($object, $fieldName, $data, $dataName, $opts);
     if($hasError){ 
-        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_taged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
         $output .= shtml_tag("span", array('class'=>'help-text'));
         $output .= $object->errors->on($fieldName);
         $output .= shtml_untag("span");
@@ -366,7 +366,7 @@ function shtmlform_group_textarea_for($object, $fieldName, $dataName = 'data', $
     $output .= shtmlform_label_for($object, $fieldName);
     $output .= shtmlform_textarea_for($object, $fieldName, $dataName, $opts);
     if($hasError){ 
-        $output .= shtml_tagged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
+        $output .= shtml_taged('span', array('class'=> "glyphicon glyphicon-warning-sign form-control-feedback"));
         $output .= shtml_tag("span", array('class'=>'help-text'));
         $output .= $object->errors->on($fieldName);
         $output .= shtml_untag("span");
