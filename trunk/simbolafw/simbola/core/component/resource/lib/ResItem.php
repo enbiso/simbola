@@ -95,7 +95,7 @@ class ResItem {
             case self::TYPE_JS:
                 return "<script type='text/javascript' src='{$path}'></script>" . PHP_EOL;                                
             case self::TYPE_CSS:
-                return "<link rel='stylesheet' type='text/css' href='{$path}'></link>" . PHP_EOL;                
+                return "<link rel='stylesheet' type='text/css' href='{$path}'>" . PHP_EOL;                
             default:
                 return $path;                
         }
