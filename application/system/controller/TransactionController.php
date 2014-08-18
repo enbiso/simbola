@@ -135,7 +135,7 @@ class TransactionController extends \simbola\core\application\AppController {
                     $response = $this->invoke('system', 'transaction', 'queueDelete', array(
                         'keys' => $keys,
                     ));
-                    $this->redirect('/system/transaction/queueList');
+                    $this->redirect('/system/transaction/queue');
                 } catch (\Exception $ex) {
                     $this->setViewData("error", $ex->getMessage());
                     $this->setViewData('object', $this->getQueueObject($keys));
@@ -154,7 +154,7 @@ class TransactionController extends \simbola\core\application\AppController {
                 }
             }
         } else {
-            $this->redirect('/system/transaction/queueList');
+            $this->redirect('/system/transaction/queue');
         }
     }
 
@@ -266,7 +266,7 @@ class TransactionController extends \simbola\core\application\AppController {
                     $response = $this->invoke('system', 'transaction', 'jobDelete', array(
                         'keys' => $keys,
                     ));
-                    $this->redirect('/system/transaction/jobList');
+                    $this->redirect('/system/transaction/job');
                 } catch (\Exception $ex) {
                     $this->setViewData("error", $ex->getMessage());
                     $this->setViewData('object', $this->getJobObject($keys));
@@ -285,7 +285,7 @@ class TransactionController extends \simbola\core\application\AppController {
                 }
             }
         } else {
-            $this->redirect('/system/transaction/jobList');
+            $this->redirect('/system/transaction/job');
         }
     }
 
