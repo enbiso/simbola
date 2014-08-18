@@ -48,9 +48,10 @@ function shtml_untag($tag) {
  * @return type
  */
 function shtml_meta($charset = "utf-8", $contents = array()){            
-    $meta = shtml_taged('meta', array('charset' => $charset));
-    $meta .= shtml_taged('meta', array('http-equiv' => "X-UA-Compatible", 'content' => "IE=edge"));    
-    $meta .= shtml_meta_content('viewport', "width=device-width, initial-scale=1.0");
+    $meta = shtml_tag('meta', array('charset' => $charset))."\n";
+    $meta .= "<!--[if IE]>".shtml_tag('meta', array('http-equiv' => "X-UA-Compatible", 'content' => "IE=edge,chrome=1"))."<![endif]-->\n";   
+    $meta .= "<!--[if IE]>".shtml_tag('meta', array('http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8"))."<![endif]-->\n";       
+    $meta .= shtml_meta_content('viewport', "width=device-width, initial-scale=1.0")."\n";
     foreach ($contents as $name => $content) {
         $meta .= shtml_meta_content($name, $content);
     }
@@ -65,7 +66,7 @@ function shtml_meta($charset = "utf-8", $contents = array()){
  * @return type
  */
 function shtml_meta_content($name, $content){
-    return shtml_taged('meta', array('name' => $name, 'content' => $content));
+    return shtml_tag('meta', array('name' => $name, 'content' => $content))."\n";
 }
 
 /**
