@@ -152,10 +152,10 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     /**
      * Initialization
      */
-    public function init() {
+    public function init() {        
         if (!$this->moduleExist()) {
             $this->moduleCreate();
-        }
+        }          
         if ($this->isNewInstallation()) {
             $this->setupTable(self::TBL_ITEM);
             $this->setupTable(self::TBL_CHILD);            
