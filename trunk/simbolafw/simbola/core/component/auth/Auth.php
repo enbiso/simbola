@@ -68,7 +68,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
      * @param string $sessionKey Session Key
      * @return boolean
      */
-    public function isLogged($username = null, $sessionKey = null) {             
+    public function isLogged($username = null, $sessionKey = null) {   
         $params = $this->getUserSession($username, $sessionKey);
         return $this->getRBAP()->userSessionCheck($params[self::USERNAME], $params[self::SESSION_KEY]);        
     }
