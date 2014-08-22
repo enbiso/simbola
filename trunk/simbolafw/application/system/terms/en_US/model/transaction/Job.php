@@ -21,6 +21,6 @@ $__term["system.model.transaction.job.output"] = "Output";
 $__term["system.model.transaction.job.user_id"] = "User Id";
 $__term["system.model.transaction.job.state"] = "State";
 $__term["system.model.transaction.job.state.new"] = "New";
-$__term["system.model.transaction.job.state.execute"] = "New";
+$__term["system.model.transaction.job.state.execute"] = "Execute";
 $__term["system.model.transaction.job.state.error"] = "Error";
 $__term["system.model.transaction.job.state.complete"] = "Complete";

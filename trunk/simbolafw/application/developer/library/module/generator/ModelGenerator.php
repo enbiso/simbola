@@ -72,13 +72,13 @@ class ModelGenerator extends CodeGenerator {
     private function getModelHasMany($tblMeta) {
         $relations = $tblMeta['relations']['has_many'];
         $hasMany = array();
-        $template = "self::hasMany(array('#NAME#', 'class_name' => '\application\#REF_MODULE_NAME#\model\#REF_LU_NAME#\#REF_ITEM_NAME#', 'foreign_key' => '#REF_COL_NAME#', 'primary_key' => '#COL_NAME#'));";
+        $template = "self::hasMany(array('#NAME#', 'class_name' => '\application\#MODULE_NAME#\model\#LU_NAME#\#ITEM_NAME#', 'foreign_key' => '#COL_NAME#', 'primary_key' => '#REF_COL_NAME#'));";
         foreach ($relations as $rel) {
             $content = $template;
             $content = str_replace("#NAME#", sstring_underscore_to_camelcase($rel['table']['name']) . "s", $content);
-            $content = str_replace("#REF_MODULE_NAME#", $rel['ref_table']['module'], $content);
-            $content = str_replace("#REF_LU_NAME#", $rel['ref_table']['lu'], $content);
-            $content = str_replace("#REF_ITEM_NAME#", sstring_underscore_to_camelcase($rel['ref_table']['name'], true), $content);
+            $content = str_replace("#MODULE_NAME#", $rel['table']['module'], $content);
+            $content = str_replace("#LU_NAME#", $rel['table']['lu'], $content);
+            $content = str_replace("#ITEM_NAME#", sstring_underscore_to_camelcase($rel['table']['name'], true), $content);
             $content = str_replace("#REF_COL_NAME#", $rel['ref_column_name'], $content);
             $content = str_replace("#COL_NAME#", $rel['column_name'], $content);
             $hasMany[] = $content;
