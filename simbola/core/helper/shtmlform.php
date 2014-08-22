@@ -136,7 +136,18 @@ function shtmlform_input_text_for($object, $fieldName, $dataName = 'data', $opts
 function shtmlform_input_for($type, $object, $fieldName, $dataName = 'data', $opts = array()) {
     $value = (is_null($object))?'':$object->$fieldName;
     if($value instanceof ActiveRecord\DateTime){
-        $value = $value->format("Y-m-d");
+        switch ($type) {
+            case 'date':
+                $format = "Y-m-d";
+                break;
+            case 'datetime-local':            
+                $format = "Y-m-d\TH:i:s";            
+                break;
+            default :
+                $format = "Y-m-d H:i:s";
+                break;
+        }
+        $value = $value->format($format);
     }
     $input_opts = array(
         'name' => "{$dataName}[{$fieldName}]",
@@ -304,7 +315,7 @@ function shtmlform_group_input_for($type, $object, $fieldName, $dataName = 'data
     $hasError = isset($object->errors) && !is_null($object->errors->on($fieldName));
     if($hasError){ 
         $formGroupOpts['class'] .= ' has-error has-feedback';        
-    }
+    }    
     $output = shtml_tag("div", $formGroupOpts);    
     $output .= shtmlform_label_for($object, $fieldName);
     $output .= shtmlform_input_for($type, $object, $fieldName, $dataName, $opts);

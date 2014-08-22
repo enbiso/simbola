@@ -19,6 +19,8 @@ class Transaction extends \simbola\core\component\system\lib\Component {
             $this->setupTable("system", "transaction", "queue");
             $this->setupTable("system", "transaction", "job");
             $this->setupTable("system", "transaction", "cronQueue");
+            $this->setupTable("system", "transaction", "schedule");
+            $this->setupTable("system", "transaction", "scheduleJob");
         }
     }
     
@@ -41,7 +43,9 @@ class Transaction extends \simbola\core\component\system\lib\Component {
     public function cron($cronId) {
         $cronUtil = new lib\CronUtil();
         $jobUtil = new lib\JobUtil();
+        $scheduleUtil = new lib\ScheduleUtil();
         try {               
+            $scheduleUtil->runScheduler();
             if ($cronUtil->initialize($cronId)) {                                
                 $cronUtil->beginCron();                
                 $queueIds = $cronUtil->getQueueIds();                                                        
