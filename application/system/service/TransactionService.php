@@ -59,6 +59,85 @@ class TransactionService extends \simbola\core\application\AppService {
         }
     }
 
+    //Schedule
+    public $schema_scheduleView = array(
+        'req' => array('params' => array('keys')),
+        'res' => array('object'),
+        'err' => array('VIEW_ERROR')
+    );
+
+    function actionScheduleView() {
+        $object = \application\system\model\transaction\Schedule::find($this->_req_params('keys'));        
+        if($object == NULL){
+            $this->_err('VIEW_ERROR');
+        }
+        $this->_res('object', $object);
+    }
+    
+    public $schema_scheduleList = array(
+        'req' => array('params' => array()),
+        'res' => array('data'),
+        'err' => array('LIST_ERROR')
+    );
+
+    function actionScheduleList() {
+        try {
+            $search = $this->_req_params('search');
+            if(empty($search)){
+               $data = \application\system\model\transaction\Schedule::find('all');   
+            }else{
+               $data = \application\system\model\transaction\Schedule::find('all', $search);  
+            }
+            $this->_res('data', $data);            
+        } catch(Exception $ex) {
+            $this->_err('LIST_ERROR');
+        }
+    }
+    
+    public $schema_scheduleCreate = array(
+        'req' => array('params' => array('data')),
+        'res' => array('object'),
+        'err' => array('CREATE_ERROR')
+    );
+
+    function actionScheduleCreate() {
+        $object = new \application\system\model\transaction\Schedule($this->_req_params('data'));        
+        $object->user_id = \simbola\Simbola::app()->auth->getId();        
+        $object->next_execute = new \DateTime();
+        if(!$object->save()){
+            $this->_err('CREATE_ERROR');
+        }
+        $this->_res('object', $object);
+    }
+    
+    public $schema_scheduleUpdate = array(
+        'req' => array('params' => array('keys', 'data')),
+        'res' => array('object'),
+        'err' => array('UPDATE_ERROR')
+    );
+
+    function actionScheduleUpdate() {
+        $object = \application\system\model\transaction\Schedule::find($this->_req_params('keys'));        
+        $object->set_attributes($this->_req_params('data'));
+        if(!$object->save()){
+            $this->_err('UPDATE_ERROR');
+        }
+        $this->_res('object', $object);
+    }
+    
+    public $schema_scheduleDelete = array(
+        'req' => array('params' => array('keys')),
+        'res' => array(),
+        'err' => array('DELETE_ERROR')
+    );
+
+    function actionScheduleDelete() {
+        $object = \application\system\model\transaction\Schedule::find($this->_req_params('keys'));
+        if(!$object->delete()){
+            $this->_err('DELETE_ERROR');
+        }        
+    }
+    
     //cron queue
     public $schema_cronQueueCreate = array(
         'req' => array('params' => array('data')),

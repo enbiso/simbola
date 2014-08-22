@@ -13,7 +13,7 @@ class TransactionController extends \simbola\core\application\AppController {
         $this->view('transaction/index');
     }
 
-    function actionCron() {     
+    function actionCron() {
         $this->view('transaction/cron/index');
     }
 
@@ -65,8 +65,143 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
+    //schedule
+    function actionSchedule() {
+        $this->view('transaction/schedule/index');
+    }
+
+    function actionScheduleCreate() {
+        $object = new \application\system\model\transaction\Schedule();
+        if ($this->issetPost('data')) {
+            try {
+                $data = $this->post('data');
+                if ($data['type'] == 'service' && $this->issetPost("service")) {
+                    $data['content'] = $this->getServiceContent($this->post('service'));
+                }
+                $response = $this->invoke('system', 'transaction', 'scheduleCreate', array(
+                    'data' => $data,
+                ));
+                $object = $response["body"]['response']['object'];
+                $keys = array(
+                    "id" => $object->id
+                );
+                $this->redirect('/system/transaction/scheduleView', $keys);
+            } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
+                $object = $ex->getResponse('object');
+                $this->setViewData("error", $object->errors->full_messages());
+            } catch (\Exception $ex) {
+                $this->setViewData("error", $ex->getMessage());
+            }
+        }
+        $this->setViewData('object', $object);
+        $this->view('transaction/schedule/create');
+    }
+
+    function actionScheduleUpdate() {
+        if ($this->issetGet('id')) {
+            $keysFromGet = array(
+                "id" => $this->get("id")
+            );
+            $object = $this->getSchduleObject($keysFromGet);
+            if (is_null($object)) {
+                $this->view('transaction/schedule/notFound');
+            } else {
+                $this->setViewData('object', $object);
+                if ($this->issetPost('data')) {
+                    $data = $this->post('data');
+                    
+                    if ($object->type == 'service' && $this->issetPost("service")) {
+                        $data['content'] = $this->getServiceContent($this->post('service'));
+                    }
+                    try {
+                        $response = $this->invoke('system', 'transaction', 'scheduleUpdate', array(
+                            'keys' => $keysFromGet,
+                            'data' => $data,
+                        ));
+                        $object = $response["body"]['response']['object'];
+                        $this->setViewData('object', $object);
+                        $keys = array(
+                            "id" => $object->id
+                        );
+                        $this->redirect('/system/transaction/scheduleView', $keys);
+                    } catch (\simbola\core\component\system\lib\exception\ServiceUserException $ex) {
+                        $object = $ex->getResponse('object');
+                        $this->setViewData("error", $object->errors->full_messages());
+                        $this->setViewData('object', $object);
+                    } catch (\Exception $ex) {
+                        $this->setViewData("error", $ex->getMessage());
+                    }
+                }
+                $this->view('transaction/schedule/update');
+            }
+        } else {
+            $this->redirect('/system/transaction/schedule');
+        }
+    }
+
+    function actionScheduleDelete() {
+        if ($this->issetGet('id')) {
+            if ($this->issetPost('keys')) {
+                $keys = $this->post('keys');
+                try {
+                    $response = $this->invoke('system', 'transaction', 'scheduleDelete', array(
+                        'keys' => $keys,
+                    ));
+                    $this->redirect('/system/transaction/scheduleList');
+                } catch (\Exception $ex) {
+                    $this->setViewData("error", $ex->getMessage());
+                    $this->setViewData('object', $this->getObject($keys));
+                    $this->view('transaction/schedule/delete');
+                }
+            } else {
+                $keys = array(
+                    "id" => $this->get("id")
+                );
+                $object = $this->getSchduleObject($keys);
+                if (is_null($object)) {
+                    $this->view('transaction/schedule/notFound');
+                } else {
+                    $this->setViewData('object', $object);
+                    $this->view('transaction/schedule/delete');
+                }
+            }
+        } else {
+            $this->redirect('/system/transaction/scheduleList');
+        }
+    }
+
+    function actionScheduleView() {
+        if ($this->issetGet('id')) {
+            $keys = array(
+                "id" => $this->get("id")
+            );
+            $object = $this->getSchduleObject($keys);
+            if (is_null($object)) {
+                $this->view('transaction/schedule/notFound');
+            } else {
+                $this->setViewData('object', $object);
+                $this->view('transaction/schedule/view');
+            }
+        } else {
+            $this->redirect('/system/transaction/schedule');
+        }
+    }
+
+    function actionScheduleList() {
+        try {
+            $response = $this->invoke('system', 'transaction', 'scheduleList', array(
+                'search' => $this->post('data'),
+            ));
+            $data = $response["body"]['response']['data'];
+            $this->setViewData('data', $data);
+        } catch (\Exception $ex) {
+            $this->setViewData("error", $ex->getMessage());
+        }
+        $this->view('transaction/schedule/list');
+    }
+
     //queue
-    
+
     function actionQueueCreate() {
         $object = new \application\system\model\transaction\Queue();
         if ($this->issetPost('data')) {
@@ -195,8 +330,8 @@ class TransactionController extends \simbola\core\application\AppController {
         if ($this->issetPost('data')) {
             try {
                 $data = $this->post('data');
-                if($data['type'] == 'service' && $this->issetPost("service")){
-                    $data['content'] = $this->getServiceContent($this->post('service'));                    
+                if ($data['type'] == 'service' && $this->issetPost("service")) {
+                    $data['content'] = $this->getServiceContent($this->post('service'));
                 }
                 $response = $this->invoke('system', 'transaction', 'jobCreate', array(
                     'data' => $data,
@@ -230,8 +365,8 @@ class TransactionController extends \simbola\core\application\AppController {
                 if ($this->issetPost('data')) {
                     try {
                         $data = $this->post('data');
-                        if($object->type == 'service' && $this->issetPost("service")){
-                            $data['content'] = $this->getServiceContent($this->post('service'));                    
+                        if ($object->type == 'service' && $this->issetPost("service")) {
+                            $data['content'] = $this->getServiceContent($this->post('service'));
                         }
                         $response = $this->invoke('system', 'transaction', 'jobUpdate', array(
                             'keys' => $keysFromGet,
@@ -250,7 +385,7 @@ class TransactionController extends \simbola\core\application\AppController {
                     } catch (\Exception $ex) {
                         $this->setViewData("error", $ex->getMessage());
                     }
-                }                
+                }
                 $this->view('transaction/job/update');
             }
         } else {
@@ -319,7 +454,18 @@ class TransactionController extends \simbola\core\application\AppController {
         $this->view('transaction/job/index');
     }
 
-    //private functions
+    //private functions        
+    private function getSchduleObject($keys) {
+        try {
+            $response = $this->invoke('system', 'transaction', 'scheduleView', array(
+                'keys' => $keys,
+            ));
+            return $response["body"]['response']['object'];
+        } catch (\Exception $ex) {
+            return null;
+        }
+    }
+
     private function getJobObject($keys) {
         try {
             $response = $this->invoke('system', 'transaction', 'jobView', array(
@@ -330,7 +476,7 @@ class TransactionController extends \simbola\core\application\AppController {
             return null;
         }
     }
-    
+
     private function getQueueObject($keys) {
         try {
             $response = $this->invoke('system', 'transaction', 'queueView', array(
@@ -353,8 +499,7 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
-    private function getServiceContent($serviceData) {
-        //$serviceData['params'] = json_decode($serviceData['params']);
+    private function getServiceContent($serviceData) {        
         return json_encode($serviceData);
     }
 }
