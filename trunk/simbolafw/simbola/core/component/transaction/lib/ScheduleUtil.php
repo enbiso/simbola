@@ -19,13 +19,16 @@ class ScheduleUtil {
      * This method will run the scheduler for the transaction schedules
      */
     function runScheduler() {
-        $schedules = \application\system\model\transaction\Schedule::find('all', array('_state', 'ready'));
+        $schedules = \application\system\model\transaction\Schedule::find('all', array('_state' => 'ready'));
         $currTime = time();
         foreach ($schedules as $schedule) {
             if($schedule->valid_from->getTimestamp() <= $currTime){                
-                if($schedule->valid_till->getTimestamp() > $currTime){
+                if($schedule->valid_till->getTimestamp() > $currTime){                        
                     if($schedule->next_execute->getTimestamp() <= $currTime){
                         $this->createJobFor($schedule);       
+                        if($schedule->last_execute == NULL){
+                            $schedule->last_execute = new \DateTime();
+                        }
                         $schedule->last_execute->setTimestamp($currTime);
                         $schedule->execute_count++;
                         $nextExecute = $currTime + $schedule->interval;
@@ -50,7 +53,6 @@ class ScheduleUtil {
      * @param \application\system\model\transaction\Schedule $schedule
      */
     private function createJobFor($schedule) {
-        $schedule = new \application\system\model\transaction\Schedule;
         //Job
         $job = new \application\system\model\transaction\Job();
         $job->user_id = $schedule->user_id;
