@@ -52,15 +52,16 @@ class CronUtil {
      */
     function initialize($cronId) {
         $this->cron = \application\system\model\transaction\Cron::find('first', array('id' => $cronId));
-        if ($this->cron == NULL) {
+        if ($this->cron == NULL) { //create a new CRON object of not executed
             $this->cron = new \application\system\model\transaction\Cron(array(
                 'id' => $cronId,
                 'execute_count' => 1,
-                'last_execute' => date("Y-m-d H:i:s"),
+                'last_execute' => new \DateTime(time()),
             ));
             return $this->cron->save();
         } elseif($this->cron->state() == 'ready'){
-            $this->cron->interval = time() - date_timestamp_get($this->cron->last_execute);
+            $this->cron->interval = time() - $this->cron->last_execute->getTimestamp();
+            $this->cron->last_execute->setTimestamp(time());
             $this->cron->execute_count++;
             return $this->cron->save();
         }else{
