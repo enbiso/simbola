@@ -60,6 +60,7 @@ class Email extends \simbola\core\component\system\lib\Component {
      */
     public function send($email) {
         $address = is_array($email['Address']) ? $email['Address'] : array($email['Address']);        
+        $this->mailer->ClearAllRecipients();
         foreach ($address as $name => $address) {
             $this->mailer->AddAddress($address, isset($name) ? $name : "");
         }
