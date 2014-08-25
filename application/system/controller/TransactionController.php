@@ -66,10 +66,6 @@ class TransactionController extends \simbola\core\application\AppController {
     }
 
     //schedule
-    function actionSchedule() {
-        $this->view('transaction/schedule/index');
-    }
-
     function actionScheduleCreate() {
         $object = new \application\system\model\transaction\Schedule();
         if ($this->issetPost('data')) {
@@ -147,7 +143,7 @@ class TransactionController extends \simbola\core\application\AppController {
                     $response = $this->invoke('system', 'transaction', 'scheduleDelete', array(
                         'keys' => $keys,
                     ));
-                    $this->redirect('/system/transaction/scheduleList');
+                    $this->redirect('/system/transaction/schedule');
                 } catch (\Exception $ex) {
                     $this->setViewData("error", $ex->getMessage());
                     $this->setViewData('object', $this->getObject($keys));
@@ -166,7 +162,7 @@ class TransactionController extends \simbola\core\application\AppController {
                 }
             }
         } else {
-            $this->redirect('/system/transaction/scheduleList');
+            $this->redirect('/system/transaction/schedule');
         }
     }
 
@@ -187,7 +183,7 @@ class TransactionController extends \simbola\core\application\AppController {
         }
     }
 
-    function actionScheduleList() {
+    function actionSchedule() {
         try {
             $response = $this->invoke('system', 'transaction', 'scheduleList', array(
                 'search' => $this->post('data'),
@@ -197,7 +193,7 @@ class TransactionController extends \simbola\core\application\AppController {
         } catch (\Exception $ex) {
             $this->setViewData("error", $ex->getMessage());
         }
-        $this->view('transaction/schedule/list');
+        $this->view('transaction/schedule/index');
     }
 
     //queue

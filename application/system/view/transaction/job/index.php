@@ -20,6 +20,7 @@ $grid->setOrderBy("id desc");
 $grid->setColumns(array(
     	"id" => "ID",
         "_state" => "Status",
+        "_created" => "Created",
 	"priority" => "Priority",
 	"type" => "Type",
 	"queue_id" => "Queue",		
