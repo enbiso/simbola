@@ -15,7 +15,7 @@ namespace application\system\model\transaction;
  *
  * Properties
  * @property String $id Id
- * @property Long $last_execute Last execute
+ * @property \ActiveRecord\DateTime $last_execute Last execute
  * @property bigint $execute_count Execute count
  * @property Integer $interval Interval
  * @property Integer $job_count Job count
