@@ -18,13 +18,15 @@ class CronUtil {
      * Finishing the cron job
      */
     function finishCron() {
-        $this->cron->job_count--;
-        if ($this->cron->job_count <= 0) {
-            $this->cron->job_count = 0;
-        }
-        $this->cron->save();
-        if ($this->cron->job_count == 0) {
-            $this->cron->state("ready");
+        if($this->cron != null){
+            $this->cron->job_count--;
+            if ($this->cron->job_count <= 0) {
+                $this->cron->job_count = 0;
+            }
+            $this->cron->save();
+            if ($this->cron->job_count == 0) {
+                $this->cron->state("ready");
+            }
         }
     }
 
@@ -56,7 +58,7 @@ class CronUtil {
             $this->cron = new \application\system\model\transaction\Cron(array(
                 'id' => $cronId,
                 'execute_count' => 1,
-                'last_execute' => new \DateTime(time()),
+                'last_execute' => date("Y-m-d H:i:s"),
             ));
             return $this->cron->save();
         } elseif($this->cron->state() == 'ready'){
