@@ -159,7 +159,19 @@ abstract class AbstractDbObject {
         $out = $this->dbDriver->query($sql);
         return $out[0]['cnt'] == '0';
     }
-
+   
+    /**
+     * Run the custom SQL script(s)
+     * @param string/array $sqls SQL statement(s)
+     */
+    public function runSQLs($sqls) {
+        if(is_string($sqls)){
+            $sqls = array($sqls);
+        }        
+        $this->setContent($sqls);
+        $this->execute();
+    }
+    
     /**
      * Get object class name
      * @param type $module Module name
