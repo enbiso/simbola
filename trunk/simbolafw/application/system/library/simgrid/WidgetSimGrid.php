@@ -245,7 +245,7 @@ class WidgetSimGrid {
      * @return string HTML JS Script
      */
     private function generateScript() {                        
-        ob_start();
+        ob_start();        
         ?>
         <script>
             $('#<?= $this->id ?>').simGrid({
