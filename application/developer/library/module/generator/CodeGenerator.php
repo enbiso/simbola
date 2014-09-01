@@ -108,7 +108,7 @@ abstract class CodeGenerator {
         foreach ($keysArray as $key) {
             $this->keysArrayFromObj[] = '"' . $key . '" => $object->' . $key;
             $this->keysArrayFromGet[] = '"' . $key . '" => $this->get("' . $key . '")';
-            $this->keysArrayForLink[] = '[' . $key . ':%' . $key . '%]';
+            $this->keysArrayForLink[] = '[' . $key . ':{{' . $key . '}}]';
         }
         $colsArray = $this->getColsArray();
         foreach ($colsArray as $col) {
