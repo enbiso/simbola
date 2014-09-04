@@ -18,21 +18,21 @@
 </div>
 
 <script>
-    function confirm_modal(label,body,post_func){
+    function confirm_modal(label, body, post_func) {
         $('#confirm_modal_label').text(label);
         $('#confirm_modal_body').text(body);
         $('#confirm_modal_alert').hide();
         $('#confirm_modal_confirm').unbind('click');
-        $('#confirm_modal_confirm').bind('click',post_func);
+        $('#confirm_modal_confirm').bind('click', post_func);
         $('#confirm_modal').modal('show');
     }
-    
-    function confirm_model_alert(message){
+
+    function confirm_model_alert(message) {
         $('#confirm_modal_alert').text(message);
         $('#confirm_modal_alert').show();
     }
-    
-    function confirm_modal_close(){
+
+    function confirm_modal_close() {
         $('#confirm_modal').modal('hide');
     }
 </script>

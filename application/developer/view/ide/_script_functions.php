@@ -178,6 +178,19 @@
             $.pnotify({title: 'Promote files', text: 'Files promoted to the location provided.'});
         });
     }
+    //Upgrade-------------------------------------------------------------------
+    function upgradeModule(module, svn_url, svn_username, svn_password){
+        set_cursor_busy();
+        simbola.call.service('developer', 'module', 'upgradeFromSvn', {
+            module: module,
+            svn_username: svn_username,
+            svn_password: svn_password,
+            svn_url: svn_url
+        }, function(data) {
+            set_cursor_auto();
+            $.pnotify({title: 'Upgrade module', text: 'Module upgraded from SVN provided.'});
+        });
+    }
     //Reload resource cache-----------------------------------------------------
     function loadResourceCache(node) {
         set_cursor_busy();

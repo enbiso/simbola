@@ -9,7 +9,7 @@
                 <div class="input-group">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
                     <input class="form-control" id="create_modal_name_value" type="text"/>           
-                </div>                
+                </div> <br/>                
                 <div class="input-group modal_grp" id="create_modal_grp_lu">                                                                            
                     <span class="input-group-addon"><span class="glyphicon glyphicon-th-list"></span></span>
                     <input class="form-control" id="create_modal_lu_value" type="text" placeholder="Logical Unit of Model"/>           
@@ -25,6 +25,18 @@
                 <div class="input-group modal_grp" id="create_modal_grp_purpose">                                    
                     <span class="input-group-addon"><span class="glyphicon glyphicon-file"></span></span>
                     <input class="form-control" id="create_modal_purpose_value" type="text" placeholder="Purpose of the object"/>           
+                </div>
+                <div class="input-group modal_grp" id="create_modal_grp_svn_url">                                    
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-link"></span></span>
+                    <input class="form-control" id="create_modal_svn_url_value" type="text" placeholder="Subversion URL"/>           
+                </div><br/>
+                <div class="input-group modal_grp" id="create_modal_grp_svn_username">                                    
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    <input class="form-control" id="create_modal_svn_username_value" type="text" placeholder="Subversion username"/>           
+                </div><br/>
+                <div class="input-group modal_grp" id="create_modal_grp_svn_password">                                    
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-ok-circle"></span></span>
+                    <input class="form-control" id="create_modal_svn_password_value" type="text" placeholder="Subversion password"/>           
                 </div>
             </div>
             <div class="modal-footer">
@@ -52,6 +64,12 @@
             case 'db_table':
                 $('#create_modal_grp_purpose').show();
                 break;
+            case 'upgrade':
+                $('#create_modal_grp_svn_username').show();
+                $('#create_modal_grp_svn_password').show();
+                $('#create_modal_grp_svn_url').show();
+                break;
+                
         }
         $('#create_modal_create').unbind('click');
         $('#create_modal_create').bind('click', post_func);
