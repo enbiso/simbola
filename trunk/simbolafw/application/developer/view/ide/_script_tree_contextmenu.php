@@ -42,6 +42,16 @@
                         create_modal_close();
                     }, 'promote');
                     break;
+                case "upgrade":
+                    var key = node.data.key;
+                    //MODULE
+                    if (key.match('^application/[^/]*$')) {
+                        create_modal("Upgrade Module", node.data.title, function() {
+                            upgradeModule(create_modal_data('name'), create_modal_data('svn_url'), create_modal_data('svn_username'), create_modal_data('svn_password'));
+                            create_modal_close();
+                        }, 'upgrade');
+                    }
+                    break;
                 case "reload_resource_cache":
                     loadResourceCache();
                     break;
@@ -212,11 +222,17 @@
             } else{
                 $('#webcode-context .new_db_table').hide();   
             }
-            //MODULE
+            //APPLICATION
             if (key.match('^application$')) {
                 $('#webcode-context .new_module').show();
             } else {
                 $('#webcode-context .new_module').hide();
+            }
+            //MODULE
+            if (key.match('application/[^/]*$')) {
+                $('#webcode-context .upgrade').show();
+            } else {
+                $('#webcode-context .upgrade').hide();
             }
             //MODEL
             if (key.match('application/[^/]*/model$')) {

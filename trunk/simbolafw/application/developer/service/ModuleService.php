@@ -68,5 +68,22 @@ class ModuleService extends \simbola\core\application\AppService {
                $this->_req_params('module'), $this->_req_params('lu'), $this->_req_params('model'),$this->_req_params('purpose'));
         $dbTableGen->generate();
     }
+
+    public $schema_upgradeFromSvn = array(
+        'req' => array('params' => array('module', 'svn_username', 'svn_password', 'svn_url')),
+        'res' => array(),
+        'err' => array('SVN_LOGIN_FAILED', 'SVN_URL_INVALID')
+    );
+    
+    function actionUpgradeFromSvn() {
+        try {
+            $svnClient = \simbola\Simbola::app()->svn->client();
+            $svnClient->setRepository($this->_req_params('svn_url'));
+            $svnClient->setAuth($this->_req_params('svn_username'), $this->_req_params('svn_password'));
+            $targetpath = \simbola\Simbola::app()->getModuleConfig($this->_req_params('module'))->getPath();
+            $svnClient->checkOut("/", $targetpath, true);        
+        }  catch (\Exception $ex){
+            $this->_err($ex->getMessage());
+        }
+    }
 }
-?>

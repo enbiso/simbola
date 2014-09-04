@@ -43,6 +43,7 @@ $this->page_breadcrumb = array(
     <li class="upload separator"><a href="#upload">Upload</a></li>  
     <li class="download"><a href="#download">Download</a></li>  
     <li class="promote separator"><a href="#promote">Promote</a></li>  
+    <li class="upgrade separator"><a href="#upgrade">Upgrade</a></li>  
     <li class="cut separator"><a href="#cut">Cut</a></li>
     <li class="copy"><a href="#copy">Copy</a></li>
     <li class="paste"><a href="#paste">Paste</a></li>
