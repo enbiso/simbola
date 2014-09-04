@@ -5,7 +5,7 @@ namespace simbola\core\component\system;
  *
  * @author Faraj Farook
  */
-class System extends lib\Component{
+class System extends \simbola\core\component\system\lib\Component{
     
 }
 
