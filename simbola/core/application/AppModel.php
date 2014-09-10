@@ -577,8 +577,13 @@ class AppModel extends \ActiveRecord\Model {
      * @param mixed $opts Options on find
      * @return array HTML Select data
      */
-    public static function getSelectData($key, $field, $opts = 'all') {
-        $data = static::find($opts);
+    public static function getSelectData($key, $field, $opts = null) {
+        $data = array();
+        if(is_null($opts)){
+            $data = static::find('all');
+        }else{
+            $data = static::find('all', $opts);
+        }
         $sData = array();
         foreach ($data as $datum) {
             $sData[$datum->$key] = $datum->$field;
