@@ -29,12 +29,12 @@ abstract class AppDbTable extends AbstractDbObject {
     /**
      * create table
      */
-    function addTable() {
+    function addTable($engine = 'InnoDB') {
         $this->setContent("CREATE TABLE {$this->getTableName()} ("
                 . "_id VARCHAR(64) NOT NULL, "
                 . "_version TIMESTAMP NOT NULL, "
                 . "_created TIMESTAMP NOT NULL, "
-                . "_state VARCHAR(15))");
+                . "_state VARCHAR(15)) ENGINE = {$engine}");
         $this->execute();
     }
 
@@ -149,11 +149,13 @@ abstract class AppDbTable extends AbstractDbObject {
     function addForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey => $fkeyDesc) {
             if(is_array($fkeyDesc)){
+                //create index
+                $this->setContent("CREATE INDEX {$fkey}_idx ON {$this->getTableName()} ({$fkeyDesc[0]})");            
+                $this->execute();
+                //get table info
                 $tableName = $this->dbDriver->getTableName($fkeyDesc[1],$fkeyDesc[2],$fkeyDesc[3]);
                 $fkeyDesc = "({$fkeyDesc[0]}) REFERENCES {$tableName}({$fkeyDesc[4]})";
             }
-            $this->setContent("CREATE INDEX {$fkey}_idx ON {$this->getTableName()} ({$fkeyDesc[0]})");            
-            $this->execute();
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD CONSTRAINT {$fkey} FOREIGN KEY {$fkeyDesc}");            
             $this->execute();
         }        
