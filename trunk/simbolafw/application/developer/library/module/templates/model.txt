@@ -44,7 +44,7 @@ class #MODEL_CLASS_NAME# extends \simbola\core\application\AppModel{
         //Model Setup
         self::setClass(__CLASS__);
         self::setSource('#MODULE_NAME#', '#LU_NAME#', '#TABLE_NAME#');
-        self::primaryKey('#MODEL_PRIMARY_KEYS#');        
+        self::primaryKey(array('#MODEL_PRIMARY_KEYS#'));        
 
         //Relationships - Has Many
         #MODEL_SETUP_HAS_MANY#
