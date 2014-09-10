@@ -111,6 +111,37 @@ abstract class AppDbTable extends AbstractDbObject {
         $this->execute();
     }
 
+    
+    /**
+     * Add Indexes
+     * @param type $indexes Index Name => Index Definition / array(Column Name, (optional) Using {BTREE | HASH}))
+     * @param type $indexType Index Type, [UNIQUE|FULLTEXT|SPATIAL]
+     */
+    function addIndex($indexes, $indexType = '') {
+        foreach ($indexes as $indexName => $indexDesc) {
+            if(is_array($indexDesc)){                
+                if(count($indexDesc) == 1){
+                    $indexDesc = "({$indexDesc[0]})";
+                }elseif(count($indexDesc) == 2){
+                    $indexDesc = "({$indexDesc[0]}) USING {$indexDesc[1]}";
+                }
+            }
+            $this->setContent("CREATE {$indexType} INDEX {$indexName} ON {$this->getTableName()} {$indexDesc}");            
+            $this->execute();
+        }
+    }
+    
+    /**
+     * Remove indexes from the index names
+     * @param array $indexes List of index names
+     */
+    function removeIndex($indexes) {
+        foreach ($indexes as $index) {
+            $this->setContent("DROP INDEX {$index} ON {$this->getTableName()}");            
+            $this->execute();
+        }
+    }
+    
     /**
      * Add foriegn key
      * @param array $fkeys key_name => Key definitions
@@ -121,6 +152,8 @@ abstract class AppDbTable extends AbstractDbObject {
                 $tableName = $this->dbDriver->getTableName($fkeyDesc[1],$fkeyDesc[2],$fkeyDesc[3]);
                 $fkeyDesc = "({$fkeyDesc[0]}) REFERENCES {$tableName}({$fkeyDesc[4]})";
             }
+            $this->setContent("CREATE INDEX {$fkey}_idx ON {$this->getTableName()} ({$fkeyDesc[0]})");            
+            $this->execute();
             $this->setContent("ALTER TABLE {$this->getTableName()} ADD CONSTRAINT {$fkey} FOREIGN KEY {$fkeyDesc}");            
             $this->execute();
         }        
@@ -132,6 +165,8 @@ abstract class AppDbTable extends AbstractDbObject {
      */
     function removeForeignKeys($fkeys) {        
         foreach ($fkeys as $fkey) {
+            $this->setContent("DROP INDEX {$fkey}_idx ON {$this->getTableName()}");            
+            $this->execute();
             $this->setContent("ALTER TABLE {$this->getTableName()} DROP FOREIGN KEY {$fkey}");            
             $this->execute();
         }        
