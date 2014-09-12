@@ -86,7 +86,8 @@ class ServiceClient {
                 throw new exception\ServiceUserException($output);
             }else{
                 slog_syserror(__METHOD__,var_export($output,true));
-                throw new \Exception($output['header']['status']);
+                $message = $output['body']['message'];
+                throw new \Exception($output['header']['status_text'] ." (" . $output['header']['status'] . ") - " . $message);
             }
         }else{
             return $output;
