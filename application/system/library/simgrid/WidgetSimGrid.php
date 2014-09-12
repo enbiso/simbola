@@ -16,6 +16,12 @@ class WidgetSimGrid {
     private $tableClass = array('table simGrid-Table');
 
     /**
+     * Array of panel CSS class
+     * @var array 
+     */
+    private $panelClass = array('panel panel-default');
+    
+    /**
      * Array of columns
      * @var array 
      */
@@ -141,6 +147,18 @@ class WidgetSimGrid {
         }
         $this->tableClass = array_merge($this->tableClass, $class);
     }
+    
+    /**
+     * Set panel CSS Classes
+     * 
+     * @param string $class Class names
+     */
+    public function setPanelCss($class) {
+        if (is_string($class)) {
+            $class = explode(" ", $class);
+        }
+        $this->panelClass = array_merge($this->panelClass, $class);
+    }
 
     /**
      * Set grid columns
@@ -191,14 +209,13 @@ class WidgetSimGrid {
      */
     public function getDisplayData() {
         $content = shtml_tag("div", array('class' => 'simGrid', 'id' => $this->id));//wrapper
-        $content .= shtml_tag("div", array('class' => "panel panel-default"));
+        $content .= shtml_tag("div", array('class' => implode(" ", $this->panelClass)));
         $content .= shtml_tag("div", array('class' => "panel-heading"));
         $content .= $this->generateTitle();
         $content .= shtml_untag("div"); //panel heading
         $content .= shtml_tag("div", array('class' => "panel-body"));
         $content .= shtml_tag("div", array('class' => 'table-responsive'));//wrapper table
-        $content .= shtml_tag("table", array(
-            'class' => implode(" ", $this->tableClass)));
+        $content .= shtml_tag("table", array('class' => implode(" ", $this->tableClass)));
         $content .= $this->generateTableHeader();
         $content .= shtml_tag("tbody");
         $content .= shtml_untag("tbody");
