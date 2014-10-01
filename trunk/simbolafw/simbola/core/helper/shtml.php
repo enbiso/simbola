@@ -164,7 +164,7 @@ function shtml_resource_include($include = array()){
         $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
         if(in_array('bootstrap-bootflat', $include)){
             $incl .= shtml_css("system", "bootstrap-bootflat/css/bootflat.min.css");
-        }else{
+        }elseif(!in_array('bootstrap-notheme', $include)){
             $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
         }
         $incl .= '<!--[if lt IE 9]>';
