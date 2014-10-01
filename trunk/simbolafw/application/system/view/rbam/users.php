@@ -2,15 +2,16 @@
 $grid = new application\system\library\flexigrid\WidgetFlexiGrid('user_list',true);
 $grid->title = "User List";
 $grid->usepager = true;
-$grid->sortname = "user";
+$grid->sortname = "user_id";
 $grid->sortorder = "asc";
 
 $grid->setDirect(true);
-$grid->setDataSource('system', 'auth', 'system_user', 'user');
-$grid->addColModel("User Name", "user", "130", true, 'left');
-$grid->addColModel("Status", "active", "70", true, 'left');
+$grid->setDataSource('system', 'auth', 'tbl_user', 'user_id');
+$grid->addColModel("User ID", "user_id", "50", true, 'left');
+$grid->addColModel("Username", "user_name", "150", true, 'left');
+$grid->addColModel("Status", "_state", "70", true, 'left');
 
-$grid->addSearchItem("User Name", 'user', true);
+$grid->addSearchItem("Username", 'username', true);
 
 $grid->addButton('Register', 'auth_action');
 $grid->addButton('Unregister', 'auth_action');
