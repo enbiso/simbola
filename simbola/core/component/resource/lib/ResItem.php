@@ -90,7 +90,7 @@ class ResItem {
      * @return string HTML Tag
      */
     function getTag() {
-        $path = $this->getUrl(true);
+        $path = $this->getUrl();
         switch ($this->type) {
             case self::TYPE_JS:
                 return "<script type='text/javascript' src='{$path}'></script>" . PHP_EOL;                                
