@@ -4,10 +4,6 @@ namespace simbola\core\component\auth;
 
 use simbola\Simbola;
 
-define("AUTH_ITEM_TYPE_ACCESS_OBJECT",  "object");
-define("AUTH_ITEM_TYPE_ENDUSER_ROLE",   "enduser");
-define("AUTH_ITEM_TYPE_ACCESS_ROLE",    "access");
-
 /**
  * Auth component definitions
  *
@@ -86,7 +82,7 @@ class Auth extends \simbola\core\component\system\lib\Component {
      * @return string Session Key
      */
     public function login($username, $password = false, $sessionInfo = '') {
-        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo, $this->getParam('SINGLE_USER'));            
+        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo, $this->getParam('SINGLE_USER'));        
         if ($sessionKey) {
             $session = Simbola::app()->session;
             $session->set(self::USERNAME, $username);
