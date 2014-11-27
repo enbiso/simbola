@@ -523,7 +523,11 @@ class AppModel extends \ActiveRecord\Model {
      * @return boolean
      */
     public static function isEditable($attribute) {
-        return !(in_array($attribute, static::$validates_uneditable));
+        if(is_array(static::$validates_uneditable)){
+            return !(in_array($attribute, static::$validates_uneditable));
+        }else{
+            return true;
+        }
     }
 
     /**

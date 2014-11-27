@@ -42,7 +42,7 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         if ($with_default_role) {
             $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
             if (!$this->itemExist($default_role)) {
-                $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
+                $this->itemCreate($default_role, AUTH_ITEM_TYPE_ENDUSER_ROLE);
             }
             $this->userAssign($username, $default_role);
         }

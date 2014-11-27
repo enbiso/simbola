@@ -192,21 +192,21 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                 case 'access_object':
                     foreach ($data as $datum) {
                         if (!$this->itemExist($datum['object'])) {
-                            $this->itemCreate($datum['object'], AuthType::ACCESS_OBJECT);
+                            $this->itemCreate($datum['object'], AUTH_ITEM_TYPE_ACCESS_OBJECT);
                         }
                     }
                     break;
                 case 'access_role':
                     foreach ($data as $datum) {
                         if (!$this->itemExist($datum['role'])) {
-                            $this->itemCreate($datum['role'], AuthType::ACCESS_ROLE);
+                            $this->itemCreate($datum['role'], AUTH_ITEM_TYPE_ACCESS_ROLE);
                         }
                     }
                     break;
                 case 'enduser_role':
                     foreach ($data as $datum) {
                         if (!$this->itemExist($datum['role'])) {
-                            $this->itemCreate($datum['role'], AuthType::ENDUSER_ROLE);
+                            $this->itemCreate($datum['role'], AUTH_ITEM_TYPE_ENDUSER_ROLE);
                         }
                     }
                     break;
@@ -304,7 +304,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return array
      */
     public function userGet() {
-        $sql = "SELECT user_id, user_name, user_active FROM {$this->getTableName(self::TBL_USER)}";
+        $sql = "SELECT user_id, user_name, _state FROM {$this->getTableName(self::TBL_USER)}";
         $data = $this->dbQuery($sql);
         return $data;
     }
@@ -458,7 +458,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                 FROM {$this->getTableName(self::TBL_CHILD)} ac, {$this->getTableName(self::TBL_ITEM)} ai
                 WHERE ac.parent_id = (SELECT item_id FROM {$this->getTableName(self::TBL_ITEM)} WHERE item_name = '{$parent}')
                   AND ac.child_id = ai.item_id
-                  AND ( NOT ai.item_type = " . AuthType::ACCESS_OBJECT . " )";
+                  AND ( NOT ai.item_type = '" . AUTH_ITEM_TYPE_ACCESS_OBJECT . "' )";
         $data = $this->dbQuery($sql);
         return $data;
     }
@@ -475,13 +475,13 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         $password = is_null($password) ? $username : $password;
         $user = new \application\system\model\auth\User(array(
             'user_name' => $username,
-            'user_password' => md5($password),
+            'user_password' => md5($password),            
         ));
         if($user->save()){
             if ($with_default_role) {
                 $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
                 if (!$this->itemExist($default_role)) {
-                    $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
+                    $this->itemCreate($default_role, AUTH_ITEM_TYPE_ENDUSER_ROLE);
                 }
                 $this->userAssign($username, $default_role);
             }
@@ -540,9 +540,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userActivate($username) {
         $user = \application\system\model\auth\User::find(array('user_name' => $username));
-        if(!is_null($user)){
-            $user->user_active = true;
-            return $user->save();
+        if(!is_null($user) && $user->state() == 'deactive'){
+            $user->state('active');
+            return true;
         }        
         return false;
     }
@@ -555,9 +555,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      */
     public function userDeactivate($username) {
         $user = \application\system\model\auth\User::find(array('user_name' => $username));
-        if(!is_null($user)){
-            $user->user_active = false;
-            return $user->save();
+        if(!is_null($user) && $user->state() == 'active'){
+            $user->state('deactive');
+            return true;
         }        
         return false;
     }
@@ -574,7 +574,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     public function userAuthenticate($username, $password = false, $sessionInfo = '', $singleUser = false) {
         $sql = "SELECT COUNT(1) AS row_count FROM {$this->getTableName(self::TBL_USER)} 
                 WHERE user_name = '{$username}' 
-                  AND user_active = true";
+                  AND _state = 'active'";
         if (is_string($password)) {
             $sql = "{$sql} AND user_password = md5('{$password}')";
         }
