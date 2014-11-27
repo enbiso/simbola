@@ -4,6 +4,10 @@ namespace simbola\core\component\auth;
 
 use simbola\Simbola;
 
+define("AUTH_ITEM_TYPE_ACCESS_OBJECT",  "object");
+define("AUTH_ITEM_TYPE_ENDUSER_ROLE",   "enduser");
+define("AUTH_ITEM_TYPE_ACCESS_ROLE",    "access");
+
 /**
  * Auth component definitions
  *
