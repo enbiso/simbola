@@ -276,7 +276,7 @@ class RbamController extends \simbola\core\application\AppController {
         }
         $data = \simbola\Simbola::app()->auth->getRBAP()->export($types);
         $header = "Content-disposition: attachment; filename=simbola_security.json";
-        $this->json($data, $header);
+        $this->json($data, $header, JSON_PRETTY_PRINT);
     }
 
     function actionImport() {
