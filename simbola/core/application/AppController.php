@@ -51,12 +51,13 @@ abstract class AppController {
      * Used to render the output as JSON
      *      
      * @param array $data the data to process along with the $viewData
+     * @param int $options json_encode options
      * @param string $header The PHP HTML header default to application/json
      */
-    protected function json($data = array(), $header = 'Content-Type: application/json') {        
+    protected function json($data = array(), $header = 'Content-Type: application/json', $options = 0) {        
         header($header);        
         $data = array_merge($data, $this->viewData);
-        echo json_encode($data);
+        echo json_encode($data, $options);
     }
 
     /**
