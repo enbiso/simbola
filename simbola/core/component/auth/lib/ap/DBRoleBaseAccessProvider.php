@@ -15,15 +15,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
     const TBL_CHILD = 'child';
     const TBL_ASSIGN = 'assign';
     const TBL_USER = 'user';
-    //View names
-    const VIW_ROLE = 'role';
-    const VIW_ACCESS_OBJECT = 'access_object';
-    const VIW_ACCESS_ROLE = 'access_role';
-    const VIW_ENDUSER_ROLE = 'enduser_role';
-    const VIW_SYSTEM_USER = 'system_user';
-    const VIW_USER_ROLE = 'user_role';
-    const VIW_OBJECT_RELATION = 'object_relation';
-
+    
     /**
      *
      * @var type Module name
@@ -71,15 +63,6 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
         $obj = new $objName(\simbola\Simbola::app()->db->getDriver());
         $obj->setup();
     }    
-    
-    //create view abstraction
-    abstract function createViewAccessRole();
-    abstract function createViewAccessObject();
-    abstract function createViewEnduserRole();
-    abstract function createViewRole();
-    abstract function createViewSystemUser();
-    abstract function createViewUserRole();
-    abstract function createViewObjectRelation();
 
     /**
      * Get table name
@@ -161,14 +144,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
             $this->setupTable(self::TBL_CHILD);            
             $this->setupTable(self::TBL_USER);            
             $this->setupTable(self::TBL_ASSIGN);            
-            $this->setupTable(self::TBL_SESSION);
-            $this->createViewAccessObject();
-            $this->createViewAccessRole();
-            $this->createViewEnduserRole();
-            $this->createViewRole();
-            $this->createViewObjectRelation();
-            $this->createViewSystemUser();
-            $this->createViewUserRole();            
+            $this->setupTable(self::TBL_SESSION);          
         }
     }
 
