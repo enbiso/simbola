@@ -42,11 +42,75 @@ class PgSQLRoleBaseAccessProvider extends DBRoleBaseAccessProvider {
         if ($with_default_role) {
             $default_role = \simbola\Simbola::app()->auth->getDefaultRole();
             if (!$this->itemExist($default_role)) {
-                $this->itemCreate($default_role, AUTH_ITEM_TYPE_ENDUSER_ROLE);
+                $this->itemCreate($default_role, AuthType::ENDUSER_ROLE);
             }
             $this->userAssign($username, $default_role);
         }
         return true;
+    }
+
+  
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
+    public function createViewSystemUser() {
+        $sql = "CREATE OR REPLACE VIEW {$this->getViewName('system_user')} AS 
+                    SELECT user_id,user_name,
+                           (CASE WHEN user_active THEN 'ACTIVE' ELSE 'DEACTIVE' END) AS user_active
+                    FROM {$this->getTableName(self::TBL_USER)}";
+        $this->dbExecute($sql);
+    }
+
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
+    public function createViewAccessRole() {
+        $sql = "CREATE OR REPLACE VIEW {{$this->getViewName(self::VIW_ACCESS_ROLE)} AS 
+                    SELECT item_id,item_name 
+                    FROM {$this->getTableName(self::TBL_ITEM)}
+                    WHERE item_type = " . AuthType::ACCESS_ROLE . "";
+        $this->dbExecute($sql);
+    }
+
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
+    public function createViewAccessObject() {
+        $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ACCESS_OBJECT)} AS 
+                    SELECT item_id,item_name 
+                    FROM {$this->getTableName(self::TBL_ITEM)}
+                    WHERE item_type = " . AuthType::ACCESS_OBJECT . "";
+        $this->dbExecute($sql);
+    }
+
+    /**
+     * Create view
+     * Framework function. Do not use.
+     */
+    public function createViewEnduserRole() {
+        $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ENDUSER_ROLE)} AS 
+                    SELECT item_id,item_name 
+                    FROM {$this->getTableName(self::TBL_ITEM)}
+                    WHERE item_type = " . AuthType::ENDUSER_ROLE . "";
+        $this->dbExecute($sql);
+    }
+
+    /**
+     * Create table
+     * Framework function. Do not use.
+     */
+    public function createViewRole() {
+        $sql = "CREATE OR REPLACE VIEW {$this->getViewName(self::VIW_ROLE)} AS 
+                    SELECT item_id,item_name,
+                   (CASE WHEN item_type = " . AuthType::ENDUSER_ROLE . " THEN 'ENDUSER_ROLE' 
+                         WHEN item_type = " . AuthType::ACCESS_ROLE . " THEN 'ACCESS_ROLE' 
+                    END) AS item_type
+                    FROM {$this->getTableName(self::TBL_ITEM)}
+                    WHERE item_type IN(" . AuthType::ENDUSER_ROLE . "," . AuthType::ACCESS_ROLE . ")";
+        $this->dbExecute($sql);
     }
 
     /**
