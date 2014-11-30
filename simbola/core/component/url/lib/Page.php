@@ -194,9 +194,9 @@ class Page {
         $alias = $url->getParam("ALIAS");
         $urlKey = $urlString;
         $urlParam = null;
-        if (($pos = strpos($urlKey, "[")) > 0) {
-            $urlKey = substr($urlKey, 0, $pos);
-            $urlParam  = substr($urlKey, $pos);
+        if (($pos = strpos($urlString, "[")) > 0) {
+            $urlKey = substr($urlString, 0, $pos);
+            $urlParam  = substr($urlString, $pos);
         }        
         if(!empty($urlKey) && array_key_exists($urlKey, $alias)){
             $this->alias = $this->parseBase() . $urlKey;
