@@ -61,6 +61,15 @@ abstract class AppController {
     }
 
     /**
+     * Set the custom Layout
+     * 
+     * @param type $layout Layout name
+     */
+    public function setCustomLayout($layout) {
+        $this->customLayout = $layout;
+    }
+    
+    /**
      * Fetch the custom layout defined for this controller
      *      
      * @return string
