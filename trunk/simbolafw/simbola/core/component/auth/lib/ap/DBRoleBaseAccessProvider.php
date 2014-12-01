@@ -577,30 +577,27 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
                   AND user_active = true";
         if (is_string($password)) {
             $sql = "{$sql} AND user_password = md5('{$password}')";
-        }
+        }      
         $data = $this->dbQuery($sql);
-        if ($data[0]['row_count'] > 0) {
-            if ($sessionInfo !== FALSE) {
+        if ($data[0]['row_count'] > 0) {            
+            if ($sessionInfo !== FALSE) {                
                 //create session
                 $session_key = uniqid("simbola.session.", TRUE);
-                $userObj = \application\system\model\auth\User::find(array('user_name' => $username));   
-                
+                $userObj = \application\system\model\auth\User::find(array('user_name' => $username));                   
                 if($singleUser){
                     \application\system\model\auth\Session::delete_all(array(
                         'conditions' => array('user_id = ?', $userObj->user_id)
                         ));
-                }
-                
+                }                
                 $sessionObj = new \application\system\model\auth\Session();
                 $sessionObj->client_addr = $_SERVER['REMOTE_ADDR'];
                 $sessionObj->user_id = $userObj->user_id;
                 $sessionObj->skey = $session_key;
                 $sessionObj->description = $sessionInfo;
-                if($sessionObj->save()){
+                if($sessionObj->save()){                    
                     return $session_key;
                 }else{
-                    throw new \Exception("Session object saving failed");
-                    return true;
+                    throw new \Exception("Session object saving failed");                    
                 }
             } else {
                 //do not create session if description is set to bool FALSE                

@@ -81,8 +81,8 @@ class Auth extends \simbola\core\component\system\lib\Component {
      * @param string $sessionInfo Session Information
      * @return string Session Key
      */
-    public function login($username, $password = false, $sessionInfo = '') {
-        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo, $this->getParam('SINGLE_USER'));        
+    public function login($username, $password = false, $sessionInfo = '') {        
+        $sessionKey = $this->getRBAP()->userAuthenticate($username, $password, $sessionInfo, $this->getParam('SINGLE_USER'));                
         if ($sessionKey) {
             $session = Simbola::app()->session;
             $session->set(self::USERNAME, $username);
