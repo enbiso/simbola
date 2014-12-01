@@ -114,6 +114,21 @@ class ViewContent {
     }
 
     /**
+     * Returns the vuew data
+     * 
+     * @param type $name Name of the variable
+     * @param type $unsetValue Value to send if not set
+     * @return type
+     */
+    public function getData($name, $unsetValue = NULL) {
+        if($this->isDataSet($name)){
+            return $this->$name;
+        }else{
+            return $unsetValue;
+        }
+    }
+    
+    /**
      * Checks if the data is set
      * 
      * @param string $name Data name
