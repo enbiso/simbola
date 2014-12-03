@@ -1,17 +1,21 @@
 <?php
-$grid = new application\system\library\simgrid\WidgetSimGrid("auth_roles");
-$grid->setTitle("Authentication Roles");
-$grid->setTableCss('table-condensed table-hover');
-$grid->setDataSource("system", "auth", "item");
-$grid->setCondition(array('item_type IN(?)', array(AUTH_ITEM_TYPE_ACCESS_ROLE, AUTH_ITEM_TYPE_ENDUSER_ROLE)));
-$grid->setColumns(array(
-    	"item_name" => "Role",
-        "item_type" => "Type",
-    "Actions",
-));
-$grid->setActions(array(
-    shtml_action_link("open", "#", array('class' => 'btn btn-default btn-xs')),
-));
+$grid = new application\system\library\flexigrid\WidgetFlexiGrid('role_list',true);
+$grid->title = "Role List";
+$grid->usepager = true;
+$grid->sortname = "role";
+$grid->sortorder = "asc";
+
+$grid->setDirect(true);
+$grid->setDataSource('system', 'auth', 'role', 'role');
+$grid->addColModel("Role", "role", "130", true, 'left');
+$grid->addColModel("Type", "type", "130", true, 'left');
+
+$grid->addSearchItem("Role", 'role', true);
+
+$grid->addButton('Register', 'role_action');
+$grid->addButton('Unregister', 'role_action');
+$grid->addButton('Enduser', 'role_action');
+$grid->addButton('Access', 'role_action');
 
 echo $grid->getDisplayData();
 ?>
