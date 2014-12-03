@@ -5,14 +5,14 @@ namespace application\system\service;
 /**
  * Description of UserService
  *
- * @author FARFLK
+ * @author Faraj
  */
 class UserService extends \simbola\core\application\AppService {
 
     public $schema_register = array(
         'req' => array('params' => array('username')),
         'res' => array('user'),
-        'err' => array('USER_EXIST'),
+        'err' => array('USER_EXIST', 'REGISTER_FAILED'),
     );
     
     function actionRegister() {
@@ -21,11 +21,14 @@ class UserService extends \simbola\core\application\AppService {
         if($rbap->userExist($username)){
             $this->_err("USER_EXIST");            
         }else{
-            $rbap->userCreate($username, 
+            if(!$rbap->userCreate($username, 
                     $this->_req_params('password'),
-                    $this->_req_params('with_default_role'));//create with defaut role            
-            $user = \application\system\model\auth\User::find_by_username($username);
-            $this->_res('user', $user);
+                    $this->_req_params('with_default_role'))){
+                $this->_err("REGISTER_FAILED");            
+            }else{
+                $user = \application\system\model\auth\User::find_by_username($username);
+                $this->_res('user', $user);
+            }
         }
     }
 
@@ -46,7 +49,7 @@ class UserService extends \simbola\core\application\AppService {
             $this->_err('PASSWORD_MISMATCH');
         }
     }
-    
+
     public $schema_changePasswordSafe = array(
         'req' => array('params' => array('username', 'password', 'new_password', 'password_repeat')),
         'res' => array(),
