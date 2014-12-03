@@ -47,11 +47,11 @@ function shtml_untag($tag) {
  * @param type $contents meta contents array
  * @return type
  */
-function shtml_meta($charset = "utf-8", $contents = array()){            
-    $meta = shtml_tag('meta', array('charset' => $charset))."\n";
-    $meta .= "<!--[if IE]>".shtml_tag('meta', array('http-equiv' => "X-UA-Compatible", 'content' => "IE=edge,chrome=1"))."<![endif]-->\n";   
-    $meta .= "<!--[if IE]>".shtml_tag('meta', array('http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8"))."<![endif]-->\n";       
-    $meta .= shtml_meta_content('viewport', "width=device-width, initial-scale=1.0")."\n";
+function shtml_meta($charset = "utf-8", $contents = array()) {
+    $meta = shtml_tag('meta', array('charset' => $charset)) . "\n";
+    $meta .= "<!--[if IE]>" . shtml_tag('meta', array('http-equiv' => "X-UA-Compatible", 'content' => "IE=edge,chrome=1")) . "<![endif]-->\n";
+    $meta .= "<!--[if IE]>" . shtml_tag('meta', array('http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8")) . "<![endif]-->\n";
+    $meta .= shtml_meta_content('viewport', "width=device-width, initial-scale=1.0") . "\n";
     foreach ($contents as $name => $content) {
         $meta .= shtml_meta_content($name, $content);
     }
@@ -65,8 +65,8 @@ function shtml_meta($charset = "utf-8", $contents = array()){
  * @param type $content Content
  * @return type
  */
-function shtml_meta_content($name, $content){
-    return shtml_tag('meta', array('name' => $name, 'content' => $content))."\n";
+function shtml_meta_content($name, $content) {
+    return shtml_tag('meta', array('name' => $name, 'content' => $content)) . "\n";
 }
 
 /**
@@ -97,101 +97,101 @@ function shtml_ecss($module, $name) {
  * @param type $include array of system resources
  * @return type include HTML
  */
-function shtml_resource_include($include = array()){    
+function shtml_resource_include($include = array()) {
     $incl = "";
-    
+
     //Generic
-    if(in_array('less', $include)){
+    if (in_array('less', $include)) {
         $incl .= shtml_js('system', 'less/less.min.js');
     }
-    if(in_array('json', $include)){
+    if (in_array('json', $include)) {
         $incl .= shtml_js('system', 'json/json2.js');
     }
-    if(in_array('codemirror', $include)){
-        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css'); 
-        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');   
+    if (in_array('codemirror', $include)) {
+        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css');
+        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');
         $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
         $incl .= shtml_js('system', 'codemirror/lib/util/matchbrackets.js');
         $incl .= shtml_js('system', 'codemirror/lib/util/continuecomment.js');
         $incl .= shtml_js('system', 'codemirror/lib/util/simple-hint.js');
         $incl .= shtml_js('system', 'codemirror/lib/util/javascript-hint.js');
         $incl .= shtml_js('system', 'codemirror/lib/util/runmode.js');
-        $incl .= shtml_js('system', 'codemirror/mode/htmlmixed/htmlmixed.js');        
-        $incl .= shtml_js('system', 'codemirror/mode/xml/xml.js');        
-        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');        
-        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');        
-        $incl .= shtml_js('system', 'codemirror/mode/php/php.js');        
-        $incl .= shtml_js('system', 'codemirror/mode/clike/clike.js');                       
+        $incl .= shtml_js('system', 'codemirror/mode/htmlmixed/htmlmixed.js');
+        $incl .= shtml_js('system', 'codemirror/mode/xml/xml.js');
+        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');
         $incl .= shtml_js('system', 'codemirror/mode/css/css.js');
-        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');       
-        $incl .= shtml_js('system', 'codemirror/mode/plsql/plsql.js');  
+        $incl .= shtml_js('system', 'codemirror/mode/php/php.js');
+        $incl .= shtml_js('system', 'codemirror/mode/clike/clike.js');
+        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');
+        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');
+        $incl .= shtml_js('system', 'codemirror/mode/plsql/plsql.js');
     }
-    
+
     //Jquery related
-    if(in_array('jquery', $include)){
+    if (in_array('jquery', $include)) {
         $incl .= '<!--[if lt IE 9]>';
-        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');  
+        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');
         $incl .= '<![endif]-->';
         $incl .= '<!--[if (gt IE 8)|(!IE)]><!-->';
         $incl .= shtml_js('system', 'jquery/jquery-2.x.min.js');
         $incl .= '<!--<![endif]-->';
-        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');  
+        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');
     }
-    if(in_array('jquery-cookie', $include)){
+    if (in_array('jquery-cookie', $include)) {
         $incl .= shtml_js('system', 'jquery-cookie/jquery.cookie.js');
     }
-    if(in_array('jquery-pnotify', $include)){
+    if (in_array('jquery-pnotify', $include)) {
         $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
         $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
         $incl .= shtml_css('system', 'jquery-pnotify/_notify.css');
         $incl .= shtml_js('system', 'jquery-pnotify/jquery.pnotify.min.js');
     }
-    if(in_array('jquery-ui', $include)){
+    if (in_array('jquery-ui', $include)) {
         $incl .= shtml_css('system', 'jquery-ui/smoothness/jquery.ui.css');
-        $incl .= shtml_js('system', 'jquery-ui/jquery.ui.js');    
+        $incl .= shtml_js('system', 'jquery-ui/jquery.ui.js');
     }
-    if(in_array('jquery-contextmenu', $include)){
+    if (in_array('jquery-contextmenu', $include)) {
         $incl .= shtml_css('system', 'jquery-contextmenu/jquery.contextMenu.css');
-        $incl .= shtml_js('system', 'jquery-contextmenu/jquery.contextMenu.js');   
+        $incl .= shtml_js('system', 'jquery-contextmenu/jquery.contextMenu.js');
     }
-    if(in_array('jquery-dynatree', $include)){
+    if (in_array('jquery-dynatree', $include)) {
         $incl .= shtml_css('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
-        $incl .= shtml_js('system', 'jquery-dynatree/jquery.dynatree.js');            
+        $incl .= shtml_js('system', 'jquery-dynatree/jquery.dynatree.js');
     }
-    
+
     //Bootstrap
-    if(in_array('bootstrap', $include)){
+    if (in_array('bootstrap', $include)) {
         $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
-        if(in_array('bootstrap-bootflat', $include)){
+        if (in_array('bootstrap-bootflat', $include)) {
             $incl .= shtml_css("system", "bootstrap-bootflat/css/bootflat.min.css");
-        }elseif(!in_array('bootstrap-notheme', $include)){
+        } elseif (!in_array('bootstrap-notheme', $include)) {
             $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
         }
         $incl .= '<!--[if lt IE 9]>';
-        $incl .= shtml_js('system', 'bootstrap/js/html5shiv.min.js');     
+        $incl .= shtml_js('system', 'bootstrap/js/html5shiv.min.js');
         $incl .= shtml_js('system', 'bootstrap/js/respond.min.js');
         $incl .= '<![endif]-->';
-        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');        
-        if(in_array('bootstrap-notify', $include)){
+        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');
+        if (in_array('bootstrap-notify', $include)) {
             $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
             $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
         }
     }
-    
+
     //Simbola
-    if(in_array('rbam', $include)){
+    if (in_array('rbam', $include)) {
         $incl .= shtml_css('system', 'rbam/main.css');
         $incl .= shtml_js('system', 'rbam/main.js');
     }
-    if(in_array('simbola', $include)){
+    if (in_array('simbola', $include)) {
         $incl .= shtml_js('system', 'simbola/simbola.js');
         $incl .= shtml_js('system', 'simbola/simbola.jquery.js');
         $incl .= shtml_js('system', 'simbola/simbola.bootstrap.js');
     }
-    if(in_array('simgrid', $include)){
+    if (in_array('simgrid', $include)) {
         $incl .= shtml_js('system', 'simgrid/simgrid.js');
     }
-    if(in_array('flexigrid', $include)){
+    if (in_array('flexigrid', $include)) {
         $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
         $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
     }
@@ -244,10 +244,10 @@ function shtml_ejs($module, $name) {
  */
 function shtml_link($value, $link = false, $opts = array(), $icon = null, $tooltip = null) {
     $value = shtml_translate($value);
-    if($link){
+    if ($link) {
         $opts['href'] = $link;
     }
-    if(isset($tooltip)){
+    if (isset($tooltip)) {
         $opts['data-toggle'] = "tooltip";
         $opts['data-placement'] = "top";
         $opts['title'] = $tooltip;
@@ -305,7 +305,7 @@ function shtml_action_link($value, $url, $opts = array(), $icon = null, $tooltip
         }
         $page = new \simbola\core\component\url\lib\Page();
         $page->loadFromArray($url);
-    }    
+    }
     return shtml_Link($value, $page->getUrl(), $opts, $icon, $tooltip);
 }
 
@@ -315,8 +315,8 @@ function shtml_action_link($value, $url, $opts = array(), $icon = null, $tooltip
  * 
  * @return string button group HTML
  */
-function shtml_buttongroup($buttons){
-    $content = shtml_tag('div',array('class'=>'btn-group'));
+function shtml_buttongroup($buttons) {
+    $content = shtml_tag('div', array('class' => 'btn-group'));
     foreach ($buttons as $button) {
         $content .= $button;
     }
@@ -379,8 +379,8 @@ function shtml_tab($id, $params) {
 function shtml_encode($value, $format = null) {
     if (!isset($value)) {
         $value = "";
-    }elseif($value instanceof DateTime){
-        $format = is_null($format)?'Y-m-d H:i:s':$format;
+    } elseif ($value instanceof DateTime) {
+        $format = is_null($format) ? 'Y-m-d H:i:s' : $format;
         $value = $value->format($format);
     }
     return htmlspecialchars($value);
@@ -401,7 +401,7 @@ function shtml_eencode($value) {
  * @param array $values Breadcrumb data
  * @return string HTML tag
  */
-function shtml_breadcrumb($values) {    
+function shtml_breadcrumb($values) {
     $val = "";
     $val .= shtml_tag("ol", array('class' => 'breadcrumb'));
     foreach ($values as $key => $value) {
@@ -440,21 +440,21 @@ function shtml_state_dropmenu($values, $label = "") {
     }
     $val .= shtml_untag('ul');
     $val .= shtml_untag('div');
-    ob_start(); ?>
-        <script>
-            $('.simbola-state-menu li a').bind('click', function (e){
-                    var state_data = <?= json_encode($values) ?>;                    
-                    simbola.call.service('system', 'state', 'change', 
-                    state_data[$(this).attr('data-title')], function(data){
-                    location.reload();
-                });
+    ob_start();
+    ?>
+    <script>
+        $('.simbola-state-menu li a').bind('click', function (e) {
+            var state_data = <?= json_encode($values) ?>;
+            simbola.call.service('system', 'state', 'change',
+                    state_data[$(this).attr('data-title')], function (data) {
+                location.reload();
             });
-        </script>
-        <?php
+        });
+    </script>
+    <?php
     $val .= ob_get_clean();
     return $val;
 }
-
 
 /**
  * Create bootstrap dropdown menu
@@ -492,23 +492,24 @@ function shtml_dropmenu($values, $title = "") {
  * Create bootstrap button group menu
  * 
  * @param type $values Button group data
+ * @param boot $showTitle Show menu titles. Default TRUE
  * @return string HTML tag
  */
-function shtml_btngroupmenu($values) {
+function shtml_btngroupmenu($values, $showTitle = true) {
     $val = shtml_tag('div', array('class' => 'btn-group'));
     foreach ($values as $key => $value) {
         if (!is_numeric($key)) {
             $value = array('title' => $key, 'link' => $value);
         }
-        if(!array_key_exists('class', $value)){
+        if (!array_key_exists('class', $value)) {
             $value['class'] = '';
         }
-        if(!array_key_exists('icon', $value)){
+        if (!array_key_exists('icon', $value)) {
             $value['icon'] = 'th';
         }
         $value['class'] = 'btn btn-default ' . $value['class'];
         if (is_array($value['link'])) {
-            $val .= shtml_action_link($value['title'], $value['link'], array('class' => $value['class']), $value['icon']);
+            $val .= shtml_action_link($showTitle ? $value['title'] : '', $value['link'], array('class' => $value['class']), $value['icon']);
         } else if ($value['link'] == "-") {
             $val .= shtml_untag('div');
             $val .= shtml_tag('div', array('class' => 'btn-group btn-group-sm'));
@@ -518,8 +519,8 @@ function shtml_btngroupmenu($values) {
     return $val;
 }
 
-function shtml_ul($data, $opts = array()){
-    if(is_string($data)){
+function shtml_ul($data, $opts = array()) {
+    if (is_string($data)) {
         $data = array($data);
     }
     $output = shtml_tag("ul", $opts);

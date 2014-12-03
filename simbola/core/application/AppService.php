@@ -155,12 +155,13 @@ class AppService extends AppController {
      * provided then as a whole
      * 
      * @param string $name Name of the serice request parameter
+     * @param object $default Default value on not set
      * @return mixed 
      */
-    public function _req_params($name = null) {
+    public function _req_params($name = null, $default = null) {
         $params = $this->currentPage->params;
         if (isset($name)) {
-            $params = isset($params[$name]) ? $params[$name] : null;
+            $params = isset($params[$name]) ? $params[$name] : $default;
         }
         return $params;
     }

@@ -472,6 +472,9 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
      * @return boolean
      */
     public function userCreate($username, $password = null, $with_default_role = false) {
+        if(empty($username)){
+            return false;
+        }
         $password = is_null($password) ? $username : $password;
         $user = new \application\system\model\auth\User(array(
             'user_name' => $username,
@@ -682,7 +685,7 @@ abstract class DBRoleBaseAccessProvider extends RoleBaseAccessProvider {
 
     /**
      * Remove user from a role
-     * 
+     *      
      * @param string $username Username
      * @param string $role Role item name
      */
