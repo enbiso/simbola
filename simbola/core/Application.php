@@ -56,7 +56,7 @@ class Application {
     public function setup($params) {
         $this->sysParams = $params;
         $this->initParam('APPNAME', "Simbola Application");
-        $this->initParam('SERVICE_API', "service_api");
+        $this->initParam('SERVICE_API', "api");
         $this->initParam('BASE', "application");
         $this->initParam('ERROR_LEVEL', E_PROD);
         $this->errorSetup();

@@ -13,7 +13,7 @@ class Url extends \simbola\core\component\system\lib\Component {
      * Setup the defaults
      */
     public function setupDefault() {
-        $this->setParamDefault("HIDE_INDEX", true);
+        $this->setParamDefault("HIDE_INDEX", false);
         $this->setParamDefault("URL_BASE", false);        
         //Alias - Start
         $this->setParamDefault("ALIAS", array());        
@@ -66,12 +66,15 @@ class Url extends \simbola\core\component\system\lib\Component {
      * 
      * @return string
      */
-    public function getAppUrlBase() {
-        $postFix = "";
-        if($this->getParam("URL_BASE")){
-            $postFix = $this->getParam("URL_BASE");
+    public function getAppUrlBase() {        
+        $urlBase = $this->getParam("URL_BASE");
+        if(!$urlBase) {
+            return "";
+        }else if(!sstring_ends_with($urlBase, "/")){
+            return "{$urlBase}/";
+        } else {    
+            return $urlBase;    
         }
-        return $postFix;
     }
 
     /**

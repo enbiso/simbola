@@ -23,6 +23,8 @@ class ResItem {
      * @var array
      */
     private $data;
+    
+    private $resExt;
 
     /**
      * Contructor
@@ -35,6 +37,7 @@ class ResItem {
         $this->data['module'] = $module;
         $this->data['type'] = $type;
         $this->data['name'] = $name;
+        $this->resExt = \simbola\Simbola::app()->resource;
     }
 
     /**
@@ -63,7 +66,9 @@ class ResItem {
      * @return boolean
      */
     function exist() {
-        $filePath = self::getSourceBase($this->module) . DIRECTORY_SEPARATOR . str_replace("/", DIRECTORY_SEPARATOR, $this->name);        
+        $filePath = $this->resExt->getSourceBase($this->module) 
+                . DIRECTORY_SEPARATOR 
+                . str_replace("/", DIRECTORY_SEPARATOR, $this->name);        
         return file_exists($filePath);
     }
 
@@ -100,45 +105,6 @@ class ResItem {
                 return $path;                
         }
     }
-    
-    /**
-     * Get the resource cache base for the module
-     * 
-     * @param string $module Module name
-     * @return string Cache base file path
-     */
-    static function getCacheBase($module) {
-        return \simbola\Simbola::app()->resource->getResourceBase() . DIRECTORY_SEPARATOR
-                . $module;
-    }
-    
-    /**
-     * Get the actual reource path
-     * 
-     * @param string $module Module name
-     * @return string Actual resource path
-     */
-    static function getSourceBase($module) {
-        $moduleConfig = \simbola\Simbola::app()->getModuleConfig($module);
-        $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR
-                . \simbola\Simbola::app()->getParam('BASE') . DIRECTORY_SEPARATOR
-                . $moduleConfig->name . DIRECTORY_SEPARATOR
-                . $moduleConfig->resource;
-        return $path;
-    }
-
-    
-    /**
-     * Reload the resource cache
-     */
-    static function reloadCache() {
-        foreach (\simbola\Simbola::app()->getModuleNames() as $moduleName) {
-            $source = self::getSourceBase($moduleName);
-            $dest = self::getCacheBase($moduleName);
-            sfile_recursive_copy($source, $dest);
-        }                    
-    }
-
 }
 
 ?>

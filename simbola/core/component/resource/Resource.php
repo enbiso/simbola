@@ -20,10 +20,43 @@ class Resource extends \simbola\core\component\system\lib\Component{
     }
     
     /**
+     * Get the resource cache base for the module
+     * 
+     * @param string $module Module name
+     * @return string Cache base file path
+     */
+    function getCacheBase($module) {
+        return \simbola\Simbola::app()->resource->getResourceBase() . DIRECTORY_SEPARATOR
+                . $module;
+    }
+    
+    /**
+     * Get the actual reource path
+     * 
+     * @param string $module Module name
+     * @return string Actual resource path
+     */
+    function getSourceBase($module) {
+        $moduleConfig = \simbola\Simbola::app()->getModuleConfig($module);
+        $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR
+                . \simbola\Simbola::app()->getParam('BASE') . DIRECTORY_SEPARATOR
+                . $moduleConfig->name . DIRECTORY_SEPARATOR
+                . $moduleConfig->resource;
+        return $path;
+    }
+
+    
+    /**
      * Reload the resource cache
      */
-    public function reloadCache() {
-        lib\ResItem::reloadCache();
+    function reloadCache() {
+        foreach (\simbola\Simbola::app()->getModuleNames() as $moduleName) {            
+            $source = $this->getSourceBase($moduleName);
+            if(file_exists($source)){
+                $dest = $this->getCacheBase($moduleName);
+                sfile_recursive_copy($source, $dest);
+            }
+        }                    
     }
     
     /**

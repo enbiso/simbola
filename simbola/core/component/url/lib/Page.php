@@ -258,10 +258,10 @@ class Page {
     private function parseBase() {
         $path = "/";
         if(\simbola\Simbola::app()->url->getParam('URL_BASE')){
-            $path .= \simbola\Simbola::app()->url->getParam('URL_BASE');
+            $path .= \simbola\Simbola::app()->url->getParam('URL_BASE') . "/";
         }
         if (!\simbola\Simbola::app()->url->getParam('HIDE_INDEX')) {
-            $path .= "/index.php/";
+            $path .= "index.php/";
         }
         return $path;
     }
@@ -287,7 +287,7 @@ class Page {
             $action .= "/{$this->action}";
         }
         if ($this->type == self::TYPE_CONTROLLER) {
-            $path .= "$action";
+            $path .= "{$action}";
         } else if($this->type == self::TYPE_SERVICE) {
             $path .= \simbola\Simbola::app()->getParam("SERVICE_API");
         }
