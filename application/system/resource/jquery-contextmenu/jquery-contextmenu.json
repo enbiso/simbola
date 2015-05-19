@@ -1,0 +1,6 @@
+{        
+    "local" :  {
+        "css" : ["jquery-contextmenu/jquery.contextMenu.css"],
+        "js" : ["jquery-contextmenu/jquery.contextMenu.js"]
+    }
+}

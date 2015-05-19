@@ -1,0 +1,6 @@
+{        
+    "cdn" :  {
+        "css" : ["https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.0.0/pnotify.all.min.css"],
+        "js" : ["https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.0.0/pnotify.all.min.js"]       
+    }
+}

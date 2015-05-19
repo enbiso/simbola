@@ -1,0 +1,23 @@
+{    
+    "cdn" :  {
+        "css" : [
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.css"
+            
+            ],
+        "js"  : [
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/codemirror.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/addon/edit/matchbrackets.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/addon/comment/continuecomment.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/addon/hint/javascript-hint.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/addon/runmode/runmode.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/htmlmixed/htmlmixed.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/xml/xml.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/javascript/javascript.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/css/css.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/php/php.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/clike/clike.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/css/css.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.2.0/mode/sql/sql.min.js"
+            ]
+    }
+}

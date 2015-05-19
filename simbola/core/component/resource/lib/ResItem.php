@@ -24,6 +24,10 @@ class ResItem {
      */
     private $data;
     
+    /**
+     * Resource component
+     * @var \simbola\core\component\resource\Resource 
+     */
     private $resExt;
 
     /**
@@ -33,10 +37,11 @@ class ResItem {
      * @param string $module Module name
      * @param string $name Resource name
      */
-    public function __construct($type = null, $module = null, $name = null) {
+    public function __construct($type = null, $module = null, $name = null, $source = 'local') {
         $this->data['module'] = $module;
         $this->data['type'] = $type;
         $this->data['name'] = $name;
+        $this->data['source'] = $source;
         $this->resExt = \simbola\Simbola::app()->resource;
     }
 
@@ -66,7 +71,7 @@ class ResItem {
      * @return boolean
      */
     function exist() {
-        $filePath = $this->resExt->getSourceBase($this->module) 
+        $filePath = $this->resExt->getResourceBase($this->module) 
                 . DIRECTORY_SEPARATOR 
                 . str_replace("/", DIRECTORY_SEPARATOR, $this->name);        
         return file_exists($filePath);
@@ -79,14 +84,18 @@ class ResItem {
      * @return string
      */
     function getUrl($absolute = false) {
-        $url = "/resource/{$this->module}/{$this->name}";
-        $appUrlBase = \simbola\Simbola::app()->url->getAppUrlBase();
-        if ($absolute) {
-            $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
-        } else if(!empty($appUrlBase)) {            
-            $url = "/" . $appUrlBase . $url;
+        if($this->source == 'local'){
+            $url = "resource/{$this->module}/{$this->name}";
+            $appUrlBase = \simbola\Simbola::app()->url->getAppUrlBase();
+            if ($absolute) {
+                $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
+            } else if(!empty($appUrlBase)) {            
+                $url = "/" . $appUrlBase . $url;
+            }
+            return $url;
+        } else {
+            return $this->name;
         }
-        return $url;
     }
     
     /**

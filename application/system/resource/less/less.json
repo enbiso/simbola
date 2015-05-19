@@ -1,0 +1,5 @@
+{
+    "cdn" : {
+        "js" : ["https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.0/less.min.js"]
+    }
+}

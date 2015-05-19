@@ -99,102 +99,43 @@ function shtml_ecss($module, $name) {
  */
 function shtml_resource_include($include = array()) {
     $incl = "";
-
-    //Generic
-    if (in_array('less', $include)) {
-        $incl .= shtml_js('system', 'less/less.min.js');
-    }
-    if (in_array('json', $include)) {
-        $incl .= shtml_js('system', 'json/json2.js');
-    }
-    if (in_array('codemirror', $include)) {
-        $incl .= shtml_css('system', 'codemirror/lib/codemirror.css');
-        $incl .= shtml_js('system', 'codemirror/lib/codemirror.js');
-        $incl .= shtml_css('system', 'codemirror/lib/util/simple-hint.css');
-        $incl .= shtml_js('system', 'codemirror/lib/util/matchbrackets.js');
-        $incl .= shtml_js('system', 'codemirror/lib/util/continuecomment.js');
-        $incl .= shtml_js('system', 'codemirror/lib/util/simple-hint.js');
-        $incl .= shtml_js('system', 'codemirror/lib/util/javascript-hint.js');
-        $incl .= shtml_js('system', 'codemirror/lib/util/runmode.js');
-        $incl .= shtml_js('system', 'codemirror/mode/htmlmixed/htmlmixed.js');
-        $incl .= shtml_js('system', 'codemirror/mode/xml/xml.js');
-        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');
-        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');
-        $incl .= shtml_js('system', 'codemirror/mode/php/php.js');
-        $incl .= shtml_js('system', 'codemirror/mode/clike/clike.js');
-        $incl .= shtml_js('system', 'codemirror/mode/css/css.js');
-        $incl .= shtml_js('system', 'codemirror/mode/javascript/javascript.js');
-        $incl .= shtml_js('system', 'codemirror/mode/plsql/plsql.js');
-    }
-
-    //Jquery related
-    if (in_array('jquery', $include)) {
-        $incl .= '<!--[if lt IE 9]>';
-        $incl .= shtml_js('system', 'jquery/jquery-1.x.min.js');
-        $incl .= '<![endif]-->';
-        $incl .= '<!--[if (gt IE 8)|(!IE)]><!-->';
-        $incl .= shtml_js('system', 'jquery/jquery-2.x.min.js');
-        $incl .= '<!--<![endif]-->';
-        $incl .= shtml_js('system', 'jquery/jquery.migrate.js');
-    }
-    if (in_array('jquery-cookie', $include)) {
-        $incl .= shtml_js('system', 'jquery-cookie/jquery.cookie.js');
-    }
-    if (in_array('jquery-pnotify', $include)) {
-        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
-        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
-        $incl .= shtml_css('system', 'jquery-pnotify/_notify.css');
-        $incl .= shtml_js('system', 'jquery-pnotify/jquery.pnotify.min.js');
-    }
-    if (in_array('jquery-ui', $include)) {
-        $incl .= shtml_css('system', 'jquery-ui/smoothness/jquery.ui.css');
-        $incl .= shtml_js('system', 'jquery-ui/jquery.ui.js');
-    }
-    if (in_array('jquery-contextmenu', $include)) {
-        $incl .= shtml_css('system', 'jquery-contextmenu/jquery.contextMenu.css');
-        $incl .= shtml_js('system', 'jquery-contextmenu/jquery.contextMenu.js');
-    }
-    if (in_array('jquery-dynatree', $include)) {
-        $incl .= shtml_css('system', 'jquery-dynatree/skin-vista/ui.dynatree.css');
-        $incl .= shtml_js('system', 'jquery-dynatree/jquery.dynatree.js');
-    }
-
-    //Bootstrap
-    if (in_array('bootstrap', $include)) {
-        $incl .= shtml_css('system', 'bootstrap/css/bootstrap.min.css');
-        if (in_array('bootstrap-bootflat', $include)) {
-            $incl .= shtml_css("system", "bootstrap-bootflat/css/bootflat.min.css");
-        } elseif (!in_array('bootstrap-notheme', $include)) {
-            $incl .= shtml_css('system', 'bootstrap/css/bootstrap-theme.min.css');
+    foreach ($include as $module => $name) {
+        if(is_numeric($module)){
+            $module = 'system';
         }
-        $incl .= '<!--[if lt IE 9]>';
-        $incl .= shtml_js('system', 'bootstrap/js/html5shiv.min.js');
-        $incl .= shtml_js('system', 'bootstrap/js/respond.min.js');
-        $incl .= '<![endif]-->';
-        $incl .= shtml_js('system', 'bootstrap/js/bootstrap.min.js');
-        if (in_array('bootstrap-notify', $include)) {
-            $incl .= shtml_css('system', 'bootstrap-notify/css/bootstrap-notify.css');
-            $incl .= shtml_js('system', 'bootstrap-notify/js/bootstrap-notify.js');
+        $resItems = \simbola\Simbola::app()->resource->loadResItems($module, $name);
+        foreach ($resItems as $resItem) {
+            $incl .= $resItem->getTag();
         }
     }
-
-    //Simbola
-    if (in_array('rbam', $include)) {
-        $incl .= shtml_css('system', 'rbam/main.css');
-        $incl .= shtml_js('system', 'rbam/main.js');
-    }
-    if (in_array('simbola', $include)) {
-        $incl .= shtml_js('system', 'simbola/simbola.js');
-        $incl .= shtml_js('system', 'simbola/simbola.jquery.js');
-        $incl .= shtml_js('system', 'simbola/simbola.bootstrap.js');
-    }
-    if (in_array('simgrid', $include)) {
-        $incl .= shtml_js('system', 'simgrid/simgrid.js');
-    }
-    if (in_array('flexigrid', $include)) {
-        $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
-        $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
-    }
+//    if (in_array('jquery-pnotify', $include)) {
+//        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.css');
+//        $incl .= shtml_css('system', 'jquery-pnotify/jquery.pnotify.default.icons.css');
+//        $incl .= shtml_css('system', 'jquery-pnotify/_notify.css');
+//        $incl .= shtml_js('system', 'jquery-pnotify/jquery.pnotify.min.js');
+//    }
+//    if (in_array('jquery-contextmenu', $include)) {
+//        $incl .= shtml_css('system', 'jquery-contextmenu/jquery.contextMenu.css');
+//        $incl .= shtml_js('system', 'jquery-contextmenu/jquery.contextMenu.js');
+//    }
+//    //
+//    //Simbola
+//    if (in_array('rbam', $include)) {
+//        $incl .= shtml_css('system', 'rbam/main.css');
+//        $incl .= shtml_js('system', 'rbam/main.js');
+//    }
+//    if (in_array('simbola', $include)) {
+//        $incl .= shtml_js('system', 'simbola/simbola.js');
+//        $incl .= shtml_js('system', 'simbola/simbola.jquery.js');
+//        $incl .= shtml_js('system', 'simbola/simbola.bootstrap.js');
+//    }
+//    if (in_array('simgrid', $include)) {
+//        $incl .= shtml_js('system', 'simgrid/simgrid.js');
+//    }
+//    if (in_array('flexigrid', $include)) {
+//        $incl .= shtml_css('system', 'flexigrid/flexigrid.css');
+//        $incl .= shtml_js('system', 'flexigrid/flexigrid.js');
+//    }
     return $incl;
 }
 
@@ -496,7 +437,7 @@ function shtml_dropmenu($values, $title = "") {
  * @return string HTML tag
  */
 function shtml_btngroupmenu($values, $showTitle = true) {
-    $val = shtml_tag('div', array('class' => 'btn-group'));
+    $val = "";shtml_tag('div', array('class' => 'btn-group'));
     foreach ($values as $key => $value) {
         if (!is_numeric($key)) {
             $value = array('title' => $key, 'link' => $value);
@@ -507,15 +448,54 @@ function shtml_btngroupmenu($values, $showTitle = true) {
         if (!array_key_exists('icon', $value)) {
             $value['icon'] = 'th';
         }
-        $value['class'] = 'btn btn-default ' . $value['class'];
+        $value['class'] = 'btn btn-sm btn-link' . $value['class'];
         if (is_array($value['link'])) {
-            $val .= shtml_action_link($showTitle ? $value['title'] : '', $value['link'], array('class' => $value['class']), $value['icon']);
+            $val .= shtml_action_link($showTitle ? $value['title'] : '', $value['link'], 
+                    array(
+                        'class' => $value['class'],
+                        'title' => $value['title'],
+                        'data-toggle' => 'tooltip'                        
+                    ), $value['icon']);
         } else if ($value['link'] == "-") {
             $val .= shtml_untag('div');
             $val .= shtml_tag('div', array('class' => 'btn-group btn-group-sm'));
         }
     }
     $val .= shtml_untag('div');
+    return $val;
+}
+
+/**
+ * Create bootstrap button list menu
+ * 
+ * @param type $values Button group data
+ * @param boot $showTitle Show menu titles. Default TRUE
+ * @return string HTML tag
+ */
+function shtml_btnlistmenu($values, $showTitle = true) {
+    $val = "";
+    foreach ($values as $key => $value) {
+        if (!is_numeric($key)) {
+            $value = array('title' => $key, 'link' => $value);
+        }
+        if (!array_key_exists('class', $value)) {
+            $value['class'] = '';
+        }
+        if (!array_key_exists('icon', $value)) {
+            $value['icon'] = 'th';
+        }
+        $value['class'] = 'btn btn-sm btn-link' . $value['class'];
+        if (is_array($value['link'])) {
+            $val .= shtml_action_link($showTitle ? $value['title'] : '', $value['link'], 
+                    array(
+                        'class' => $value['class'],
+                        'title' => $value['title'],
+                        'data-toggle' => 'tooltip'                        
+                    ), $value['icon']);
+        } else if ($value['link'] == "-") {
+            $val .= shtml_untag('div');            
+        }
+    }    
     return $val;
 }
 

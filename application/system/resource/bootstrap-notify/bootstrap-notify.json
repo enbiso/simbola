@@ -1,0 +1,6 @@
+{    
+    "local" :  {
+        "css" : ["bootstrap-notify/css/bootstrap-notify.css"],
+        "js"  : ["bootstrap-notify/js/bootstrap-notify.js"]
+    }
+}

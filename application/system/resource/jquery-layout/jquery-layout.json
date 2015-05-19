@@ -1,0 +1,6 @@
+{        
+    "cdn" :  {
+        "css" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css"],
+        "js" : ["https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"]       
+    }
+}

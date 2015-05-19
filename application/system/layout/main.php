@@ -13,8 +13,8 @@
 
         <?php
         $resource_list = array(
-            'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json',
-            'flexigrid', 'jquery-ui', 'jquery-dynatree', 'jquery-contextmenu',
+            'jquery', 'jquery-pnotify', 'jquery-cookie', 'simbola', 'json',
+            'flexigrid', 'jqueryui', 'jquery-dynatree', 'jquery-contextmenu',
             'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify');
         if ($this->isDataSet('resource_list')) {
             $resource_list = array_merge($resource_list, $this->resource_list);

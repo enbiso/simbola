@@ -1,0 +1,6 @@
+{        
+    "local" :  {
+        "css" : ["jquery-dynatree/skin-vista/ui.dynatree.css"],
+        "js" : ["jquery-dynatree/jquery.dynatree.min.js"]
+    }
+}

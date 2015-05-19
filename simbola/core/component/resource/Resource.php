@@ -12,7 +12,7 @@ class Resource extends \simbola\core\component\system\lib\Component{
      */
     public function init() {
         parent::init();
-        $resBase = $this->getResourceBase();
+        $resBase = $this->getCacheBase();
         if(!file_exists($resBase)){
             mkdir($resBase);
             $this->reloadCache();
@@ -20,14 +20,24 @@ class Resource extends \simbola\core\component\system\lib\Component{
     }
     
     /**
+     * Setup default values
+     */
+    public function setupDefault() {
+        $this->setParamDefault('CDN', true);
+    }
+    
+    /**
      * Get the resource cache base for the module
      * 
-     * @param string $module Module name
+     * @param string $module Module name nullable
      * @return string Cache base file path
      */
-    function getCacheBase($module) {
-        return \simbola\Simbola::app()->resource->getResourceBase() . DIRECTORY_SEPARATOR
-                . $module;
+    function getCacheBase($module = false) {
+        $cacheBase = \simbola\Simbola::app()->basepath('app').DIRECTORY_SEPARATOR.'resource';
+        if($module) {
+            $cacheBase .= DIRECTORY_SEPARATOR . $module;
+        }
+        return $cacheBase;        
     }
     
     /**
@@ -36,7 +46,7 @@ class Resource extends \simbola\core\component\system\lib\Component{
      * @param string $module Module name
      * @return string Actual resource path
      */
-    function getSourceBase($module) {
+    function getResourceBase($module) {
         $moduleConfig = \simbola\Simbola::app()->getModuleConfig($module);
         $path = \simbola\Simbola::app()->basepath('app') . DIRECTORY_SEPARATOR
                 . \simbola\Simbola::app()->getParam('BASE') . DIRECTORY_SEPARATOR
@@ -51,21 +61,12 @@ class Resource extends \simbola\core\component\system\lib\Component{
      */
     function reloadCache() {
         foreach (\simbola\Simbola::app()->getModuleNames() as $moduleName) {            
-            $source = $this->getSourceBase($moduleName);
+            $source = $this->getResourceBase($moduleName);
             if(file_exists($source)){
                 $dest = $this->getCacheBase($moduleName);
                 sfile_recursive_copy($source, $dest);
             }
         }                    
-    }
-    
-    /**
-     * Get the resource base file path
-     * 
-     * @return string
-     */
-    public function getResourceBase() {
-        return \simbola\Simbola::app()->basepath('app').DIRECTORY_SEPARATOR.'resource';
     }
     
     /**
@@ -92,6 +93,37 @@ class Resource extends \simbola\core\component\system\lib\Component{
     public function getResource($type, $module, $name) {
         $res = new lib\ResItem($type, $module, $name);
         return $res;
+    }
+    
+    /**
+     * Loads the resource items by name using the config.json
+     * 
+     * @param type $module Module Name
+     * @param type $name Resource Set Name
+     * @return array ResItem
+     */
+    public function loadResItems($module, $name) {
+        $configFile = $this->getResourceBase($module)
+                . DIRECTORY_SEPARATOR . $name
+                . DIRECTORY_SEPARATOR . $name . ".json";
+        $resItems = [];
+        if(file_exists($configFile)){
+            $config = (array)json_decode(file_get_contents($configFile));
+            if($this->getParam("CDN") && key_exists("cdn", $config)){
+                foreach ($config["cdn"] as $type => $paths) {
+                    foreach ($paths as $path) {
+                        $resItems[] = new lib\ResItem($type, $module, $path, 'cdn');   
+                    }
+                }
+            }elseif(key_exists("local", $config)){
+                foreach ($config["local"] as $type => $paths) {
+                    foreach ($paths as $path) {
+                        $resItems[] = new lib\ResItem($type, $module, $path, 'local');   
+                    }
+                }
+            }
+        }
+        return $resItems;
     }
 }
 

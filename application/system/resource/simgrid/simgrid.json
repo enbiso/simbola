@@ -1,0 +1,7 @@
+{        
+    "local" :  {        
+        "js" : [
+            "simgrid/simgrid.js"
+            ]
+    }
+}

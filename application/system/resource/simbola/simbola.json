@@ -1,0 +1,9 @@
+{        
+    "local" :  {        
+        "js" : [
+            "simbola/simbola.js",
+            "simbola/simbola.jquery.js",
+            "simbola/simbola.bootstrap.js"
+            ]
+    }
+}

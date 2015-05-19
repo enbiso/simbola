@@ -1,0 +1,6 @@
+{        
+    "local" :  {
+        "css" : ["rbam/main.css"],
+        "js" : ["rbam/main.js"]
+    }
+}

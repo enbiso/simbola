@@ -7,8 +7,8 @@
             'author' => 'Faraj Farook')) ?>        
         
         <?= shtml_resource_include(array(
-            'jquery-pnotify', 'jquery', 'jquery-cookie', 'simbola', 'json', 'codemirror',
-            'flexigrid', 'jquery-ui', 'jquery-pnotify', 'jquery-dynatree', 'jquery-contextmenu', 
+            'jquery', 'jquery-pnotify', 'jquery-cookie', 'simbola', 'json', 'codemirror',
+            'flexigrid', 'jqueryui', 'jquery-pnotify', 'jquery-dynatree', 'jquery-contextmenu', 
             'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>     
         
         <style>

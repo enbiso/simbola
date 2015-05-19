@@ -19,7 +19,7 @@ namespace simbola\core;
  * @property component\term\Term $term Term component
  * @property component\url\Url $url URL component
  * @property component\transaction\Transaction $transaction Transaction component
- * @property component\svn\Svn $svn Subversion component
+ * @property component\resource\Resource $resource Resource component
  */
 class Application {
 
