@@ -22,50 +22,9 @@
                 echo "\t\"$params[$index]\" : \"\"" . (((count($params) - 1) == $index) ? "\n" : ",\n");
             }
             ?>}</textarea>        
-        <button class="btn btn-default btn-sm" id='service_execute'>Execute Service</button>
     </div>
     <div class="col-md-8">                  
         <code>Response</code>        
-        <div id="service_response"></div>
+        <textarea id="service_response"/>
     </div>
 </div>
-
-<script>
-    var editor = CodeMirror.fromTextArea(document.getElementById("service_params"), {
-        mode: "javascript",
-        lineNumbers: true,
-        matchBrackets: true,
-        indentUnit: 4,
-        indentWithTabs: true,
-        enterMode: "keep",
-        tabMode: "shift",        
-    });
-
-    var reponse = CodeMirror.fromTextArea(document.getElementById("service_response"), {
-        mode: "javascript",
-        lineNumbers: true,
-        matchBrackets: true,
-        indentUnit: 4,
-        indentWithTabs: true,
-        enterMode: "keep",
-        tabMode: "shift",        
-    });
-
-    $('#service_execute').bind('click', function(e) {
-        var rawParams = editor.getValue();
-        var args = JSON.parse(rawParams);
-        simbola.call.service('<?= $this->module ?>', '<?= $this->service ?>', '<?= $this->action ?>', args, function(data) {
-            reponse.setValue(JSON.stringify(data, undefined, 2));
-        }, false);
-    });
-</script>
-
-<style>
-    .CodeMirror {
-        border: 1px solid #eee;
-    }
-    .CodeMirror-scroll {
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-</style>

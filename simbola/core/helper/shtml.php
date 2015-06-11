@@ -437,7 +437,8 @@ function shtml_dropmenu($values, $title = "") {
  * @return string HTML tag
  */
 function shtml_btngroupmenu($values, $showTitle = true) {
-    $val = "";shtml_tag('div', array('class' => 'btn-group'));
+    if(count($values) == 0) return;
+    $val = shtml_tag('div', array('class' => 'btn-group'));
     foreach ($values as $key => $value) {
         if (!is_numeric($key)) {
             $value = array('title' => $key, 'link' => $value);

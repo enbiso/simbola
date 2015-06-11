@@ -9,7 +9,7 @@
         <?= shtml_resource_include(array(
             'jquery', 'jquery-pnotify', 'jquery-cookie', 'simbola', 'json', 'codemirror',
             'flexigrid', 'jqueryui', 'jquery-pnotify', 'jquery-dynatree', 'jquery-contextmenu', 
-            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify')) ?>     
+            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify', 'mousetrap')) ?>     
         
         <style>
             body{

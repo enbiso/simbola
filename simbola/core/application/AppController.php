@@ -163,6 +163,19 @@ abstract class AppController {
     }
 
     /**
+     * Check if the request made is from client is AJAX
+     * 
+     * @return boolean
+     */
+    protected function isAjaxRequest() {
+        if(isset($_SERVER['HTTP_X_REQUESTED_WITH'])){
+            $xmlreq = strtolower($_SERVER['HTTP_X_REQUESTED_WITH']);
+            return ($xmlreq === 'xmlhttprequest');
+        }else{
+            return false;
+        }
+    }
+    /**
      * Checks if the given action is defined in the security bypass action list
      *      
      * @param string $action action name

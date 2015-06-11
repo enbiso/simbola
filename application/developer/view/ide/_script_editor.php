@@ -12,6 +12,10 @@
         tabMode: "shift",
         extraKeys: {"Ctrl-Space": "autocomplete"}
     });
+    editor.addKeyMap({"Ctrl-S" : function() {
+            call_action("save");
+        }
+    });
     
     //Auto complete-------------------------------------------------------------
     CodeMirror.commands.autocomplete = function(cm) {

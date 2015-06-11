@@ -91,6 +91,8 @@ class ResItem {
                 $url = \simbola\Simbola::app()->url->getBaseUrl() . $url;
             } else if(!empty($appUrlBase)) {            
                 $url = "/" . $appUrlBase . $url;
+            } else {
+                $url = "/" . $url;
             }
             return $url;
         } else {

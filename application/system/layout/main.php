@@ -15,7 +15,7 @@
         $resource_list = array(
             'jquery', 'jquery-pnotify', 'jquery-cookie', 'simbola', 'json',
             'flexigrid', 'jqueryui', 'jquery-dynatree', 'jquery-contextmenu',
-            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify');
+            'rbam', 'less', 'simgrid', 'bootstrap', 'bootstrap-notify', 'mousetrap');
         if ($this->isDataSet('resource_list')) {
             $resource_list = array_merge($resource_list, $this->resource_list);
         }
