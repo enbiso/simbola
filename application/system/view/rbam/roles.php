@@ -36,7 +36,7 @@ echo $grid->getDisplayData();
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleUnregister";  
                     $.post(url,{rolename:item.role},function(data){
-                        $.pnotify(data);  
+                        new PNotify(data);  
                         $('#role_list').flexReload();
                     },'json');
                 });
@@ -45,7 +45,7 @@ echo $grid->getDisplayData();
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleSetEnduser";  
                     $.post(url,{rolename:item.role},function(data){
-                        $.pnotify(data);  
+                        new PNotify(data);  
                         $('#role_list').flexReload();
                     },'json');
                 });
@@ -54,7 +54,7 @@ echo $grid->getDisplayData();
                 $.each(selectedItems,function(index,item){
                     var url = "rbam/roleSetAccess";  
                     $.post(url,{rolename:item.role},function(data){
-                        $.pnotify(data);  
+                        new PNotify(data);  
                         $('#role_list').flexReload();
                     },'json');
                 });

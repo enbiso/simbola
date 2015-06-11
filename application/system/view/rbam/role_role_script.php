@@ -25,11 +25,11 @@
                     if(data.type != 'success'){
                         silent = true;
                         node.select(!select);
-                        $.pnotify(data);
+                        new PNotify(data);
                         return;
                     }
                     if(!silent){
-                        $.pnotify(data);
+                        new PNotify(data);
                         silent = false;
                     }
                 }, 'json');             

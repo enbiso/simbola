@@ -4,19 +4,31 @@ $this->page_breadcrumb = array(
     'Role Based Access Manager');
 
 $url = simbola\Simbola::app()->url; ?>
-<div id="tabs-rbam-main">
-    <ul>
-        <li><?= shtml_action_link("Users", array('/system/rbam/tabUsers')) ?></li>
-        <li><?= shtml_action_link("Roles", array('/system/rbam/tabRoles')) ?></li>
-        <li><?= shtml_action_link("User - Role", array('/system/rbam/tabUserRole')) ?></li>
-        <li><?= shtml_action_link("Role - Role", array('/system/rbam/tabRoleRole')) ?></li>
-        <li><?= shtml_action_link("Role - Access Object", array('/system/rbam/tabRoleAccessObj')) ?></li>
-        <li><?= shtml_action_link("Manage Access Objects", array('/system/rbam/tabManAccessObj')) ?></li>
-        <li><?= shtml_action_link("Import & Export", array('/system/rbam/tabImportExport')) ?></li>
-    </ul>
-</div>
+<ul class="nav nav-tabs tabs-up tabs-rbam">
+    <li role="presentation" class="active"><?= shtml_action_link("Users", array('/system/rbam/tabUsers')) ?></li>
+    <li role="presentation"><?= shtml_action_link("Roles", array('/system/rbam/tabRoles')) ?></li>
+    <li role="presentation"><?= shtml_action_link("User - Role", array('/system/rbam/tabUserRole')) ?></li>
+    <li role="presentation"><?= shtml_action_link("Role - Role", array('/system/rbam/tabRoleRole')) ?></li>
+    <li role="presentation"><?= shtml_action_link("Role - Access Object", array('/system/rbam/tabRoleAccessObj')) ?></li>
+    <li role="presentation"><?= shtml_action_link("Manage Access Objects", array('/system/rbam/tabManAccessObj')) ?></li>
+    <li role="presentation"><?= shtml_action_link("Import & Export", array('/system/rbam/tabImportExport')) ?></li>
+</ul>
+<br/>
+<div class="page-display"></div>
 <script>
-    $('#tabs-rbam-main').tabs({cache: true});
+    
+    $('.tabs-rbam > li > a').click(function(e) {
+        e.preventDefault();
+        var loadurl = $(this).attr('href');
+        $.get(loadurl, function(data) {
+            $('.page-display').html(data);
+        });
+        $(this).parent().tab('show');
+    });
+    
+    $.get($('.tabs-rbam > li.active > a').attr('href'), function(data) {
+        $('.page-display').html(data);
+    });
     
     function openDialog(label, url, opts, post_data){         
         opts.show = 'clip';

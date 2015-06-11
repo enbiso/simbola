@@ -118,14 +118,14 @@ var simbola = {
                                 callback(data.body.response);
                                 break;
                             case simbola.STATUS.USER_ERROR:
-                                $.pnotify({
+                                new PNotify({
                                     title: 'Application error',
                                     text: data.body.message,
                                     type: 'error'
                                 });
                                 break;
                             case simbola.STATUS.ERROR:
-                                $.pnotify({
+                                new PNotify({
                                     title: 'System error',
                                     text: data.body.message,
                                     type: 'error'

@@ -30,7 +30,7 @@
             }
             $('#auth_change_password_form label.message').html(data.text);
             $('#auth_change_password_form label.message').addClass(uiclass);
-            $.pnotify(data);     
+            new PNotify(data);     
         },'json');          
         return false;
     });

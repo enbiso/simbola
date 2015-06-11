@@ -18,7 +18,7 @@
             }
             $('#role_register_form label.message').html(data.text);
             $('#role_register_form label.message').addClass(uiclass)
-            $.pnotify(data);               
+            new PNotify(data);               
         },'json');          
         return false;
     });

@@ -22,7 +22,7 @@
     //execute All LUs
     function executeAllLUs(node, moduleName) {
         simbola.call.service('developer', 'dbsetup', 'setupModule', {module: moduleName}, function(data) {
-            $.pnotify({
+            new PNotify({
                 title: 'Executed',
                 text: 'Executed with success'
             });
@@ -30,7 +30,7 @@
     }
     function executeLU(node, moduleName, luName) {
         simbola.call.service('developer', 'dbsetup', 'setupLu', {module: moduleName, lu: luName}, function(data) {
-            $.pnotify({
+            new PNotify({
                 title: 'Executed',
                 text: 'Executed with success'
             });
@@ -38,7 +38,7 @@
     }
     function executeObj(node, moduleName, luName, objType, objName) {
         simbola.call.service('developer', 'dbsetup', 'setupObj', {module: moduleName, lu: luName, type: objType, name: objName}, function(data) {
-            $.pnotify({
+            new PNotify({
                 title: 'Executed',
                 text: 'Executed with success'
             });
@@ -175,7 +175,7 @@
         set_cursor_busy();
         simbola.call.service('developer', 'ide', 'promoteFile', {path: node.data.key, promotePath: promotePath}, function(data) {
             set_cursor_auto();
-            $.pnotify({title: 'Promote files', text: 'Files promoted to the location provided.'});
+            new PNotify({title: 'Promote files', text: 'Files promoted to the location provided.'});
         });
     }
     //Upgrade-------------------------------------------------------------------
@@ -188,7 +188,7 @@
             svn_url: svn_url
         }, function(data) {
             set_cursor_auto();
-            $.pnotify({title: 'Upgrade module', text: 'Module upgraded from SVN provided.'});
+            new PNotify({title: 'Upgrade module', text: 'Module upgraded from SVN provided.'});
         });
     }
     //Reload resource cache-----------------------------------------------------
@@ -196,7 +196,7 @@
         set_cursor_busy();
         simbola.call.service('developer', 'ide', 'loadResourceCache', {}, function(data) {
             set_cursor_auto();
-            $.pnotify({title: 'Resource cache', text: 'Resource case reloaded successfully.'});
+            new PNotify({title: 'Resource cache', text: 'Resource case reloaded successfully.'});
         });
     }
     //Remove File---------------------------------------------------------------

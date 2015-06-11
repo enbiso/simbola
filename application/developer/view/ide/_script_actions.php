@@ -17,7 +17,7 @@
                 set_cursor_busy();
                 simbola.call.service('developer', 'ide', 'setFileContent', post_data, function(response) {
                     if (response.status) {
-                        $.pnotify({'title' : 'Saved Successfully', 'text' : currentFile + ' saved!'});
+                        new PNotify({'title' : 'Saved Successfully', 'text' : currentFile + ' saved!'});
                         confirm_modal_close();
                     } else {
                         confirm_model_alert("Error in saving the file");

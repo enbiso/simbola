@@ -26,7 +26,7 @@ function registerModule(){
     $("body").css("cursor", "progress");
     $.post(url, function(data){
         $("body").css("cursor", "auto");
-        $.pnotify(data);        
+        new PNotify(data);        
         $("#access_obj_list").dynatree('getTree').reload();
     },'json');
 }
@@ -36,7 +36,7 @@ function registerAllModules(){
     $("body").css("cursor", "progress");
     $.post(url, function(data){
         $("body").css("cursor", "auto");
-        $.pnotify(data);        
+        new PNotify(data);        
         $("#access_obj_list").dynatree('getTree').reload();
     },'json');
 }
@@ -55,7 +55,7 @@ function removeObjs(){
     $("body").css("cursor", "progress");
     $.post('<?= surl_geturl(array("/system/rbam/unregister")) ?>', post_data, function(data){
         $("body").css("cursor", "auto");
-        $.pnotify(data);
+        new PNotify(data);
         $("#access_obj_list").dynatree('getTree').reload();
     }, 'json');
 }

@@ -21,7 +21,7 @@
             }
             $('#auth_register_form label.message').html(data.text);
             $('#auth_register_form label.message').addClass(uiclass)
-            $.pnotify(data);               
+            new PNotify(data);               
         },'json');          
         return false;
     });

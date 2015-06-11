@@ -21,7 +21,7 @@
                 $("body").css("cursor", "progress");
                 $.post("rbam/grant", post_data, function(data){
                     $("body").css("cursor", "auto");
-                    $.pnotify(data);
+                    new PNotify(data);
                 }, 'json');
             }
         });

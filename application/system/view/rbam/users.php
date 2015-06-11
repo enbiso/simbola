@@ -46,7 +46,7 @@ echo $grid->getDisplayData();
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userUnregister";  
                         $.post(url,{username:user.user},function(data){
-                            $.pnotify(data);  
+                            new PNotify(data);  
                             $('#user_list').flexReload();
                         },'json');
                     });
@@ -55,7 +55,7 @@ echo $grid->getDisplayData();
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userActivate";  
                         $.post(url,{username:user.user},function(data){
-                            $.pnotify(data);  
+                            new PNotify(data);  
                             $('#user_list').flexReload();
                         },'json');
                     });
@@ -64,7 +64,7 @@ echo $grid->getDisplayData();
                     $.each(selectedItems,function(index,user){
                         var url = "rbam/userDeactivate";  
                         $.post(url,{username:user.user},function(data){                            
-                            $.pnotify(data);                            
+                            new PNotify(data);                            
                             $('#user_list').flexReload();
                         },'json');
                     });
